@@ -21,9 +21,6 @@
         echo $e->getMessage();}
     }
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
