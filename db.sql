@@ -38,16 +38,16 @@ CREATE TABLE `checkouts` (
   FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
-    INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
+  INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
 CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
-    INSERT INTO `categories` (`category`) VALUES (category);
+  INSERT INTO `categories` (`category`) VALUES (category);
 CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author` VARCHAR(100), IN `category` CHAR(100), IN `description` TEXT, IN `published` DATE)
-    INSERT INTO `books` (`title`, `author`, `category`, `description`, `published`) VALUES (title, author, category, description, published);
+  INSERT INTO `books` (`title`, `author`, `category`, `description`, `published`) VALUES (title, author, category, description, published);
 CREATE PROCEDURE `muonsach` (IN `user_id` INT, IN `book_id` INT)
-    INSERT INTO `checkouts` (`user_id`, `book_id`) VALUES (user_id, book_id);
+  INSERT INTO `checkouts` (`user_id`, `book_id`) VALUES (user_id, book_id);
 CREATE PROCEDURE `trasach` (IN `id` INT)
-    UPDATE `checkouts` SET `return_date` = NOW() WHERE `id` = id;
+  UPDATE `checkouts` SET `return_date` = NOW() WHERE `id` = id;
 CREATE PROCEDURE `muonsachtheongay` (IN `user_id` INT, IN `book_id` INT, IN `checkout_date` DATE)
-    INSERT INTO `checkouts` (`user_id`, `book_id`, `checkout_date`) VALUES (user_id, book_id, checkout_date);
+  INSERT INTO `checkouts` (`user_id`, `book_id`, `checkout_date`) VALUES (user_id, book_id, checkout_date);
 CREATE PROCEDURE `trasachtheongay` (IN `id` INT, IN `return_date` DATE)
-    UPDATE `checkouts` SET `return_date` = return_date WHERE `id` = id;
+  UPDATE `checkouts` SET `return_date` = return_date WHERE `id` = id;
