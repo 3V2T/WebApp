@@ -70,10 +70,26 @@ CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
   INSERT INTO `wishlist` (`user_id`, `book_id`) VALUES (user_id, book_id);
 CREATE PROCEDURE `xoauser` (IN `id` INT)
   DELETE FROM `users` WHERE `id` = id;
+CREATE PROCEDURE `timtensach` (IN `title` VARCHAR(100))
+  SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (title);
+CREATE PROCEDURE `timsachtheotacgia` (IN `author` VARCHAR(100))
+  SELECT * FROM `vwbooks` WHERE MATCH (`author`) AGAINST (author);
+CREATE PROCEDURE `timsachtheotheloai` (IN `category` CHAR(100))
+  SELECT * FROM `vwbooks` WHERE MATCH (`category`) AGAINST (category);
+CREATE PROCEDURE `timsachtheonoidung` (IN `description` TEXT)
+  SELECT * FROM `vwbooks` WHERE MATCH (`description`) AGAINST (description);
+CREATE PROCEDURE `timsachtheonamxuatban` (IN `published` DATE)
+  SELECT * FROM `vwbooks` WHERE `published` = published;
+CREATE PROCEDURE `timtacgia` (IN `author` VARCHAR(100))
+  SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (author);
+CREATE PROCEDURE `timtheloai` (IN `category` CHAR(100))
+  SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (category);
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
   DELETE FROM `history` WHERE `user_id` = OLD.id;
   DELETE FROM `wishlist` WHERE `user_id` = OLD.id;
 END;
-
-
+CREATE FUNCTION `kiemtratontaiuser` (IN `username` VARCHAR(50)) RETURNS BOOLEAN
+  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0;
+CREATE FUNCTION `kiemtrauser` (IN `username` VARCHAR(50), IN `password` CHAR(128)) RETURNS BOOLEAN
+  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0;
