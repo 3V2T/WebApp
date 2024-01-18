@@ -9,6 +9,13 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`, `username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE TABLE `authors` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `author` varchar(100) NOT NULL,
+  `description` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY (`author`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE TABLE `categories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `category` char(100) NOT NULL UNIQUE,
@@ -17,37 +24,56 @@ CREATE TABLE `categories` (
 CREATE TABLE `books` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
-  `author` varchar(100) NOT NULL,
-  `category` char(100) NOT NULL,
+  `author_id` int NOT NULL,
+  `category_id` int NOT NULL,
   `description` text NOT NULL DEFAULT '',
   `published` date NOT NULL DEFAULT NOW(),
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`category`) REFERENCES `categories` (`category`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FULLTEXT KEY `title` (`title`),
-  FULLTEXT KEY `author` (`author`),
   FULLTEXT KEY `description` (`description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-CREATE TABLE `checkouts` (
+CREATE TABLE `history` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `book_id` int NOT NULL,
-  `checkout_date` date NOT NULL DEFAULT NOW(),
-  `return_date` date NULL,
+  `last_read` date NOT NULL DEFAULT NOW(),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE TABLE `wishlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE VIEW `vwusers` AS SELECT * FROM `users`;
+CREATE VIEW `vwauthors` AS SELECT * FROM `authors`;
+CREATE VIEW `vwcategories` AS SELECT * FROM `categories`;
+CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author`, `categories`.`category`, `books`.`description`, `books`.`published` FROM `books` INNER JOIN `authors` ON `books`.`author_id` = `authors`.`id` INNER JOIN `categories` ON `books`.`category_id` = `categories`.`id`;
+CREATE VIEW `vwhistory` AS SELECT `history`.`id`, `users`.`name`, `books`.`title`, `history`.`last_read` FROM `history` INNER JOIN `users` ON `history`.`user_id` = `users`.`id` INNER JOIN `books` ON `history`.`book_id` = `books`.`id`;
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
   INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
 CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
   INSERT INTO `categories` (`category`) VALUES (category);
+CREATE PROCEDURE `themauthor` (IN `author` VARCHAR(100), IN `description` TEXT)
+  INSERT INTO `authors` (`author`, `description`) VALUES (author, description);
 CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author` VARCHAR(100), IN `category` CHAR(100), IN `description` TEXT, IN `published` DATE)
   INSERT INTO `books` (`title`, `author`, `category`, `description`, `published`) VALUES (title, author, category, description, published);
-CREATE PROCEDURE `muonsach` (IN `user_id` INT, IN `book_id` INT)
-  INSERT INTO `checkouts` (`user_id`, `book_id`) VALUES (user_id, book_id);
-CREATE PROCEDURE `trasach` (IN `id` INT)
-  UPDATE `checkouts` SET `return_date` = NOW() WHERE `id` = id;
-CREATE PROCEDURE `muonsachtheongay` (IN `user_id` INT, IN `book_id` INT, IN `checkout_date` DATE)
-  INSERT INTO `checkouts` (`user_id`, `book_id`, `checkout_date`) VALUES (user_id, book_id, checkout_date);
-CREATE PROCEDURE `trasachtheongay` (IN `id` INT, IN `return_date` DATE)
-  UPDATE `checkouts` SET `return_date` = return_date WHERE `id` = id;
+CREATE PROCEDURE `vuadoc` (IN `user_id` INT, IN `book_id` INT)
+  INSERT INTO `history` (`user_id`, `book_id`) VALUES (user_id, book_id);
+CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
+  INSERT INTO `wishlist` (`user_id`, `book_id`) VALUES (user_id, book_id);
+CREATE PROCEDURE `xoauser` (IN `id` INT)
+  DELETE FROM `users` WHERE `id` = id;
+CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
+BEGIN
+  DELETE FROM `history` WHERE `user_id` = OLD.id;
+  DELETE FROM `wishlist` WHERE `user_id` = OLD.id;
+END;
+
+
