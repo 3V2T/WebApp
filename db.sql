@@ -27,7 +27,7 @@ CREATE TABLE `books` (
   `author_id` int NOT NULL,
   `category_id` int NOT NULL,
   `description` text NULL,
-  `published` date NOT NULL DEFAULT NOW(),
+  `published` date NOT NULL DEFAULT CURDATE(),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -38,7 +38,7 @@ CREATE TABLE `history` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `book_id` int NOT NULL,
-  `last_read` date NOT NULL DEFAULT NOW(),
+  `last_read` date NOT NULL DEFAULT CURDATE(),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
