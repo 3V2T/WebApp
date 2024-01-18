@@ -6,13 +6,13 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` char(128) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL DEFAULT '',
+  `email` varchar(100) NULL,
   PRIMARY KEY (`id`, `username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE TABLE `authors` (
   `id` int NOT NULL AUTO_INCREMENT,
   `author` varchar(100) NOT NULL,
-  `description` text NOT NULL DEFAULT '',
+  `description` text NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY (`author`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -26,7 +26,7 @@ CREATE TABLE `books` (
   `title` varchar(100) NOT NULL,
   `author_id` int NOT NULL,
   `category_id` int NOT NULL,
-  `description` text NOT NULL DEFAULT '',
+  `description` text NULL,
   `published` date NOT NULL DEFAULT NOW(),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
