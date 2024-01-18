@@ -70,10 +70,10 @@ CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
   INSERT INTO `wishlist` (`user_id`, `book_id`) VALUES (user_id, book_id);
 CREATE PROCEDURE `xoauser` (IN `id` INT)
   DELETE FROM `users` WHERE `id` = id;
+DELIMITER $$
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
-  DELETE FROM `history` WHERE `user_id` = OLD.id;
-  DELETE FROM `wishlist` WHERE `user_id` = OLD.id;
-END;
-
-
+  DELETE FROM `history` WHERE `user_id` = OLD.`id`;
+  DELETE FROM `wishlist` WHERE `user_id` = OLD.`id`;
+END$$
+DELIMITER ;
