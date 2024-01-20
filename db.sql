@@ -91,7 +91,9 @@ BEGIN
   DELETE FROM `wishlist` WHERE `user_id` = OLD.`id`;
 END$$
 DELIMITER ;
-CREATE FUNCTION `kiemtratontaiuser` (IN `username` VARCHAR(50)) RETURNS BOOLEAN
+CREATE FUNCTION `kiemtratontaiuser` (`username` VARCHAR(50)) RETURNS BOOLEAN
+DETERMINISTIC
   RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0;
-CREATE FUNCTION `kiemtrauser` (IN `username` VARCHAR(50), IN `password` CHAR(128)) RETURNS BOOLEAN
+CREATE FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
+DETERMINISTIC
   RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0;
