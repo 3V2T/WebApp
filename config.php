@@ -1,6 +1,6 @@
 <?php
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'db_ct06');
-    define('DB_USER', "ad_db_ct06");
-    define('DB_PASS', "dbct06");
+    define('DB_NAME', 'nhasach');
+    define('DB_USER', "root");
+    define('DB_PASS', "mysql");
 ?>
