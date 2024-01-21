@@ -26,7 +26,8 @@ CREATE TABLE `books` (
   `title` varchar(100) NOT NULL,
   `author_id` int NOT NULL,
   `category_id` int NOT NULL,
-  `path` varchar(260) NULL,
+  `cover_path` varchar(260) NULL,
+  `file_path` varchar(260) NULL,
   `description` text NULL,
   `published` date NOT NULL DEFAULT (CURRENT_DATE),
   PRIMARY KEY (`id`),
@@ -55,7 +56,7 @@ CREATE TABLE `wishlist` (
 CREATE VIEW `vwusers` AS SELECT * FROM `users`;
 CREATE VIEW `vwauthors` AS SELECT * FROM `authors`;
 CREATE VIEW `vwcategories` AS SELECT * FROM `categories`;
-CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author`, `categories`.`category`, `books`.`path`, `books`.`description`, `books`.`published` FROM `books` INNER JOIN `authors` ON `books`.`author_id` = `authors`.`id` INNER JOIN `categories` ON `books`.`category_id` = `categories`.`id`;
+CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author`, `categories`.`category`, `books`.`cover_path`, `books`.`file_path`, `books`.`description`, `books`.`published` FROM `books` INNER JOIN `authors` ON `books`.`author_id` = `authors`.`id` INNER JOIN `categories` ON `books`.`category_id` = `categories`.`id`;
 CREATE VIEW `vwhistory` AS SELECT `history`.`id`, `users`.`name`, `books`.`title`, `history`.`last_read` FROM `history` INNER JOIN `users` ON `history`.`user_id` = `users`.`id` INNER JOIN `books` ON `history`.`book_id` = `books`.`id`;
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
   INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
@@ -63,10 +64,14 @@ CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
   INSERT INTO `categories` (`category`) VALUES (category);
 CREATE PROCEDURE `themauthor` (IN `author` VARCHAR(100), IN `description` TEXT)
   INSERT INTO `authors` (`author`, `description`) VALUES (author, description);
-CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author` VARCHAR(100), IN `category` CHAR(100), IN `description` TEXT, IN `published` DATE)
-  INSERT INTO `books` (`title`, `author`, `category`, `path`, `description`, `published`) VALUES (title, author, category, path, description, published);
-CREATE PROCEDURE `suaduongdan` (IN `id` INT, IN `path` VARCHAR(260))
-  UPDATE `books` SET `path` = path WHERE `id` = id;
+CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author_id` INT, IN `category_id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260), IN `description` TEXT, IN `published` DATE)
+  INSERT INTO `books` (`title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES (title, author_id, category_id, cover_path, file_path, description, published);
+CREATE PROCEDURE `suaduongdan` (IN `id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260))
+  UPDATE `books` SET `cover_path` = cover_path, `file_path` = file_path WHERE `id` = id;
+CREATE PROCEDURE `suaduongdanbiasach` (IN `id` INT, IN `cover_path` VARCHAR(260))
+  UPDATE `books` SET `cover_path` = cover_path WHERE `id` = id;
+CREATE PROCEDURE `suaduongdanfile` (IN `id` INT, IN `file_path` VARCHAR(260))
+  UPDATE `books` SET `file_path` = file_path WHERE `id` = id;
 CREATE PROCEDURE `vuadoc` (IN `user_id` INT, IN `book_id` INT)
   INSERT INTO `history` (`user_id`, `book_id`) VALUES (user_id, book_id);
 CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
