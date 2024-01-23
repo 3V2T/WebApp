@@ -58,6 +58,7 @@ CREATE VIEW `vwauthors` AS SELECT * FROM `authors`;
 CREATE VIEW `vwcategories` AS SELECT * FROM `categories`;
 CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author`, `categories`.`category`, `books`.`cover_path`, `books`.`file_path`, `books`.`description`, `books`.`published` FROM `books` INNER JOIN `authors` ON `books`.`author_id` = `authors`.`id` INNER JOIN `categories` ON `books`.`category_id` = `categories`.`id`;
 CREATE VIEW `vwhistory` AS SELECT `history`.`id`, `users`.`name`, `books`.`title`, `history`.`last_read` FROM `history` INNER JOIN `users` ON `history`.`user_id` = `users`.`id` INNER JOIN `books` ON `history`.`book_id` = `books`.`id`;
+CREATE VIEW `vwwishlist` AS SELECT `wishlist`.`id`, `users`.`name`, `books`.`title` FROM `wishlist` INNER JOIN `users` ON `wishlist`.`user_id` = `users`.`id` INNER JOIN `books` ON `wishlist`.`book_id` = `books`.`id`;
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
   INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
 CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
@@ -90,6 +91,14 @@ CREATE PROCEDURE `timtacgia` (IN `author` VARCHAR(100))
   SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (author WITH QUERY EXPANSION);
 CREATE PROCEDURE `timtheloai` (IN `category` CHAR(100))
   SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (category WITH QUERY EXPANSION);
+CREATE PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)
+  SELECT * FROM `vwbooks` LIMIT start, number;
+CREATE PROCEDURE `phantrangtacgia` (IN `start` INT, IN `number` INT)
+  SELECT * FROM `vwauthors` LIMIT start, number;
+CREATE PROCEDURE `phantranglichsu` (IN `start` INT, IN `number` INT)
+  SELECT * FROM `vwhistory` LIMIT start, number;
+CREATE PROCEDURE `phantrangyeuthich` (IN `start` INT, IN `number` INT)
+  SELECT * FROM `vwwishlist` LIMIT start, number;
 DELIMITER $$
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
