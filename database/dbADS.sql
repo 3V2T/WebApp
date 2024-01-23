@@ -79,19 +79,19 @@ CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
 CREATE PROCEDURE `xoauser` (IN `id` INT)
   DELETE FROM `users` WHERE `id` = id;
 CREATE PROCEDURE `timtensach` (IN `title` VARCHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (title);
+  SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (title WITH QUERY EXPANSION);
 CREATE PROCEDURE `timsachtheotacgia` (IN `author` VARCHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`author`) AGAINST (author);
+  SELECT * FROM `vwbooks` WHERE MATCH (`author`) AGAINST (author WITH QUERY EXPANSION);
 CREATE PROCEDURE `timsachtheotheloai` (IN `category` CHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`category`) AGAINST (category);
+  SELECT * FROM `vwbooks` WHERE MATCH (`category`) AGAINST (category WITH QUERY EXPANSION);
 CREATE PROCEDURE `timsachtheonoidung` (IN `description` TEXT)
-  SELECT * FROM `vwbooks` WHERE MATCH (`description`) AGAINST (description);
+  SELECT * FROM `vwbooks` WHERE MATCH (`description`) AGAINST (description WITH QUERY EXPANSION);
 CREATE PROCEDURE `timsachtheonamxuatban` (IN `published` DATE)
   SELECT * FROM `vwbooks` WHERE `published` = published;
 CREATE PROCEDURE `timtacgia` (IN `author` VARCHAR(100))
-  SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (author);
+  SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (author WITH QUERY EXPANSION);
 CREATE PROCEDURE `timtheloai` (IN `category` CHAR(100))
-  SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (category);
+  SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (category WITH QUERY EXPANSION);
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
   DELETE FROM `history` WHERE `user_id` = OLD.id;
