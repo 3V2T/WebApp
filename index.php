@@ -1,5 +1,5 @@
 <!-- Kiểm tra người dùng đăng nhập chưa -->
-<?php
+<!-- <?php
 session_start();
 include_once "./utils/routerConfig.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
@@ -8,7 +8,7 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
-?>
+?> -->
 
 <!DOCTYPE html>
 <html lang="en">

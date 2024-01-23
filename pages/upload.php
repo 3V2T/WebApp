@@ -44,6 +44,84 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $("form").submit(function(event) {
+            // Prevent form submission
+            event.preventDefault();
+
+            // Perform form validation
+            var tenSach = $("#ten-sach").val();
+            var tacGia = $("#tac-gia").val();
+            var moTaTacGia = $("#mo-ta-tac-gia").val();
+            var moTaSach = $("#mo-ta-sach").val();
+            var ngayPhatHanh = $("#ngay-phat-hanh").val();
+            var filePDF = $("#file-pdf").val();
+            var fileAnh = $("#file-anh").val();
+
+            var isValid = true;
+
+            // Validate required fields
+            if (tenSach === "") {
+                isValid = false;
+                $("#ten-sach").addClass("is-invalid");
+            } else {
+                $("#ten-sach").removeClass("is-invalid");
+            }
+
+            if (tacGia === "") {
+                isValid = false;
+                $("#tac-gia").addClass("is-invalid");
+            } else {
+                $("#tac-gia").removeClass("is-invalid");
+            }
+
+            if (moTaTacGia === "") {
+                isValid = false;
+                $("#mo-ta-tac-gia").addClass("is-invalid");
+            } else {
+                $("#mo-ta-tac-gia").removeClass("is-invalid");
+            }
+
+            if (moTaSach === "") {
+                isValid = false;
+                $("#mo-ta-sach").addClass("is-invalid");
+            } else {
+                $("#mo-ta-sach").removeClass("is-invalid");
+            }
+
+            if (ngayPhatHanh === "") {
+                isValid = false;
+                $("#ngay-phat-hanh").addClass("is-invalid");
+            } else {
+                $("#ngay-phat-hanh").removeClass("is-invalid");
+            }
+
+            // Validate file inputs
+            if (filePDF === "") {
+                isValid = false;
+                $("#file-pdf").addClass("is-invalid");
+            } else {
+                $("#file-pdf").removeClass("is-invalid");
+            }
+
+            if (fileAnh === "") {
+                isValid = false;
+                $("#file-anh").addClass("is-invalid");
+            } else {
+                $("#file-anh").removeClass("is-invalid");
+            }
+
+            // If the form is valid, submit it
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        // Clear all form fields
+        $("#clear-all").click(function() {
+            $("form")[0].reset();
+        });
+    });
     // Hiển thị hình ảnh khi tải lên
     $(document).on("change", "#file-anh", function() {
         var file = this.files[0];

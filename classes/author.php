@@ -22,9 +22,9 @@ class Author
         // Sửa 1 tác giả bằng id và trả về boolean
     }
 
-    public static function delete($conn, $author)
+    public static function delete($conn, $id)
     {
-        // Thêm 1 tác giả mới và trả về boolean
+        // Xóa tác giả trả bằng id về boolean
     }
 
     public static function getById($conn, $id)

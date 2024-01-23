@@ -47,7 +47,7 @@ class Book
         // ];
     }
 
-    public static function getById($conn)
+    public static function getById($conn, $id)
     {
         //Lấy ra 1 quyển sách bằng id
         //Trả về 1 Object Book
