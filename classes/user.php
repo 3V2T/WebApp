@@ -3,66 +3,56 @@ class User
 {
     public $id;
     public $username;
+    public $name;
     public $password;
-    /*
-                phương thức khởi tạo constructor
-            */
-    public function __construct($id, $username, $password)
+    public $email;
+
+    public function __construct($id, $username, $name, $password, $email)
     {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
+        $this->name = $name;
+        $this->email = $email;
     }
 
 
-    public static function login($conn, $username, $password)
+    public static function add($conn, $user)
     {
-        try {
-            $stmt = $conn->prepare("SELECT * FROM user Where username =:username");
-            $stmt->bindParam(':username', $username);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            // Lấy ra user
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION["user_id"] = $user["id"];
-                $_SESSION["user_name"] = $user["username"];
-                return true;
-            } else {
-                // Đăng thất bại
-                return false;
-            }
-        } catch (PDOException $e) {
-            // Đăng nhập lỗi
-            echo "Error: " . $e->getMessage();
-            return false;
-        }
-        // Default trả về false
-        return false;
+        // Thêm người dùng mới xuống database trả về boolean.
+        // với trường password dùng thuật toán mã hóa bằng hàm password_hash và dùng thuật toán Bcrypt. Ví dụ password_hash('khacvi2003AZ', PASSWORD_BCRYPT).
     }
 
-    public static function addUser($conn, $user)
+    public static function update($conn, $user, $id)
     {
-        if ($user) {
-            try { // Câu truy vấn INSERT INTO
-                $sql = "INSERT INTO user (username, password) VALUES (:username, :password)";
-
-                // Chuẩn bị câu truy vấn
-                $stmt = $conn->prepare($sql);
-
-                // Bind các giá trị vào câu truy vấn
-                $stmt->bindParam(':username', $user->username);
-                $hashPassword = password_hash($user->password, PASSWORD_BCRYPT);
-                $stmt->bindParam(':password', $hashPassword);
-                // Thực thi câu truy vấn
-                $stmt->execute();
-                echo "Thêm người dùng mới thành công";
-            } catch (PDOException $e) {
-                echo "Lỗi: " . $e->getMessage();
-            }
-        }
+        // Sử người dùng đã có xuống database bằng id trả về boolean.
     }
 
-    public function addInformation($conn, $user)
+    public static function delete($conn, $id)
     {
+        // Xóa người dùng database trả về boolean.
+    }
+
+    public static function authen($conn, $username, $password)
+    {
+        // Tìm người dùng dưới database bằng username và password và trả về boolean.
+        // Dùng hàm password_verify để xác thực.
+    }
+
+    public static function getAll($conn)
+    {
+        // Lấy ra tất cả user có trong database và trả về 1 mảng chứa các Object User.
+        // Ví dụ  
+        // $usersList = [
+        //     user1,
+        //     user2, 
+        //     ...
+        // ];
+    }
+
+    public static function getById($conn, $id)
+    {
+        // Lấy ra user bằng id
+        // Trả về 1 đối tượng user
     }
 }
