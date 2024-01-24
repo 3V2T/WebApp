@@ -179,7 +179,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE `xoakhoiwishlist` (IN `username` CHAR(100), IN `title` VARCHAR(100))
 BEGIN
-  PREPARE stmt FROM 'DELETE * FROM `wishlist` WHERE `user_id` = (SELECT `id` FROM `users` WHERE `username` = ?) AND `book_id` = (SELECT `id` FROM `books` WHERE `title` = ?)';
+  PREPARE stmt FROM 'DELETE FROM `wishlist` WHERE `user_id` = (SELECT `id` FROM `users` WHERE `username` = ?) AND `book_id` = (SELECT `id` FROM `books` WHERE `title` = ?)';
   SET @username = username;
   SET @title = title;
   EXECUTE stmt USING @username, @title;
@@ -189,7 +189,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE `xoakhoihistory` (IN `username` CHAR(100), IN `title` VARCHAR(100))
 BEGIN
-  PREPARE stmt FROM 'DELETE * FROM `history` WHERE `user_id` = (SELECT `id` FROM `users` WHERE `username` = ?) AND `book_id` = (SELECT `id` FROM `books` WHERE `title` = ?)';
+  PREPARE stmt FROM 'DELETE FROM `history` WHERE `user_id` = (SELECT `id` FROM `users` WHERE `username` = ?) AND `book_id` = (SELECT `id` FROM `books` WHERE `title` = ?)';
   SET @username = username;
   SET @title = title;
   EXECUTE stmt USING @username, @title;
