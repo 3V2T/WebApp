@@ -3,11 +3,11 @@ CREATE DATABASE `library` CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `library`;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL UNIQUE,
   `password` char(128) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NULL,
-  PRIMARY KEY (`id`, `username`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE TABLE `authors` (
   `id` int NOT NULL AUTO_INCREMENT,
