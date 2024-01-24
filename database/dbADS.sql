@@ -60,25 +60,91 @@ CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author
 CREATE VIEW `vwhistory` AS SELECT `history`.`id`, `users`.`name`, `books`.`title`, `history`.`last_read` FROM `history` INNER JOIN `users` ON `history`.`user_id` = `users`.`id` INNER JOIN `books` ON `history`.`book_id` = `books`.`id`;
 CREATE VIEW `vwwishlist` AS SELECT `wishlist`.`id`, `users`.`name`, `books`.`title` FROM `wishlist` INNER JOIN `users` ON `wishlist`.`user_id` = `users`.`id` INNER JOIN `books` ON `wishlist`.`book_id` = `books`.`id`;
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
-  INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (username, password, name, email);
+BEGIN
+  PREPARE stmt FROM 'INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (?, ?, ?, ?)';
+  SET @username = username;
+  SET @password = password;
+  SET @name = name;
+  SET @email = email;
+  EXECUTE stmt USING @username, @password, @name, @email;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
-  INSERT INTO `categories` (`category`) VALUES (category);
+BEGIN
+  PREPARE stmt FROM 'INSERT INTO `categories` (`category`) VALUES (?)';
+  SET @category = category;
+  EXECUTE stmt USING @category;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `themauthor` (IN `author` VARCHAR(100), IN `description` TEXT)
-  INSERT INTO `authors` (`author`, `description`) VALUES (author, description);
+BEGIN
+  PREPARE stmt FROM 'INSERT INTO `authors` (`author`, `description`) VALUES (?, ?)';
+  SET @author = author;
+  SET @description = description;
+  EXECUTE stmt USING @author, @description;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author_id` INT, IN `category_id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260), IN `description` TEXT, IN `published` DATE)
-  INSERT INTO `books` (`title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES (title, author_id, category_id, cover_path, file_path, description, published);
+BEGIN
+  PREPARE stmt FROM 'INSERT INTO `books` (`title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  SET @title = title;
+  SET @author_id = author_id;
+  SET @category_id = category_id;
+  SET @cover_path = cover_path;
+  SET @file_path = file_path;
+  SET @description = description;
+  SET @published = published;
+  EXECUTE stmt USING @title, @author_id, @category_id, @cover_path, @file_path, @description, @published;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `suaduongdan` (IN `id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260))
-  UPDATE `books` SET `cover_path` = cover_path, `file_path` = file_path WHERE `id` = id;
+BEGIN
+  PREPARE stmt FROM 'UPDATE `books` SET `cover_path` = ?, `file_path` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @cover_path = cover_path;
+  SET @file_path = file_path;
+  EXECUTE stmt USING @id, @cover_path, @file_path;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `suaduongdanbiasach` (IN `id` INT, IN `cover_path` VARCHAR(260))
-  UPDATE `books` SET `cover_path` = cover_path WHERE `id` = id;
+BEGIN
+  PREPARE stmt FROM 'UPDATE `books` SET `cover_path` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @cover_path = cover_path;
+  EXECUTE stmt USING @id, @cover_path;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `suaduongdanfile` (IN `id` INT, IN `file_path` VARCHAR(260))
-  UPDATE `books` SET `file_path` = file_path WHERE `id` = id;
+BEGIN
+  PREPARE stmt FROM 'UPDATE `books` SET `file_path` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @file_path = file_path;
+  EXECUTE stmt USING @id, @file_path;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `vuadoc` (IN `user_id` INT, IN `book_id` INT)
-  INSERT INTO `history` (`user_id`, `book_id`) VALUES (user_id, book_id);
+BEGIN 
+  PREPARE stmt FROM 'INSERT INTO `history` (`user_id`, `book_id`) VALUES (?, ?)';
+  SET @user_id = user_id;
+  SET @book_id = book_id;
+  EXECUTE stmt USING @user_id, @book_id;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
-  INSERT INTO `wishlist` (`user_id`, `book_id`) VALUES (user_id, book_id);
+BEGIN
+  PREPARE stmt FROM 'INSERT INTO `wishlist` (`user_id`, `book_id`) VALUES (?, ?)';
+  SET @user_id = user_id;
+  SET @book_id = book_id;
+  EXECUTE stmt USING @user_id, @book_id;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `xoauser` (IN `id` INT)
-  DELETE FROM `users` WHERE `id` = id;
+BEGIN
+  PREPARE stmt FROM 'DELETE FROM `users` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timtensach` (IN `title` VARCHAR(100))
 BEGIN
   PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (? WITH QUERY EXPANSION)';
@@ -129,13 +195,37 @@ BEGIN
   DEALLOCATE PREPARE stmt;
 END;
 CREATE PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)
-  SELECT * FROM `vwbooks` LIMIT start, number;
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` LIMIT ?, ?';
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantrangtacgia` (IN `start` INT, IN `number` INT)
-  SELECT * FROM `vwauthors` LIMIT start, number;
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwauthors` LIMIT ?, ?';
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantranglichsu` (IN `start` INT, IN `number` INT)
-  SELECT * FROM `vwhistory` LIMIT start, number;
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwhistory` LIMIT ?, ?';
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantrangyeuthich` (IN `start` INT, IN `number` INT)
-  SELECT * FROM `vwwishlist` LIMIT start, number;
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwwishlist` LIMIT ?, ?';
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
   DELETE FROM `history` WHERE `user_id` = OLD.id;
