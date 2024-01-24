@@ -106,6 +106,27 @@ BEGIN
 END$$
 DELIMITER ;
 DELIMITER $$
+CREATE PROCEDURE `doimatkhau` (IN `id` INT, IN `password` CHAR(128))
+BEGIN
+  PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @password = password;
+  EXECUTE stmt USING @id, @password;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `suathongtin` (IN `id` INT, IN `name` VARCHAR(100), IN `email` VARCHAR(100))
+BEGIN
+  PREPARE stmt FROM 'UPDATE `users` SET `name` = ?, `email` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @name = name;
+  SET @email = email;
+  EXECUTE stmt USING @id, @name, @email;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
 CREATE PROCEDURE `suaduongdan` (IN `id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260))
 BEGIN
   PREPARE stmt FROM 'UPDATE `books` SET `cover_path` = ?, `file_path` = ? WHERE `id` = ?';
