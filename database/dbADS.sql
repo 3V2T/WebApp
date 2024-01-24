@@ -80,19 +80,54 @@ CREATE PROCEDURE `yeuthich` (IN `user_id` INT, IN `book_id` INT)
 CREATE PROCEDURE `xoauser` (IN `id` INT)
   DELETE FROM `users` WHERE `id` = id;
 CREATE PROCEDURE `timtensach` (IN `title` VARCHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (title WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @title = title;
+  EXECUTE stmt USING @title;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timsachtheotacgia` (IN `author` VARCHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`author`) AGAINST (author WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`author`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @author = author;
+  EXECUTE stmt USING @author;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timsachtheotheloai` (IN `category` CHAR(100))
-  SELECT * FROM `vwbooks` WHERE MATCH (`category`) AGAINST (category WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`category`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @category = category;
+  EXECUTE stmt USING @category;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timsachtheonoidung` (IN `description` TEXT)
-  SELECT * FROM `vwbooks` WHERE MATCH (`description`) AGAINST (description WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`description`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @description = description;
+  EXECUTE stmt USING @description;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timsachtheonamxuatban` (IN `published` DATE)
-  SELECT * FROM `vwbooks` WHERE `published` = published;
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`published`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @published = published;
+  EXECUTE stmt USING @published;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timtacgia` (IN `author` VARCHAR(100))
-  SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (author WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwauthors` WHERE MATCH (`author`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @author = author;
+  EXECUTE stmt USING @author;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `timtheloai` (IN `category` CHAR(100))
-  SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (category WITH QUERY EXPANSION);
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwcategories` WHERE MATCH (`category`) AGAINST (? WITH QUERY EXPANSION)';
+  SET @category = category;
+  EXECUTE stmt USING @category;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)
   SELECT * FROM `vwbooks` LIMIT start, number;
 CREATE PROCEDURE `phantrangtacgia` (IN `start` INT, IN `number` INT)
