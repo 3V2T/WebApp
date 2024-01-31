@@ -335,6 +335,24 @@ BEGIN
   EXECUTE stmt USING @start, @number;
   DEALLOCATE PREPARE stmt;
 END;
+CREATE PROCEDURE `phantrangwltheouserid` (IN `id` INT, IN `start` INT, IN `number` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwwishlist` WHERE `user_id` = ? LIMIT ?, ?';
+  SET @id = id;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @id, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
+CREATE PROCEDURE `phantranglstheouserid` (IN `id` INT, IN `start` INT, IN `number` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwhistory` WHERE `user_id` = ? LIMIT ?, ?';
+  SET @id = id;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @id, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW 
 BEGIN
   DELETE FROM `history` WHERE `user_id` = OLD.id;
