@@ -260,6 +260,42 @@ BEGIN
 END$$
 DELIMITER ;
 DELIMITER $$
+CREATE PROCEDURE `getBooksbyid` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `getAuthorsbyid` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwauthors` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `getCategoriesbyid` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwcategories` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `getUsersbyid` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwusers` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
 CREATE PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)
 BEGIN
   PREPARE stmt FROM 'SELECT * FROM `vwbooks` LIMIT ?, ?';
