@@ -72,6 +72,19 @@ BEGIN
 END$$
 DELIMITER ;
 DELIMITER $$
+CREATE PROCEDURE `suauser` (IN `id` INT, IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
+BEGIN
+  PREPARE stmt FROM 'UPDATE `users` SET `username` = ?, `password` = ?, `name` = ?, `email` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @username = username;
+  SET @password = password;
+  SET @name = name;
+  SET @email = email;
+  EXECUTE stmt USING @username, @password, @name, @email, @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
 CREATE PROCEDURE `themcategory` (IN `category` CHAR(100))
 BEGIN
   PREPARE stmt FROM 'INSERT INTO `categories` (`category`) VALUES (?)';
@@ -91,6 +104,26 @@ BEGIN
 END$$
 DELIMITER ;
 DELIMITER $$
+CREATE PROCEDURE `suaauthor` (IN `id` INT, IN `author` VARCHAR(100), IN `description` TEXT)
+BEGIN
+  PREPARE stmt FROM 'UPDATE `authors` SET `author` = ?, `description` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @author = author;
+  SET @description = description;
+  EXECUTE stmt USING @author, @description, @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `xoaauthor` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'DELETE FROM `authors` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
 CREATE PROCEDURE `themsach` (IN `title` VARCHAR(100), IN `author_id` INT, IN `category_id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260), IN `description` TEXT, IN `published` DATE)
 BEGIN
   PREPARE stmt FROM 'INSERT INTO `books` (`title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -102,6 +135,31 @@ BEGIN
   SET @description = description;
   SET @published = published;
   EXECUTE stmt USING @title, @author_id, @category_id, @cover_path, @file_path, @description, @published;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `suasach` (IN `id` INT, IN `title` VARCHAR(100), IN `author_id` INT, IN `category_id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260), IN `description` TEXT, IN `published` DATE)
+BEGIN
+  PREPARE stmt FROM 'UPDATE `books` SET `title` = ?, `author_id` = ?, `category_id` = ?, `cover_path` = ?, `file_path` = ?, `description` = ?, `published` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @title = title;
+  SET @author_id = author_id;
+  SET @category_id = category_id;
+  SET @cover_path = cover_path;
+  SET @file_path = file_path;
+  SET @description = description;
+  SET @published = published;
+  EXECUTE stmt USING @id, @title, @author_id, @category_id, @cover_path, @file_path, @description, @published;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `xoasach` (IN `id` INT)
+BEGIN
+  PREPARE stmt FROM 'DELETE FROM `books` WHERE `id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
   DEALLOCATE PREPARE stmt;
 END$$
 DELIMITER ;
@@ -197,7 +255,7 @@ BEGIN
 END$$
 DELIMITER ;
 DELIMITER $$
-CREATE PROCEDURE `timtensach` (IN `title` VARCHAR(100))
+CREATE PROCEDURE `timsachtheoten` (IN `title` VARCHAR(100))
 BEGIN
   PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (? WITH QUERY EXPANSION)';
   SET @title = title;
@@ -342,6 +400,15 @@ BEGIN
   DELETE FROM `wishlist` WHERE `user_id` = OLD.`id`;
 END$$
 DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `xoasach` BEFORE DELETE ON `books` FOR EACH ROW
+BEGIN
+  DELETE FROM `history` WHERE `book_id` = OLD.id;
+  DELETE FROM `wishlist` WHERE `book_id` = OLD.id;
+END$$
+DELIMITER ;
+CREATE TRIGGER `xoatacgia` BEFORE DELETE ON `authors` FOR EACH ROW
+  DELETE FROM `books` WHERE `author_id` = OLD.id;
 CREATE FUNCTION `kiemtratontaiuser` (`username` VARCHAR(50)) RETURNS BOOLEAN
 DETERMINISTIC
   RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0;
