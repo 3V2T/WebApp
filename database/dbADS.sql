@@ -303,6 +303,20 @@ BEGIN
   EXECUTE stmt USING @id;
   DEALLOCATE PREPARE stmt;
 END;
+CREATE PROCEDURE `getwlbyuserid` (IN `user_id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwwishlist` WHERE `user_id` = ?';
+  SET @user_id = user_id;
+  EXECUTE stmt USING @user_id;
+  DEALLOCATE PREPARE stmt;
+END;
+CREATE PROCEDURE `gethistorybyuserid` (IN `user_id` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwhistory` WHERE `user_id` = ?';
+  SET @user_id = user_id;
+  EXECUTE stmt USING @user_id;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)
 BEGIN
   PREPARE stmt FROM 'SELECT * FROM `vwbooks` LIMIT ?, ?';
