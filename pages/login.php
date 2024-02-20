@@ -7,8 +7,8 @@
         display: none;
     }
 </style>
-<div class="position-fixed bg-white d-flex" style="top: 0; left: 0; bottom: 0; right: 0; z-index: 10;">
-    <div class="row container m-auto">
+<div class="bg-white w-full h-full d-flex">
+    <div class=" row container m-auto">
         <div class="col-4"></div>
         <div class="col-4 p-3 bg-white" style="
             box-shadow: 0px 2px 10px 2px #cccc;
