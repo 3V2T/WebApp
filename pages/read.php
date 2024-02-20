@@ -7,10 +7,9 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
-if (isset($_GET['name'])) {
-    $value = $_GET['name'];
-    echo $value;
-    $file = '../uploads/books/' . $value . ".pdf";
+$name = $_GET['name'];
+if (isset($name)) {
+    $file = '../uploads/books/' . $name . ".pdf";
     if (file_exists($file)) {
         header('Content-Description: File Transfer');
         header('Content-Type: application/pdf');

@@ -18,16 +18,17 @@ class Database
         $this->db_pass = $db_pass;
     }
 
-    public function getConn () {
+    public function getConn()
+    {
         // create dsn (datasource name)
         $dsn = "mysql:host={$this->db_host};dbname={$this->db_name};charset=utf8";
 
         try {
             $conn = new PDO($dsn, $this->db_user, $this->db_pass);
-            $conn -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conn;
         } catch (PDOException $e) {
-            echo $e -> getMessage();
+            echo $e->getMessage();
             exit;
         }
     }

@@ -16,43 +16,86 @@ class User
         $this->email = $email;
     }
 
-
     public static function add($conn, $user)
     {
-        // Thêm người dùng mới xuống database trả về boolean.
-        // với trường password dùng thuật toán mã hóa bằng hàm password_hash và dùng thuật toán Bcrypt. Ví dụ password_hash('khacvi2003AZ', PASSWORD_BCRYPT).
+        $query = "INSERT INTO users (username, password, name, email) VALUES (:username, :password, :name, :email)";
+        $stmt = $conn->prepare($query);
+
+        // Sử dụng PDO bind để tránh SQL injection
+        $stmt->bindParam(':username', $user->username);
+        $stmt->bindParam(':password', $user->password);
+        $stmt->bindParam(':name', $user->name);
+        $stmt->bindParam(':email', $user->email);
+        $stmt->execute();
     }
 
     public static function update($conn, $user, $id)
     {
-        // Sử người dùng đã có xuống database bằng id trả về boolean.
+        $query = "UPDATE users SET username = :username, name = :name, email = :email WHERE id = :id";
+        $stmt = $conn->prepare($query);
+
+        // Sử dụng PDO bind để tránh SQL injection
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':username', $user->username);
+        $stmt->bindParam(':name', $user->name);
+        $stmt->bindParam(':email', $user->email);
+
+        return $stmt->execute();
     }
 
     public static function delete($conn, $id)
     {
-        // Xóa người dùng database trả về boolean.
+        $query = "DELETE FROM users WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
     }
 
     public static function authen($conn, $username, $password)
     {
-        // Tìm người dùng dưới database bằng username và password và trả về boolean.
-        // Dùng hàm password_verify để xác thực.
+        $query = "SELECT * FROM users WHERE username = :username";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function getAll($conn)
     {
-        // Lấy ra tất cả user có trong database và trả về 1 mảng chứa các Object User.
-        // Ví dụ  
-        // $usersList = [
-        //     user1,
-        //     user2, 
-        //     ...
-        // ];
+        $query = "SELECT * FROM users";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+
+        $usersList = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $user = new User($row['id'], $row['username'], $row['name'], $row['password'], $row['email']);
+            $usersList[] = $user;
+        }
+
+        return $usersList;
     }
 
     public static function getById($conn, $id)
     {
-        // Lấy ra user bằng id
-        // Trả về 1 đối tượng user
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            return new User($user['id'], $user['username'], $user['name'], $user['password'], $user['email']);
+        } else {
+            return null;
+        }
     }
 }
