@@ -48,8 +48,8 @@
                 </li>
             </ul>
             <div class="d-flex" style="gap: 16px;">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" style="box-shadow: 2px 2px 5px 2px #cccc;" placeholder="Nhập tên sách" aria-label="Tìm kiếm">
+                <form class="form-inline my-2 my-lg-0" method="get" action="/WebApp/pages/search.php">
+                    <input class=" form-control mr-sm-2" type="search" name="keyword" style="box-shadow: 2px 2px 5px 2px #cccc;" placeholder="Nhập tên sách" aria-label="Tìm kiếm">
                     <button class="btn btn-outline-success my-2 my-sm-0" style="box-shadow: 2px 2px 5px 2px #cccc;" type="submit">Tìm kiếm</button>
                 </form>
                 <div class="dropdown d-flex">
