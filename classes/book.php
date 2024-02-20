@@ -29,7 +29,6 @@ class Book
 
     public static function add($conn, $book)
     {
-        //Thêm sách mới trả về boolean
         if ($book->validate()) {
             $sql = "INSERT INTO books (title, author_id, category_id, description, published, cover_path, file_path)
                 VALUES (:title, :author_id, :category_id, :description, :published, :cover_path, :file_path)";
@@ -51,7 +50,6 @@ class Book
 
     public static function update($conn, $book, $id)
     {
-        //Sửa sách bằng id trả về boolean
         if ($book->validate()) {
             try {
                 $sql = "UPDATE books
@@ -86,7 +84,6 @@ class Book
 
     public static function delete($conn, $id)
     {
-        //Xóa sách bằng id trả về boolean
         try {
             $sql = "DELETE FROM books WHERE id = :id";
             $stmt = $conn->prepare($sql);
@@ -100,13 +97,34 @@ class Book
 
     public static function getAll($conn)
     {
-        //Lấy thông tin tất cả các cuốn sách
-        //Trả về 1 mảng chưa các Object Book
-        // $booksList = [
-        //     book1
-        //     book2, 
-        //     ...
-        // ];
+        try {
+            $sql = "SELECT * FROM books";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+
+            $booksList = [];
+
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $booksList[] = new Book(
+                    $row['id'],
+                    $row['title'],
+                    $row['author_id'],
+                    $row['category_id'],
+                    $row['description'],
+                    $row['published'],
+                    $row['cover_path'],
+                    $row['file_path']
+                );
+            }
+            return $booksList;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public static function getLimit($conn)
+    {
         try {
             $sql = "SELECT * FROM books";
             $stmt = $conn->prepare($sql);
@@ -135,8 +153,6 @@ class Book
 
     public static function getById($conn, $id)
     {
-        //Lấy ra 1 quyển sách bằng id
-        //Trả về 1 Object Book
         try {
             $sql = "SELECT * FROM books WHERE id = :id";
             $stmt = $conn->prepare($sql);
@@ -167,10 +183,11 @@ class Book
 
     public static function getByCategory($conn, $category_name)
     {
-        //Lấy ra các quyển sách bằng tên của phân loại (String)
-        //Trả về mảng các Object Book
         try {
-            $sql = "SELECT * FROM books INNER JOIN categories ON books.category_id = categories.id WHERE categories.category = :category_name";
+            $sql = "SELECT books.id, books.title, books.author_id, books.category_id, books.description, books.published, books.cover_path, books.file_path, categories.category
+            FROM books
+            INNER JOIN categories ON books.category_id = categories.id
+            WHERE categories.category = :category_name";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':category_name', $category_name);
@@ -198,8 +215,6 @@ class Book
 
     public static function getByKeyWord($conn, $key_word)
     {
-        //Lấy ra các quyển sách có từ khóa trong tên
-        //Trả về mảng các Object Book
         try {
             $sql = "SELECT * FROM books WHERE title LIKE :key_word";
 

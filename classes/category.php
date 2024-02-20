@@ -26,4 +26,21 @@ class Category
 
         return $categoriesList;
     }
+
+    public static function getById($conn, $id)
+    {
+        $query = "call getCategoriesbyid(:id)";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        $category = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($category) {
+            return new Category($category['id'], $category['category'], $category['name']);
+        } else {
+            return null;
+            // Lấy ra author bằng id và trả về 1 Object Author
+        }
+    }
 }

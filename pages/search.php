@@ -5,7 +5,9 @@ include_once "../utils/routerConfig.php";
 include "../classes/database.php";
 include "../classes/book.php";
 include "../classes/author.php";
+include "../classes/category.php";
 include "../config.php";
+
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["user_id"])) {
@@ -54,7 +56,8 @@ $connection = $conn->getConn();
                             <div class="card-body">
                                 <h5 class="card-title">' . $b->title . '</h5>
                                 <p> ' . $author->author . ' </p>
-                                <a href="#" class="btn btn-primary">Detail</a>
+                                <a class="btn btn-primary" href="/WebApp/pages/detail.php?id=' . $b->id . '">Detail</a>
+                                <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ if ($slug != "login") {
 }
 $name = $_GET['name'];
 if (isset($name)) {
-    $file = '../uploads/books/' . $name . ".pdf";
+    $file = '../uploads/books/' . $name;
     if (file_exists($file)) {
         header('Content-Description: File Transfer');
         header('Content-Type: application/pdf');

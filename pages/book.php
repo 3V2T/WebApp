@@ -6,6 +6,7 @@ include "../classes/database.php";
 include "../classes/book.php";
 include "../classes/author.php";
 include "../config.php";
+include "../classes/category.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["user_id"])) {
@@ -37,35 +38,11 @@ $connection = $conn->getConn();
         <div class="container min-vh-100 mt-4">
             <?php
             if (isset($_GET["type"])) {
-                $list = [
-                    (object) [
-                        "name" => "Tất cả",
-                        "slug" => "all",
-                    ],
-                    (object) [
-                        "name" => "Thiếu nhi",
-                        "slug" => "thieu-nhi",
-                    ],
-                    (object) [
-                        "name" => "Khoa học",
-                        "slug" => "khoa-hoc",
-                    ],
-                    (object) [
-                        "name" => "Tâm lý",
-                        "slug" => "tam-ly",
-                    ],
-                    (object) [
-                        "name" => "Lịch sử",
-                        "slug" => "lich-su",
-                    ],
-
-                    (object) [
-                        "name" => "Văn học",
-                        "slug" => "van-hoc",
-                    ],
-                ];
+                $list = Category::getAll($connection);
+                $category_all = new Category(1, "tat-ca", "Tất cả");
+                array_push($list, $category_all);
                 foreach ($list as $item) {
-                    if ($item->slug == $_GET['type']) {
+                    if ($item->category == $_GET['type']) {
                         echo "<h1 class='p-4'>{$item->name}</h1>";
                     }
                 }
@@ -76,9 +53,10 @@ $connection = $conn->getConn();
                     <?php
                     $category = $_GET['type'] != null ? $_GET['type'] : null;
                     if ($category) {
-                        $books = $category == "all" ? Book::getAll($connection) : Book::getByCategory($connection, $category);
+                        $books = $category == "tat-ca" ? Book::getAll($connection) : Book::getByCategory($connection, $category);
                         foreach ($books as $b) {
                             $author = Author::getById($connection, $b->author_id);
+                            echo $b->author_id;
                             echo '
                         <div class=" col-xl-3 col-md-3 col-sm-4 col-sm-6 mb-4">
                         <div class="card">
@@ -86,25 +64,15 @@ $connection = $conn->getConn();
                             <div class="card-body">
                                 <h5 class="card-title">' . $b->title . '</h5>
                                 <p> ' . $author->author . ' </p>
-                                <a href="#" class="btn btn-primary">Detail</a>
+                                <a class="btn btn-primary" href="/WebApp/pages/detail.php?id=' . $b->id . '">Detail</a>
+                                <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
                             </div>
                         </div>
                     </div>
                         ';
                         }
                     }
-
                     ?>
-
-                    <!-- <div class=" col-xl-3 col-md-3 col-sm-4 col-sm-6 mb-4">
-                        <div class="card">
-                            <img src="../uploads/books-cover/thanh-cat-tu-han-va-su-hinh-thanh-the-gioi-hien-dai.jpg" class="card-img-top" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <a href="#" class="btn btn-primary">Detail</a>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>

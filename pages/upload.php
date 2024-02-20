@@ -1,7 +1,3 @@
-<?php
-include "./classes/category.php";
-include "./classes/author.php";
-?>
 <div class="container p-5">
     <form action="controller/handleUpload.php" method="post" enctype="multipart/form-data">
         <h1>Form upload sách</h1>
@@ -54,100 +50,100 @@ include "./classes/author.php";
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 <script>
-$(document).ready(function() {
-    $("form").submit(function(event) {
-        // Prevent form submission
-        event.preventDefault();
+    $(document).ready(function() {
+        $("form").submit(function(event) {
+            // Prevent form submission
+            event.preventDefault();
 
-        // Perform form validation
-        var tenSach = $("#ten-sach").val();
-        var tacGia = $("#tac-gia").val();
-        var moTaSach = $("#mo-ta-sach").val();
-        var theLoai = $("#the-loai").val();
-        var ngayPhatHanh = $("#ngay-phat-hanh").val();
-        var filePDF = $("#file-pdf").val();
-        var fileAnh = $("#file-anh").val();
+            // Perform form validation
+            var tenSach = $("#ten-sach").val();
+            var tacGia = $("#tac-gia").val();
+            var moTaSach = $("#mo-ta-sach").val();
+            var theLoai = $("#the-loai").val();
+            var ngayPhatHanh = $("#ngay-phat-hanh").val();
+            var filePDF = $("#file-pdf").val();
+            var fileAnh = $("#file-anh").val();
 
-        var isValid = true;
+            var isValid = true;
 
-        // Validate required fields
-        if (tenSach === "") {
-            isValid = false;
-            $("#ten-sach").addClass("is-invalid");
-        } else {
-            $("#ten-sach").removeClass("is-invalid");
-        }
+            // Validate required fields
+            if (tenSach === "") {
+                isValid = false;
+                $("#ten-sach").addClass("is-invalid");
+            } else {
+                $("#ten-sach").removeClass("is-invalid");
+            }
 
-        if (tacGia === "") {
-            isValid = false;
-            $("#tac-gia").addClass("is-invalid");
-        } else {
-            $("#tac-gia").removeClass("is-invalid");
-        }
-        if (theLoai === "") {
-            isValid = false;
-            $("#the-loai").addClass("is-invalid");
-        } else {
-            $("#the-loai").removeClass("is-invalid");
-        }
-        if (moTaSach === "") {
-            isValid = false;
-            $("#mo-ta-sach").addClass("is-invalid");
-        } else {
-            $("#mo-ta-sach").removeClass("is-invalid");
-        }
+            if (tacGia === "") {
+                isValid = false;
+                $("#tac-gia").addClass("is-invalid");
+            } else {
+                $("#tac-gia").removeClass("is-invalid");
+            }
+            if (theLoai === "") {
+                isValid = false;
+                $("#the-loai").addClass("is-invalid");
+            } else {
+                $("#the-loai").removeClass("is-invalid");
+            }
+            if (moTaSach === "") {
+                isValid = false;
+                $("#mo-ta-sach").addClass("is-invalid");
+            } else {
+                $("#mo-ta-sach").removeClass("is-invalid");
+            }
 
-        if (ngayPhatHanh === "") {
-            isValid = false;
-            $("#ngay-phat-hanh").addClass("is-invalid");
-        } else {
-            $("#ngay-phat-hanh").removeClass("is-invalid");
-        }
+            if (ngayPhatHanh === "") {
+                isValid = false;
+                $("#ngay-phat-hanh").addClass("is-invalid");
+            } else {
+                $("#ngay-phat-hanh").removeClass("is-invalid");
+            }
 
-        // Validate file inputs
-        if (filePDF === "") {
-            isValid = false;
-            $("#file-pdf").addClass("is-invalid");
-        } else {
-            $("#file-pdf").removeClass("is-invalid");
-        }
+            // Validate file inputs
+            if (filePDF === "") {
+                isValid = false;
+                $("#file-pdf").addClass("is-invalid");
+            } else {
+                $("#file-pdf").removeClass("is-invalid");
+            }
 
-        if (fileAnh === "") {
-            isValid = false;
-            $("#file-anh").addClass("is-invalid");
-        } else {
-            $("#file-anh").removeClass("is-invalid");
-        }
+            if (fileAnh === "") {
+                isValid = false;
+                $("#file-anh").addClass("is-invalid");
+            } else {
+                $("#file-anh").removeClass("is-invalid");
+            }
 
-        // If the form is valid, submit it
-        if (isValid) {
-            this.submit();
-        }
+            // If the form is valid, submit it
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        // Clear all form fields
+        $("#clear-all").click(function() {
+            $("form")[0].reset();
+        });
+    });
+    // Hiển thị hình ảnh khi tải lên
+    $(document).on("change", "#file-anh", function() {
+        var file = this.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function() {
+            var image = reader.result;
+            $('#anh-sach').attr('src', image);
+            $('#anh-sach').show();
+        };
+        reader.readAsDataURL(file);
     });
 
-    // Clear all form fields
-    $("#clear-all").click(function() {
-        $("form")[0].reset();
+    // Clear all data in form
+    $(document).on("click", "#clear-all", function() {
+        // Clear all input fields
+        $("input").val("");
+        // Clear all textarea fields
+        $("textarea").val("");
     });
-});
-// Hiển thị hình ảnh khi tải lên
-$(document).on("change", "#file-anh", function() {
-    var file = this.files[0];
-    var reader = new FileReader();
-
-    reader.onload = function() {
-        var image = reader.result;
-        $('#anh-sach').attr('src', image);
-        $('#anh-sach').show();
-    };
-    reader.readAsDataURL(file);
-});
-
-// Clear all data in form
-$(document).on("click", "#clear-all", function() {
-    // Clear all input fields
-    $("input").val("");
-    // Clear all textarea fields
-    $("textarea").val("");
-});
 </script>

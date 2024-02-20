@@ -13,35 +13,11 @@
                     </a>
                     <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;" aria-labelledby="navbarDropdown">
                         <?php
-                        $list = [
-                            (object) [
-                                "name" => "Tất cả",
-                                "slug" => "all",
-                            ],
-                            (object) [
-                                "name" => "Thiếu nhi",
-                                "slug" => "thieu-nhi",
-                            ],
-                            (object) [
-                                "name" => "Khoa học",
-                                "slug" => "khoa-hoc",
-                            ],
-                            (object) [
-                                "name" => "Tâm lý",
-                                "slug" => "tam-ly",
-                            ],
-                            (object) [
-                                "name" => "Lịch sử",
-                                "slug" => "lich-su",
-                            ],
-
-                            (object) [
-                                "name" => "Văn học",
-                                "slug" => "van-hoc",
-                            ],
-                        ];
+                        $list = Category::getAll($connection);
+                        $category_all = new Category(1, "tat-ca", "Tất cả");
+                        array_push($list, $category_all);
                         foreach ($list as $item) {
-                            echo "<a class='dropdown-item' href='/WebApp/pages/book.php?type={$item->slug}'>{$item->name}</a>";
+                            echo "<a class='dropdown-item' href='/WebApp/pages/book.php?type={$item->category}'>{$item->name}</a>";
                         }
                         ?>
                     </div>
@@ -52,20 +28,18 @@
                     <input class=" form-control mr-sm-2" type="search" name="keyword" style="box-shadow: 2px 2px 5px 2px #cccc;" placeholder="Nhập tên sách" aria-label="Tìm kiếm">
                     <button class="btn btn-outline-success my-2 my-sm-0" style="box-shadow: 2px 2px 5px 2px #cccc;" type="submit">Tìm kiếm</button>
                 </form>
-                <div class="dropdown d-flex">
-                    <a class="btn bg-white dropdown-toggle m-auto " style="box-shadow: 2px 2px 5px 2px #cccc;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="user-name">Me</span>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#">Thông tin cá nhân</a>
-                        <a class="dropdown-item" href="#">Yêu thích</a>
-                        <a class="dropdown-item" href="#">Lịch sử đọc</a>
-                        <a class="dropdown-item" href="controller/handleLogout.php">Đăng
-                            xuất</a>
-                    </div>
-                </div>
-
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-btn-outline-light " href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Me
+                        </a>
+                        <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="">Thông tin cá nhân</a><a class="dropdown-item" href="">Lịch
+                                sử đọc</a><a class="dropdown-item" href="">Đăng
+                                xuất</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
 </nav>

@@ -5,6 +5,9 @@ session_start();
 $_SESSION["user_id"] = "23232";
 include_once "./utils/routerConfig.php";
 include_once "./classes/database.php";
+include_once "./classes/category.php";
+include_once "./classes/book.php";
+include_once "./classes/author.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
@@ -51,6 +54,9 @@ $connection = $conn->getConn();
                 break;
             case "search":
                 include __DIR__ . '/pages/search.php';
+                break;
+            case "book/detail":
+                include __DIR__ . '/pages/detail.php';
                 break;
             case "book":
                 include __DIR__ . '/pages/book.php';
