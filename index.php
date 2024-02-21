@@ -7,6 +7,7 @@ include_once "./classes/database.php";
 include_once "./classes/category.php";
 include_once "./classes/book.php";
 include_once "./classes/author.php";
+include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug == "upload") {
@@ -14,11 +15,16 @@ if ($slug == "upload") {
         header("Location: " . baseURL("home"));
     }
 }
-if ($slug != "login") {
+if ($slug != "login" && $slug != "register") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        if ($slug == "login") {
+            header("Location: " . baseURL("login"));
+        } else {
+            header("Location: " . baseURL("regiter"));
+        }
     }
 }
+
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
 ?>
@@ -70,6 +76,9 @@ $connection = $conn->getConn();
                 break;
             case "read":
                 include __DIR__ . '/pages/read.php';
+                break;
+            case "wishlist":
+                include __DIR__ . '/pages/wishlist.php';
                 break;
         }
         ?>

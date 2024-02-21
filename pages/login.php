@@ -32,11 +32,20 @@
                 </div>
                 <div class="form-group form-check" style="font-size: 14px">
                     <label class="form-check-label" for="message">Have no account?</label>
-                    <a href="">Click here!</a>
+                    <a href="register">Click here!</a>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
         <div class=" col-4"></div>
+        <?php
+        if (isset($_SESSION['register_message'])) {
+            echo "<script>alert('" . $_SESSION['register_message'] . "')</script>";
+            session_destroy();
+        }
+        ?>
+        <script>
+        localStorage.clear("data");
+        </script>
     </div>
 </div>

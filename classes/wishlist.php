@@ -52,4 +52,19 @@ class WishList
             return null;
         }
     }
+
+    public static function getWishListByUserAndBook($conn, $user_id, $book_id)
+    {
+        $query = "select * from wishlist where user_id = :user_id and book_id = :book_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":book_id", $book_id);
+        $stmt->execute();
+        $wishlist = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($wishlist) {
+            return new WishList($wishlist['id'], $wishlist['book_id'], $wishlist['user_id']);
+        } else {
+            return null;
+        }
+    }
 }

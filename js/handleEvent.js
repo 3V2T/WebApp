@@ -2,6 +2,7 @@ export default function handleEvent() {
   return {
     handleToggleHeartIcon: (event, userId, bookId) => {
       event.preventDefault();
+      event.stopPropagation();
       const element = event.target;
       element.classList.toggle("active");
       if (element.classList.contains("active")) {

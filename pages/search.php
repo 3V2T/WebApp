@@ -6,6 +6,7 @@ include "../classes/database.php";
 include "../classes/book.php";
 include "../classes/author.php";
 include "../classes/category.php";
+include "../classes/wishlist.php";
 include "../config.php";
 
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
@@ -48,6 +49,7 @@ $connection = $conn->getConn();
                         $books = [];
                         $books = Book::getByKeyWord($connection, $keyword);
                         foreach ($books as $b) {
+                            $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
                             $author = Author::getById($connection, $b->author_id);
                             echo '
                         <div class=" col-xl-3 col-md-3 col-sm-4 col-sm-6 mb-4">
@@ -60,8 +62,8 @@ $connection = $conn->getConn();
                                     <a class="btn btn-primary" href="/WebApp/pages/detail.php?id=' . $b->id . '">Detail</a>
                                     <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
-                                <div class="col-2">
-                                    <a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>
+                                <div class="col-2" style="padding: 0;">
+                                ' . ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart active"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') . '
                                 </div>
                             </div>
                         </div>
@@ -78,18 +80,18 @@ $connection = $conn->getConn();
         ?>
     </div>
     <script type="module" async>
-    import handleEvent from '../js/handleEvent.js';
-    const {
-        handleToggleHeartIcon
-    } = handleEvent();
-    console.log(handleToggleHeartIcon);
-    const heartList = document.querySelectorAll(".heart");
-    console.log(heartList);
-    heartList.forEach(heart => {
-        heart.onclick = (event) => {
-            handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
-        }
-    });
+        import handleEvent from '../js/handleEvent.js';
+        const {
+            handleToggleHeartIcon
+        } = handleEvent();
+        console.log(handleToggleHeartIcon);
+        const heartList = document.querySelectorAll(".heart");
+        console.log(heartList);
+        heartList.forEach(heart => {
+            heart.onclick = (event) => {
+                handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
+            }
+        });
     </script>
 </body>
 
