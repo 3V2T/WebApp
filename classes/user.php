@@ -98,4 +98,20 @@ class User
             return null;
         }
     }
+
+    public static function getByName($conn, $username)
+    {
+        $query = "SELECT * FROM users WHERE username = :username";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            return new User($user['id'], $user['username'], $user['name'], $user['password'], $user['email']);
+        } else {
+            return null;
+        }
+    }
 }

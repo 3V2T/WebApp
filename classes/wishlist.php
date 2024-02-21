@@ -1,9 +1,9 @@
 <?php
 class WishList
 {
-    private $id;
-    private $book_id;
-    private $user_id;
+    public $id;
+    public $book_id;
+    public $user_id;
     public function __construct($id, $book_id, $user_id)
     {
         $this->id = $id;
@@ -11,27 +11,33 @@ class WishList
         $this->user_id = $user_id;
     }
 
-    public function add($conn, $wishlist)
+    public static function add($conn, $wishlist)
     {
-        $query = "call yeuthich(:id)";
+        $query = "call yeuthich(:user_id, :book_id)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':book_id', $wishlist->book_id);
         $stmt->bindParam(':user_id', $wishlist->user_id);
-        $stmt->execute();
-        // Thêm 1 phần tử mới và trả về boolean
+        return $stmt->execute();
     }
 
-    public function delete($conn, $id)
+    public static function delete($conn, $id)
     {
         $query = "call xoakhoiwishlist(:id)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id);
-
         return $stmt->execute();
-        // Xóa 1 phần tử bằng id và trả về boolean
     }
 
-    public function getWishListByUserId($conn, $id)
+    public static function deleteByUserAndBook($conn, $user_id, $book_id)
+    {
+        $query = "delete from wishlist where user_id = :user_id and book_id = :book_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":book_id", $book_id);
+        return $stmt->execute();
+    }
+
+    public static function getWishListByUserId($conn, $id)
     {
         $query = "call getwlbyuserid(:id)";
         $stmt = $conn->prepare($query);
@@ -44,13 +50,6 @@ class WishList
             return new WishList($wishlist['id'], $wishlist['book_id'], $wishlist['user_id']);
         } else {
             return null;
-            // Lấy ra tất cả phần tử trong wishlist bằng user_id
-            // Trả về 1 mảng các Object WishList
-            // $wishList = [
-            //     Wishlist1,
-            //     Wishlist2, 
-            //     ...
-            // ];
         }
     }
 }

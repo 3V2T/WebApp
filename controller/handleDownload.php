@@ -1,16 +1,16 @@
 <?php
 
-function downloadFile($file_path, $file_name)
+function downloadFile($file_name)
 {
     // Set the appropriate headers
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . $file_name . '"');
-    header('Content-Length: ' . filesize($file_path));
+    header('Content-Disposition: attachment; filename="' . $file_name);
+    header('Content-Length: ' . filesize("../uploads/books/" . $file_name));
 
     // Output the file contents
-    readfile($file_path);
+    readfile("../uploads/books/" . $file_name);
 }
 
-$file_path = $_GET("path");
-$file_name = $_GET("name");
-downloadFile($file_path, $file_name);
+$file_name = $_GET["file"];
+echo $file_name;
+downloadFile($file_name);

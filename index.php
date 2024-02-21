@@ -2,7 +2,6 @@
 
 <?php
 session_start();
-$_SESSION["user_id"] = "23232";
 include_once "./utils/routerConfig.php";
 include_once "./classes/database.php";
 include_once "./classes/category.php";
@@ -10,8 +9,13 @@ include_once "./classes/book.php";
 include_once "./classes/author.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
+if ($slug == "upload") {
+    if (!isset($_SESSION["is_admin"])) {
+        header("Location: " . baseURL("home"));
+    }
+}
 if ($slug != "login") {
-    if (!isset($_SESSION["user_id"])) {
+    if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
     }
 }

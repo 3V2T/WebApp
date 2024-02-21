@@ -10,7 +10,7 @@ include "../config.php";
 
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
-    if (!isset($_SESSION["user_id"])) {
+    if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
     }
 }

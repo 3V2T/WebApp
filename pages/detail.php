@@ -9,7 +9,7 @@ include "../config.php";
 include "../classes/category.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
-    if (!isset($_SESSION["user_id"])) {
+    if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
     }
 }
@@ -52,13 +52,13 @@ $connection = $conn->getConn();
                     </div>
                     <div class="col-md-7 p-4" style="box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
                         <h1>' . $book->title . '</h1>
-                        <h6>Tác giả:</h6> <span class="pl-4">' . $author->author . '</span>
-                        <h6>Thể loại:</h6><span class="pl-4">' . $category->name . '</span>
-                        <h6>Ngày phát hành:</h6><span class="pl-4">' . $book->published . '</span>
+                        <h6>Tác giả:</h6> <p class="pl-4">' . $author->author . '</p>
+                        <h6>Thể loại:</h6><p><a href="/WebApp/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
+                        <h6>Ngày phát hành:</h6><p class="pl-4">' . $book->published . '</p>
                         <h6 >Mô tả:</h6>
                         <p class="pl-4">' . $book->description . '</p>
                         <div>
-                            <a class="btn btn-success text-white">Download</a>
+                            <a class="btn btn-success text-white" href="/WebApp/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
                             <a class="btn btn-danger"
                                 href="/WebApp/pages/read.php?name=' . $book->file_path . '">Read</a>
                         </div>
