@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['success_message'] = "Đăng nhập thành công";
             header("Location: " . baseURL("home"));
         } else {
+            $_SESSION['error_message'] = "Tên đăng nhập hoặc mật khẩu không đúng";
             header("Location: " . baseURL("login"));
         }
     }

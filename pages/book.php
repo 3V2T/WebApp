@@ -84,7 +84,7 @@ $connection = $conn->getConn();
                                     <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
                                 <div class="col-2" style="padding: 0;">
-                                ' . ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart active"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') . '
+                                ' . ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') . '
                                 </div>
                             </div>
                         </div>

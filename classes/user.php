@@ -33,7 +33,6 @@ class User
     {
         $query = "UPDATE users SET username = :username, name = :name, email = :email WHERE id = :id";
         $stmt = $conn->prepare($query);
-
         // Sử dụng PDO bind để tránh SQL injection
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':username', $user->username);
@@ -42,6 +41,17 @@ class User
 
         return $stmt->execute();
     }
+    public static function updatePassword($conn, $user, $id)
+    {
+        $query = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        // Sử dụng PDO bind để tránh SQL injection
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':password', $user->password);
+        return $stmt->execute();
+    }
+
+
 
     public static function delete($conn, $id)
     {

@@ -27,6 +27,7 @@ class Auth
         $user = User::getByName($conn, $username);
         if ($isAuth) {
             $_SESSION['is_login'] = true;
+            $_SESSION['name_user'] = $user->username;
             $_SESSION['id_user'] = $user->id;
             return true;
         } else return false;

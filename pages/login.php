@@ -1,11 +1,11 @@
 <style>
-.header {
-    display: none;
-}
+    .header {
+        display: none;
+    }
 
-.footer {
-    display: none;
-}
+    .footer {
+        display: none;
+    }
 </style>
 <div class="bg-white mh-100 mw-100">
     <div class=" row container m-auto">
@@ -22,13 +22,11 @@
                 </div>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" name="username" id="username" aria-describedby="emailHelp"
-                        placeholder="Enter username">
+                    <input type="text" class="form-control" name="username" id="username" aria-describedby="emailHelp" placeholder="Enter username">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password"
-                        placeholder="Enter password">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                 </div>
                 <div class="form-group form-check" style="font-size: 14px">
                     <label class="form-check-label" for="message">Have no account?</label>
@@ -43,9 +41,12 @@
             echo "<script>alert('" . $_SESSION['register_message'] . "')</script>";
             session_destroy();
         }
+        if (isset($_SESSION['error_message'])) {
+            echo "<script>alert('" . $_SESSION['error_message'] . "')</script>";
+        }
         ?>
         <script>
-        localStorage.clear("data");
+            localStorage.clear("data");
         </script>
     </div>
 </div>

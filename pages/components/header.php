@@ -34,7 +34,7 @@
                             Me
                         </a>
                         <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="">Thông tin cá nhân</a><a class="dropdown-item" href="">Lịch
+                            <a class="dropdown-item" href="/WebApp/pages/me.php">Thông tin cá nhân</a><a class="dropdown-item" href="">Lịch
                                 sử đọc</a>
                             <a class="dropdown-item" href="/WebApp/wishlist">Sách yêu thích</a>
                             <a class="dropdown-item" href="/WebApp/controller/handleLogout.php">Đăng

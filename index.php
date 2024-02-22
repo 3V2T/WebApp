@@ -10,18 +10,14 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-if ($slug == "upload") {
-    if (!isset($_SESSION["is_admin"])) {
-        header("Location: " . baseURL("home"));
-    }
-}
+// if ($slug == "upload") {
+//     if (!isset($_SESSION["is_admin"])) {
+//         header("Location: " . baseURL("home"));
+//     }
+// }
 if ($slug != "login" && $slug != "register") {
     if (!isset($_SESSION["is_login"])) {
-        if ($slug == "login") {
-            header("Location: " . baseURL("login"));
-        } else {
-            header("Location: " . baseURL("regiter"));
-        }
+        header("Location: " . baseURL("login"));
     }
 }
 
@@ -80,6 +76,14 @@ $connection = $conn->getConn();
             case "wishlist":
                 include __DIR__ . '/pages/wishlist.php';
                 break;
+            case "wishlist":
+                include __DIR__ . '/pages/wishlist.php';
+                break;
+            case "user":
+                include __DIR__ . '/pages/user.php';
+                break;
+            default:
+                include __DIR__ . '/pages/notfound.php';
         }
         ?>
         <?php
