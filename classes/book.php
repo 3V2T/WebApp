@@ -48,6 +48,36 @@ class Book
         }
     }
 
+    public static function updateInfo($conn, $book, $id)
+    {
+        if ($book->validate()) {
+            try {
+                $sql = "UPDATE books
+                SET title = :title, 
+                    author_id = :author_id, 
+                    category_id = :category_id, 
+                    description = :description, 
+                    published = :published
+                WHERE id = :id";
+
+                $stmt = $conn->prepare($sql);
+
+                $stmt->bindParam(':title', $book->title);
+                $stmt->bindParam(':author_id', $book->author_id);
+                $stmt->bindParam(':category_id', $book->category_id);
+                $stmt->bindParam(':description', $book->description);
+                $stmt->bindParam(':published', $book->published);
+                $stmt->bindParam(':id', $id);
+                return $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public static function update($conn, $book, $id)
     {
         if ($book->validate()) {
@@ -157,6 +187,37 @@ class Book
             $sql = "SELECT * FROM books WHERE id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                return new Book(
+                    $row['id'],
+                    $row['title'],
+                    $row['author_id'],
+                    $row['category_id'],
+                    $row['description'],
+                    $row['published'],
+                    $row['cover_path'],
+                    $row['file_path']
+                );
+            } else {
+                return null;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public static function getByTitle($conn, $title)
+    {
+        try {
+            $sql = "SELECT * FROM books WHERE title = :title";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':title', $title);
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);

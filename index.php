@@ -10,11 +10,12 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-// if ($slug == "upload") {
-//     if (!isset($_SESSION["is_admin"])) {
-//         header("Location: " . baseURL("home"));
-//     }
-// }
+
+if ($slug == "upload") {
+    if (!isset($_SESSION["is_admin"])) {
+        header("Location: " . baseURL("home"));
+    }
+}
 if ($slug != "login" && $slug != "register") {
     if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
@@ -60,9 +61,6 @@ $connection = $conn->getConn();
                 break;
             case "search":
                 include __DIR__ . '/pages/search.php';
-                break;
-            case "book/detail":
-                include __DIR__ . '/pages/detail.php';
                 break;
             case "book":
                 include __DIR__ . '/pages/book.php';

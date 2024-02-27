@@ -1,14 +1,16 @@
 <?php
+$action = $_GET['type'];
+echo $action;
 include "../classes/database.php";
 include "../classes/author.php";
 include "../classes/book.php";
+include "../classes/category.php";
 include "../config.php";
 // Error reporting for development
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // Define upload path
-
 function uploadFile()
 {
     $path = (object) [
@@ -17,7 +19,6 @@ function uploadFile()
     ];
     $upload_dir_pdf = '../uploads/books/';
     $upload_dir_img = '../uploads/books-cover/';
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check if a PDF file has been uploaded
         if (isset($_FILES['file-pdf']) && $_FILES['file-pdf']['error'] == 0) {
@@ -33,11 +34,12 @@ function uploadFile()
             // Generate a unique filename to prevent overwrites
             $new_filename = $file_name;
             // Move the uploaded file to the uploads directory
-            if (move_uploaded_file($file_tmp, $upload_dir_pdf . $new_filename)) {
+            try {
+                move_uploaded_file($file_tmp, $upload_dir_pdf . $new_filename);
                 // File uploaded successfully
                 $path->pdf_path = $new_filename;
                 // You can now store the file path in your database or process it further
-            } else {
+            } catch (\Throwable $e) {
                 return false;
             }
         } else {
@@ -57,13 +59,13 @@ function uploadFile()
 
             $new_filename = $file_name;
 
-            if (move_uploaded_file($file_tmp, $upload_dir_img . $new_filename)) {
+            try {
+                move_uploaded_file($file_tmp, $upload_dir_img . $new_filename);
                 $path->img_path = $new_filename;
-            } else {
+            } catch (\Throwable $e) {
                 return false;
             }
         }
-
         return $path;
     } else {
         return false;
@@ -75,8 +77,6 @@ function addData()
     $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
     $connection = $conn->getConn();
     $uploadPath = uploadFile();
-    echo $uploadPath->pdf_path;
-    echo $uploadPath->img_path;
     if (is_object($uploadPath)) {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $title = $_POST["title"];
@@ -84,39 +84,114 @@ function addData()
             $description = $_POST["description"];
             $author_name = $_POST["author"];
             $published = $_POST["published"];
-            echo "Tên sách: " . $title . "<br>";
-            echo "Thể loại ID: " . $category_id . "<br>";
-            echo "Mô tả sách: " . $description . "<br>";
-            echo "Tác giả: " . $author_name . "<br>";
-            echo "Ngày phát hành: " . $published . "<br>";
             try {
                 $author = Author::getByName($connection, $author_name);
                 if ($author) {
-                    echo "isvalid";
                     $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
                     Book::add($connection, $book);
-                    echo "success add book";
+                    $_SESSION['title'] = $book->title;
                 } else {
-                    echo "isntvalid";
                     $author =  new Author(1, $author_name, " ");
                     Author::add($connection, $author);
                     $author = Author::getByName($connection, $author_name);
                     if ($author) {
-                        echo "isvalid";
                         $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
                         Book::add($connection, $book);
-                        echo "success add book";
+                        $_SESSION['title'] = $book->title;
                     }
-                    echo "true";
                 }
             } catch (\Throwable $e) {
-                echo $e;
-                echo "error";
+                echo $_SESSION['error_message'] = $e;
             }
         }
     } else {
-        echo "false";
+        $_SESSION['error_message'] = "Upload file gặp lỗi vui lòng thử lại!";
     }
 }
 
 addData();
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<?php
+include "../js/bootstrapConfig.php";
+?>
+
+<body>
+    <div class="min-vh-100 min-vw-100 ">
+        <div class="modal d-flex " tabindex="-1" role="dialog">
+            <div class="modal-dialog d-flex w-75" role="document">
+                <div class="modal-content m-auto">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Notice</h2>
+                    </div>
+                    <div>
+                        <?php
+                        $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+                        $connection = $conn->getConn();
+                        if (isset($_SESSION['title'])) {
+                            $title = $_SESSION['title'];
+                            if ($title != "") {
+                                $book = Book::getByTitle($connection, $title);
+                                $author = Author::getById($connection, $book->author_id);
+                                $category = Category::getById($connection, $book->category_id);
+                                echo "
+                            <div class='modal-body'>
+                            <h3>Upload successfully!</h3>
+                            </div>
+                            <div class='row px-4 pb-4'>
+                                <div class='col-md-8'>
+                                <div>
+                                    <strong>Title: </strong>
+                                    <span>" . $book->title . "</span>
+                                </div>
+                                <div>
+                                    <strong>Category: </strong>
+                                    <span>" . $category->name . "</span>
+                                </div>
+                                <div>
+                                    <strong>Author: </strong>
+                                    <span>" . $author->author . "</span>
+                                </div>
+                                </div>
+                                <div class='col-md-4'>
+                                    <img class='w-100' src='../uploads/books-cover/" . $book->cover_path . "' >
+                                </div>
+                            </div>
+                            ";
+                                unset($_SESSION['title']);
+                            }
+                        }
+                        if (isset($_SESSION['error_message'])) {
+                            echo "<div class='modal-body'>
+                            <h3>" . $_SESSION['error_message'] . "</h3>
+                            </div>";
+                        }
+                        ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="goBack()" class="btn btn-outline-primary">New upload</button>
+                        <button type="button" onclick="goHome()" class="btn btn-outline-success" data-dismiss="modal">Go
+                            home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const goHome = () => {
+        location.href = "/WebApp/home";
+    }
+    const goBack = () => {
+        location.href = "/WebApp/upload";
+    }
+</script>
+
+</html>
