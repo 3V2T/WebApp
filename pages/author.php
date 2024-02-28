@@ -14,20 +14,6 @@
 </head>
 
 <body>
-    <script type="module" async>
-    import handleEvent from './js/handleEvent.js';
-    const {
-        handleToggleHeartIcon
-    } = handleEvent();
-    console.log(handleToggleHeartIcon);
-    const heartList = document.querySelectorAll(".heart");
-    console.log(heartList);
-    heartList.forEach(heart => {
-        heart.onclick = (event) => {
-            handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
-        }
-    });
-    </script>
     <?php
     include_once("./js/bootstrapConfig.php");
     ?>
@@ -36,6 +22,7 @@
         include_once("./pages/components/header.php");
         ?>
         <div class="container min-vh-100 mt-4">
+            <h1 class="pt-4">Tác giả: </h1>
             <div class="container">
                 <div class="row gap-3">
                     <div class="col-12 d-flex">
@@ -57,9 +44,11 @@
                                     echo '<tr>
                                     <th scope="row">' . ++$i . '</th>
                                     <td>' . $author->id . '</td>
-                                    <td><input class="p-2" value="' . $author->author . '"></td>
-                                    <td><a class="btn undoBtn btn-primary text-white">Undo</a>
-                                    <button data-toggle="modal" data-target="#modalDelete' . $author->id . '" class="btn btn-danger text-white">Delete</button>
+                                    <td><input class="input-author p-2 authorId-' . $author->id . '" value="' . $author->author . '"></td>
+                                    <td>
+                                    <div class="d-flex justify-content-around">
+                                    <a class="px-2 justify-content-between btn undoBtn btn-primary text-white">Undo</a>
+                                    <button data-toggle="modal" data-target="#modalDelete' . $author->id . '" class="px-2  btn btn-danger text-white">Delete</button>
                                     <div class="modal fade" id="modalDelete' . $author->id . '" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel' . $author->id . '" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -79,7 +68,11 @@
                                             </div>
                                         </div>
                                         </div>
-                                        <a class="btn btn-success text-white">Save</a>
+                                        <form action="/WebApp/controller/handleUpdateAuthor.php?id=' . $author->id . '" method="post" class="editform authorId-' . $author->id . '">
+                                        <input class="d-none" name="author"></input>
+                                        <button class="px-2  btn btn-success text-white">Save</button>
+                                        </form>
+                                    </div>
                                     </td>
                                     </tr>';
                                 }
@@ -91,13 +84,21 @@
             </div>
         </div>
         <script>
-        const undoBtn = document.querySelectorAll(".undoBtn");
-        undoBtn.forEach((btn, index) => {
-            btn.onclick = (e) => {
-                location.href = "/WebApp/author";
-            }
-        })
-        const deleteBtn = document.querySelectorAll(".deleteBtn");
+            const undoBtn = document.querySelectorAll(".undoBtn");
+            undoBtn.forEach((btn, index) => {
+                btn.onclick = (e) => {
+                    location.href = "/WebApp/author";
+                }
+            })
+            const inputAuthor = document.querySelectorAll(".input-author");
+            const inputEdit = document.querySelectorAll(".editform input");
+            inputAuthor.forEach((element, index) => {
+                inputEdit[index].value = element.value;
+                element.onchange = (e) => {
+                    inputEdit[index].value = e.target.value;
+                    console.log(e.target.value);
+                }
+            })
         </script>
         <?php
         include_once("./pages/components/footer.php");

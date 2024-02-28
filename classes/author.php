@@ -22,13 +22,13 @@ class Author
         // Thêm 1 tác giả mới và trả về boolean
     }
 
-    public static function update($conn, $author)
+    public static function update($conn, $author, $id)
     {
-        $query = "call suaauthor(:id)";
+        $query = "CALL suaauthor(:id, :author, :description)";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $author->id);
-        $stmt->bindParam(':name', $author->author);
-        $stmt->bindParam('description', $author->description);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':author', $author->author);
+        $stmt->bindParam(':description', $author->description);
 
         return $stmt->execute();
         // Sửa 1 tác giả bằng id và trả về boolean
