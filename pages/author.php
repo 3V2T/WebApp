@@ -25,8 +25,8 @@
             <h1 class="pt-4">Tác giả: </h1>
             <div class="container">
                 <div class="row gap-3">
-                    <div class="col-12 d-flex">
-                        <table class="table mt-5 ">
+                    <div class="col-12">
+                        <table class="table mt-5">
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
@@ -79,6 +79,15 @@
                                 ?>
                             </tbody>
                         </table>
+                        <form class="d-flex p-5" method="post" action="/WebApp/controller/handleAddAuthor.php" style="gap: 8px">
+                            <input class="form-control" name="author" placeholder=" Enter author's name">
+                            <button class="btn btn-danger ">
+                                Clear
+                            </button>
+                            <button class="btn btn-success">
+                                Save
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
