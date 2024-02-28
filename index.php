@@ -10,7 +10,7 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-$_SESSION["is_admin"] = "true";
+$_SESSION['is_admin'] = 'true';
 if ($slug == "upload" || $slug == "author") {
     if (!isset($_SESSION["is_admin"])) {
         header("Location: " . baseURL("home"));

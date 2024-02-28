@@ -14,7 +14,6 @@ if ($slug != "login") {
     }
 }
 $isEdit = false;
-unset($_SESSION['is_admin']);
 if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {
         $isEdit = true;
@@ -68,7 +67,7 @@ $connection = $conn->getConn();
         <p class="pl-4">' . $book->description . '</p>
         <div>
             <a class="btn btn-success text-white" href="/WebApp/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
-            <a class="btn btn-secondary text-white"
+            <a class="btn btn-primary text-white"
                 href="/WebApp/pages/read.php?name=' . $book->file_path . '">Read</a>
                 ';
 
@@ -85,7 +84,7 @@ $connection = $conn->getConn();
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Delete this book!
+                                                Delete this book?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

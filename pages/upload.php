@@ -1,4 +1,3 @@
-<?php $_SESSION['is_admin'] = "true"; ?>
 <div class="container p-5">
     <form action="controller/handleUpload.php" method="post" enctype="multipart/form-data">
         <h1>Form upload sách</h1>

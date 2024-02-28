@@ -22,17 +22,25 @@
                         ?>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Action
-                    </a>
-                    <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;" aria-labelledby="navbarDropdown">
-                        <a class='dropdown-item' href=''>Users</a>
-                        <a class='dropdown-item' href=''>Categories</a>
-                        <a class='dropdown-item' href='/WebApp/author'>Author</a>
-                        <a class='dropdown-item' href='/WebApp/upload'>Upload</a>
-                    </div>
-                </li>
+                <?php
+                if (isset($_SESSION["is_admin"])) {
+                    if ($_SESSION["is_admin"]) {
+                        echo '<li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </a>
+                            <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
+                                aria-labelledby="navbarDropdown">
+                                <a class= "dropdown-item" href="">Users</a>
+                                <a class= "dropdown-item" href="">Categories</a>
+                                <a class= "dropdown-item" href="/WebApp/author">Author</a>
+                                <a class= "dropdown-item" href="/WebApp/upload">Upload</a>
+                            </div>
+                        </li>';
+                    }
+                }
+                ?>
             </ul>
             <div class="d-flex" style="gap: 16px;">
                 <form class="form-inline my-2 my-lg-0" method="get" action="/WebApp/pages/search.php">
