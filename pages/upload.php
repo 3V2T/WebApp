@@ -1,3 +1,4 @@
+<?php $_SESSION['is_admin'] = "true"; ?>
 <div class="container p-5">
     <form action="controller/handleUpload.php" method="post" enctype="multipart/form-data">
         <h1>Form upload sách</h1>
@@ -23,7 +24,16 @@
                     <textarea class="form-control" name="description" id="mo-ta-sach" rows="5"></textarea>
                 </div>
                 <div class="form-group"> <label for="tac-gia">Tác giả</label>
-                    <input type="text" class="form-control" name="author" id="tac-gia" placeholder="Tên tác giả">
+                    <select class="form-control" name="author" id="the-loai" placeholder="Thể loại">
+                        <option value="" selected> -- Chọn tác giả -- </option>
+                        <?php
+                        $authorList = [];
+                        $authorList = Author::getAll($connection);
+                        foreach ($authorList as $author) {
+                            echo "<option value='$author->author'>$author->author</option>";
+                        }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="ngay-phat-hanh">Ngày phát hành</label>

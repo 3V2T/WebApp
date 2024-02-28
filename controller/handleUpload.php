@@ -1,6 +1,4 @@
 <?php
-$action = $_GET['type'];
-echo $action;
 include "../classes/database.php";
 include "../classes/author.php";
 include "../classes/book.php";

@@ -14,7 +14,7 @@ if ($slug != "login") {
     }
 }
 $isEdit = false;
-$_SESSION['is_admin'] = true;
+unset($_SESSION['is_admin']);
 if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {
         $isEdit = true;
@@ -73,8 +73,28 @@ $connection = $conn->getConn();
                 ';
 
                         if (isset($_SESSION["is_admin"])) {
-                            echo '<a class="btn btn-danger text-white">Delete</a>
-                                    <a class="btn btn-info text-white">Edit</a>';
+                            echo '<button data-toggle="modal" data-target="#modalDelete" class="btn btn-danger text-white">Delete</button>
+                                    <a  class="btn btn-info text-white" href="/WebApp/pages/editBook.php?id=' . $book->id . '">Edit</a>
+                                    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalDeleteLabel">Notice</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Delete this book!
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                <a type="button" class="btn btn-danger text-white"href="/WebApp/controller/handleDelete.php?id=' . $book->id . '">Delete</a>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    ';
                         }
 
                         echo '</div>

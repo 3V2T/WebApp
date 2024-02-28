@@ -10,8 +10,8 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-
-if ($slug == "upload") {
+$_SESSION["is_admin"] = "true";
+if ($slug == "upload" || $slug == "author") {
     if (!isset($_SESSION["is_admin"])) {
         header("Location: " . baseURL("home"));
     }
@@ -79,6 +79,9 @@ $connection = $conn->getConn();
                 break;
             case "user":
                 include __DIR__ . '/pages/user.php';
+                break;
+            case "author":
+                include __DIR__ . '/pages/author.php';
                 break;
             default:
                 include __DIR__ . '/pages/notfound.php';

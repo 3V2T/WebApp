@@ -274,6 +274,36 @@ class Book
         }
     }
 
+    public static function getByAuthor($conn, $author_id)
+    {
+        try {
+            $sql = "SELECT books.id, books.title, books.author_id, books.category_id, books.description, books.published, books.cover_path, books.file_path
+            FROM books
+            WHERE books.author_id = :author_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam('author_id', $author_id);
+            $stmt->execute();
+
+            $booksList = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $booksList[] = new Book(
+                    $row['id'],
+                    $row['title'],
+                    $row['author_id'],
+                    $row['category_id'],
+                    $row['description'],
+                    $row['published'],
+                    $row['cover_path'],
+                    $row['file_path']
+                );
+            }
+            return $booksList;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
     public static function getByKeyWord($conn, $key_word)
     {
         try {
