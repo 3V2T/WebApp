@@ -242,16 +242,16 @@ class Book
         }
     }
 
-    public static function getByCategory($conn, $category_name)
+    public static function getByCategory($conn, $category)
     {
         try {
             $sql = "SELECT books.id, books.title, books.author_id, books.category_id, books.description, books.published, books.cover_path, books.file_path, categories.category
             FROM books
             INNER JOIN categories ON books.category_id = categories.id
-            WHERE categories.category = :category_name";
+            WHERE categories.category = :category";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':category_name', $category_name);
+            $stmt->bindParam(':category', $category);
             $stmt->execute();
 
             $booksList = [];

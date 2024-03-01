@@ -7,7 +7,7 @@ class Auth
         */
     public static function isLoggedIn()
     {
-        return isset($_SESSION['logged_in']) && $_SESSION['logged_in'];
+        return isset($_SESSION['is_login']) && $_SESSION['is_login'];
     }
     /*
             Bắt buộc đăng nhập

@@ -83,6 +83,9 @@ $connection = $conn->getConn();
             case "author":
                 include __DIR__ . '/pages/author.php';
                 break;
+            case "category":
+                include __DIR__ . '/pages/category.php';
+                break;
             default:
                 include __DIR__ . '/pages/notfound.php';
         }

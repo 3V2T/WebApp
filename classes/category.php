@@ -27,6 +27,15 @@ class Category
         return $categoriesList;
     }
 
+    public static function add($conn, $category)
+    {
+        $query = "INSERT INTO categories (category, name) VALUES (:category, :name)";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':category', $category->category);
+        $stmt->bindParam(':name', $category->name);
+        return $stmt->execute();
+    }
+
     public static function getById($conn, $id)
     {
         $query = "call getCategoriesbyid(:id)";
@@ -42,5 +51,23 @@ class Category
             return null;
             // Lấy ra author bằng id và trả về 1 Object Author
         }
+    }
+
+    public static function updateById($conn, $category, $id)
+    {
+        $query = "UPDATE categories SET category = :category, name = :name WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":category", $category->category);
+        $stmt->bindParam(":name", $category->name);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
+
+    public static function deleteById($conn, $id)
+    {
+        $query = "DELETE FROM categories WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
     }
 }
