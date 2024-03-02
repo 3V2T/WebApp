@@ -52,7 +52,7 @@ $connection = $conn->getConn();
                             $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
                             $author = Author::getById($connection, $b->author_id);
                             echo '
-                        <div class=" col-xl-3 col-md-3 col-sm-4 col-sm-6 mb-4">
+                            <div class=" col-xl-3 col-md-4 col-sm-6 mb-4">
                         <div class="card">
                             <img src="../uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
                             <div class="card-body row">

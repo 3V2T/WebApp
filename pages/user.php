@@ -67,7 +67,7 @@
                                             </div>
                                         </div>
                                         </div>
-                                        <a class="px-2  btn btn-primary text-white">Edit</a>
+                                        <a href="/WebApp/pages/info.php?id=' . $user->id . '" class="px-2 btn btn-primary text-white">Edit</a>
                                         </form>
                                     </div>
                                     </td>
