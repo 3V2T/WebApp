@@ -32,7 +32,7 @@
                             </a>
                             <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
                                 aria-labelledby="navbarDropdown">
-                                <a class= "dropdown-item" href="">Users</a>
+                                <a class= "dropdown-item" href="/WebApp/user">Users</a>
                                 <a class= "dropdown-item" href="/WebApp/category">Category</a>
                                 <a class= "dropdown-item" href="/WebApp/author">Author</a>
                                 <a class= "dropdown-item" href="/WebApp/upload">Upload</a>

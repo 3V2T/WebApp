@@ -27,6 +27,13 @@ class WishList
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
+    public static function deleteByUser($conn, $id)
+    {
+        $query = "delete from wishlist where user_id = :user_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':user_id', $id);
+        return $stmt->execute();
+    }
 
     public static function deleteByUserAndBook($conn, $user_id, $book_id)
     {
@@ -39,13 +46,11 @@ class WishList
 
     public static function getWishListByUserId($conn, $id)
     {
-        $query = "call getwlbyuserid(:id)";
+        $query = "delete from wishlist where user_id = :user_id";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':user_id', $id);
         $stmt->execute();
-
         $wishlist = $stmt->fetch(PDO::FETCH_ASSOC);
-
         if ($wishlist) {
             return new WishList($wishlist['id'], $wishlist['book_id'], $wishlist['user_id']);
         } else {
