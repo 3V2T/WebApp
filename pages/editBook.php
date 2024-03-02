@@ -50,7 +50,8 @@ $_SESSION['current_id'] = $id;
 
         ?>
         <div class="container p-5">
-            <form action="/WebApp/controller/handleUpdateBook.php?type=info" method="post" enctype="multipart/form-data">
+            <form action="/WebApp/controller/handleUpdateBook.php?type=info" method="post"
+                enctype="multipart/form-data">
                 <?php
                 $book = Book::getById($connection, $id);
                 $category_book = Category::getById($connection, $book->category_id);
@@ -81,16 +82,19 @@ $_SESSION['current_id'] = $id;
         </div>
         <?php
         echo '<div class="form-group"> <label for="mo-ta-sach">Mô tả sách</label>
-            <textarea class="form-control" name="description" id="mo-ta-sach" rows="5"></textarea>
-            <script> const textArea = document.querySelector("textarea").value= "' . $book->description . '" </script>
-        </div>
-        <div class="form-group"> <label for="tac-gia">Tác giả</label>
-            <input type="text" class="form-control" name="author" id="tac-gia" placeholder="Tên tác giả" value="' . $author->author . '">
-        </div>
-        <div class="form-group">
-            <label for="ngay-phat-hanh">Ngày phát hành</label>
-            <input type="date" name="published" class="form-control" id="ngay-phat-hanh" value="' . $book->published . '">
-        </div>';
+        <div class="form-control h-auto text" style="cursor:pointer">
+            ' . $book->description . '
+        </div> 
+        <textarea class="d-none form-control" name="description" id="mo-ta-sach" rows="10"></textarea>
+    </div>
+    <div class="form-group"> <label for="tac-gia">Tác giả</label>
+        <input type="text" class="form-control" name="author" id="tac-gia" placeholder="Tên tác giả"
+            value="' . $author->author . '">
+    </div>
+    <div class="form-group">
+        <label for="ngay-phat-hanh">Ngày phát hành</label>
+        <input type="date" name="published" class="form-control" id="ngay-phat-hanh" value="' . $book->published . '">
+    </div>';
         ?>
     </div>
 
@@ -115,87 +119,94 @@ $_SESSION['current_id'] = $id;
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $("form").submit(function(event) {
-                // Prevent form submission
-                event.preventDefault();
+    const textArea = document.querySelector("textarea");
+    const textDiv = document.querySelector(".text");
+    textArea.value = textDiv.innerText;
+    textDiv.onclick = (e) => {
+        textDiv.classList.add("d-none");
+        textArea.classList.remove("d-none");
+    };
+    $(document).ready(function() {
+        $("form").submit(function(event) {
+            // Prevent form submission
+            event.preventDefault();
 
-                // Perform form validation
-                var tenSach = $("#ten-sach").val();
-                var tacGia = $("#tac-gia").val();
-                var moTaSach = $("#mo-ta-sach").val();
-                var theLoai = $("#the-loai").val();
-                var ngayPhatHanh = $("#ngay-phat-hanh").val();
-                var filePDF = $("#file-pdf").val();
-                var fileAnh = $("#file-anh").val();
+            // Perform form validation
+            var tenSach = $("#ten-sach").val();
+            var tacGia = $("#tac-gia").val();
+            var moTaSach = $("#mo-ta-sach").val();
+            var theLoai = $("#the-loai").val();
+            var ngayPhatHanh = $("#ngay-phat-hanh").val();
+            var filePDF = $("#file-pdf").val();
+            var fileAnh = $("#file-anh").val();
 
-                var isValid = true;
+            var isValid = true;
 
-                // Validate required fields
-                if (tenSach === "") {
-                    isValid = false;
-                    $("#ten-sach").addClass("is-invalid");
-                } else {
-                    $("#ten-sach").removeClass("is-invalid");
-                }
+            // Validate required fields
+            if (tenSach === "") {
+                isValid = false;
+                $("#ten-sach").addClass("is-invalid");
+            } else {
+                $("#ten-sach").removeClass("is-invalid");
+            }
 
-                if (tacGia === "") {
-                    isValid = false;
-                    $("#tac-gia").addClass("is-invalid");
-                } else {
-                    $("#tac-gia").removeClass("is-invalid");
-                }
-                if (theLoai === "") {
-                    isValid = false;
-                    $("#the-loai").addClass("is-invalid");
-                } else {
-                    $("#the-loai").removeClass("is-invalid");
-                }
-                if (moTaSach === "") {
-                    isValid = false;
-                    $("#mo-ta-sach").addClass("is-invalid");
-                } else {
-                    $("#mo-ta-sach").removeClass("is-invalid");
-                }
+            if (tacGia === "") {
+                isValid = false;
+                $("#tac-gia").addClass("is-invalid");
+            } else {
+                $("#tac-gia").removeClass("is-invalid");
+            }
+            if (theLoai === "") {
+                isValid = false;
+                $("#the-loai").addClass("is-invalid");
+            } else {
+                $("#the-loai").removeClass("is-invalid");
+            }
+            if (moTaSach === "") {
+                isValid = false;
+                $("#mo-ta-sach").addClass("is-invalid");
+            } else {
+                $("#mo-ta-sach").removeClass("is-invalid");
+            }
 
-                if (ngayPhatHanh === "") {
-                    isValid = false;
-                    $("#ngay-phat-hanh").addClass("is-invalid");
-                } else {
-                    $("#ngay-phat-hanh").removeClass("is-invalid");
-                }
+            if (ngayPhatHanh === "") {
+                isValid = false;
+                $("#ngay-phat-hanh").addClass("is-invalid");
+            } else {
+                $("#ngay-phat-hanh").removeClass("is-invalid");
+            }
 
-                // If the form is valid, submit it
-                if (isValid) {
-                    this.submit();
-                }
-            });
-
-            // Clear all form fields
-            $("#clear-all").click(function() {
-                $("form")[0].reset();
-            });
-        });
-        // Hiển thị hình ảnh khi tải lên
-        $(document).on("change", "#file-anh", function() {
-            var file = this.files[0];
-            var reader = new FileReader();
-
-            reader.onload = function() {
-                var image = reader.result;
-                $('#anh-sach').attr('src', image);
-                $('#anh-sach').show();
-            };
-            reader.readAsDataURL(file);
+            // If the form is valid, submit it
+            if (isValid) {
+                this.submit();
+            }
         });
 
-        // Clear all data in form
-        $(document).on("click", "#clear-all", function() {
-            // Clear all input fields
-            $("input").val("");
-            // Clear all textarea fields
-            $("textarea").val("");
+        // Clear all form fields
+        $("#clear-all").click(function() {
+            $("form")[0].reset();
         });
+    });
+    // Hiển thị hình ảnh khi tải lên
+    $(document).on("change", "#file-anh", function() {
+        var file = this.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function() {
+            var image = reader.result;
+            $('#anh-sach').attr('src', image);
+            $('#anh-sach').show();
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Clear all data in form
+    $(document).on("click", "#clear-all", function() {
+        // Clear all input fields
+        $("input").val("");
+        // Clear all textarea fields
+        $("textarea").val("");
+    });
     </script>
     <?php
     include_once("./components/footer.php");
