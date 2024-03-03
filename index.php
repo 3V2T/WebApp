@@ -11,13 +11,12 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-$_SESSION['is_admin'] = 'true';
-if ($slug == "upload" || $slug == "author") {
+if ($slug == "upload" || $slug == "author" || $slug == "user") {
     if (!isset($_SESSION["is_admin"])) {
         header("Location: " . baseURL("home"));
     }
 }
-if ($slug != "login" && $slug != "register") {
+if ($slug != "login" && $slug != "register" && $slug != "loginAdmin") {
     if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
     }
@@ -86,6 +85,9 @@ $connection = $conn->getConn();
                 break;
             case "category":
                 include __DIR__ . '/pages/category.php';
+                break;
+            case "loginAdmin":
+                include __DIR__ . '/pages/loginAdmin.php';
                 break;
             default:
                 include __DIR__ . '/pages/notfound.php';

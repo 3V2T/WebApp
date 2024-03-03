@@ -18,7 +18,7 @@ class Author
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':author', $author->author);
         $stmt->bindParam(':description', $author->description);
-        $stmt->execute();
+        return $stmt->execute();
         // Thêm 1 tác giả mới và trả về boolean
     }
 

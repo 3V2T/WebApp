@@ -49,7 +49,10 @@ $connection = $conn->getConn();
                         $books = [];
                         $books = Book::getByKeyWord($connection, $keyword);
                         foreach ($books as $b) {
-                            $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
+                            $wishlist;
+                            if (isset($_SESSION['id_user'])) {
+                                $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
+                            }
                             $author = Author::getById($connection, $b->author_id);
                             echo '
                             <div class=" col-xl-3 col-md-4 col-sm-6 mb-4">
@@ -63,7 +66,7 @@ $connection = $conn->getConn();
                                     <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
                                 <div class="col-2" style="padding: 0;">
-                                ' . ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') . '
+                                ' . (isset($_SESSION["id_user"]) ? ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') : null) . '
                                 </div>
                             </div>
                         </div>
