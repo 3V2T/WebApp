@@ -86,7 +86,7 @@ $user = User::getById($connection, $_SESSION["id_user"]);
                             </div>
                             <div class="form-group">
                                 <strong class="mb-4" for="password">Nhập password hiện tại để xác nhận:</strong>
-                                <input type="password" class="form-control" name="password" id="password" value=" required">
+                                <input type="password" class="form-control" name="password" id="password" value="" required>
                             </div>
                             <button type="reset" class="cancel btn btn-outline-danger">Cancel</button>
                             <button type="submit" class="password btn btn-outline-success">Save</button>
