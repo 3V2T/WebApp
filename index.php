@@ -16,7 +16,7 @@ if ($slug == "upload" || $slug == "author" || $slug == "user") {
         header("Location: " . baseURL("home"));
     }
 }
-if ($slug != "login" && $slug != "register" && $slug != "loginAdmin") {
+if ($slug != "login" && $slug != "register" && $slug != "login-admin") {
     if (!isset($_SESSION["is_login"])) {
         header("Location: " . baseURL("login"));
     }
@@ -59,20 +59,8 @@ $connection = $conn->getConn();
             case "register":
                 include __DIR__ . "/pages/register.php";
                 break;
-            case "search":
-                include __DIR__ . '/pages/search.php';
-                break;
-            case "book":
-                include __DIR__ . '/pages/book.php';
-                break;
             case "upload":
                 include __DIR__ . '/pages/upload.php';
-                break;
-            case "read":
-                include __DIR__ . '/pages/read.php';
-                break;
-            case "wishlist":
-                include __DIR__ . '/pages/wishlist.php';
                 break;
             case "wishlist":
                 include __DIR__ . '/pages/wishlist.php';
@@ -86,7 +74,7 @@ $connection = $conn->getConn();
             case "category":
                 include __DIR__ . '/pages/category.php';
                 break;
-            case "loginAdmin":
+            case "login-admin":
                 include __DIR__ . '/pages/loginAdmin.php';
                 break;
             default:
