@@ -102,11 +102,15 @@ function addData()
                         $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
                         Book::update($connection, $book, $id);
                         $_SESSION['title'] = $book->title;
-                        $_SESSION['error_message'] = "Sửa thông tin thành công!";
+                        echo "<script>alert('Sửa thông tin thành công!');
+                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
+                        </script>";
                     }
                 }
             } catch (\Throwable $e) {
-                echo $_SESSION['error_message'] = "Đã xảy ra lỗi vui lòng thử lại!";
+                echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
+                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
+                        </script>";
             }
         }
     } else {
@@ -123,6 +127,9 @@ function addData()
                     $book = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
                     Book::updateInfo($connection, $book, $id);
                     $_SESSION['title'] = $book->title;
+                    echo "<script>alert('Sửa thông tin thành công!');
+                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
+                        </script>";
                 } else {
                     $author =  new Author(1, $author_name, " ");
                     Author::add($connection, $author);
@@ -131,17 +138,18 @@ function addData()
                         $book = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
                         Book::updateInfo($connection, $book, $id);
                         $_SESSION['title'] = $book->title;
+                        echo "<script>alert('Sửa thông tin thành công!');
+                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
+                        </script>";
                     }
                 }
             } catch (\Throwable $e) {
-                echo $_SESSION['error_message'] = "Đã xảy ra lỗi vui lòng thử lại!";
+                echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
+                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
+                        </script>";
             }
         }
     }
 }
 
 addData();
-
-echo '<script>alert("' . $_SESSION['error_message']  . '")
-    location.href = "/WebApp/home";
-</script>';

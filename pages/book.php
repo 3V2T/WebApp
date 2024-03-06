@@ -14,8 +14,29 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
+if (!isset($_GET["type"])) {
+    header("Location: " . baseURL("error"));
+}
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
+
+try {
+    $categories = Category::getAll($connection);
+    if (isset($_GET["type"])) {
+        $type = $_GET["type"];
+        $list = ['tat-ca'];
+        foreach ($categories as $category) {
+            array_push($list, $category->category);
+        }
+        if (!in_array($type, $list)) {
+            header("Location: " . baseURL("error"));
+        }
+    }
+} catch (\Throwable $e) {
+    header("Location: " . baseURL("error"));
+}
+
+
 ?>
 
 <!DOCTYPE html>

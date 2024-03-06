@@ -23,7 +23,7 @@
                     <textarea class="form-control" name="description" id="mo-ta-sach" rows="5"></textarea>
                 </div>
                 <div class="form-group"> <label for="tac-gia">Tác giả</label>
-                    <select class="form-control" name="author" id="the-loai" placeholder="Thể loại">
+                    <select class="form-control" name="author" id="tac-gia">
                         <option value="" selected> -- Chọn tác giả -- </option>
                         <?php
                         $authorList = [];
@@ -52,8 +52,8 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Tải lên</button>
         <button type="button" class="btn btn-danger" id="clear-all">Clear all</button>
+        <button type="submit" class="btn btn-primary">Tải lên</button>
     </form>
 </div>
 

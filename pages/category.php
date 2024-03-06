@@ -1,47 +1,24 @@
-<!-- Kiểm tra người dùng đăng nhập chưa -->
-<?php
+<div class="container min-vh-100 mt-4">
+    <h1 class="pt-4">Thể loại </h1>
+    <div class="container">
+        <div class="row gap-3">
+            <div class="col-12">
+                <table class="table mt-5">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/style.css">
-</head>
-
-<body>
-    <?php
-    include_once("./js/bootstrapConfig.php");
-    ?>
-    <div class="main-container">
-        <?php
-        include_once("./pages/components/header.php");
-        ?>
-        <div class="container min-vh-100 mt-4">
-            <h1 class="pt-4">Thể loại </h1>
-            <div class="container">
-                <div class="row gap-3">
-                    <div class="col-12">
-                        <table class="table mt-5">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Id</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php
-                                $categoryList = Category::getAll($connection);
-                                $i = 0;
-                                foreach ($categoryList as $category) {
-                                    echo '<tr>
+                        <?php
+                        $categoryList = Category::getAll($connection);
+                        $i = 0;
+                        foreach ($categoryList as $category) {
+                            echo '<tr>
                                     <th scope="row">' . ++$i . '</th>
                                     <td>' . $category->id . '</td>
                                     <td><input class="input-category p-2 authorId-' . $category->id . '" value="' . $category->name . '"></td>
@@ -75,44 +52,37 @@
                                     </div>
                                     </td>
                                     </tr>';
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                        <form class="d-flex p-5" method="post" action="/WebApp/controller/handleAddCategory.php" style="gap: 8px">
-                            <input class="form-control" name="category_name" placeholder=" Enter category">
-                            <button class="btn btn-danger ">
-                                Clear
-                            </button>
-                            <button class="btn btn-success">
-                                Save
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <form class="d-flex p-5" method="post" action="/WebApp/controller/handleAddCategory.php" style="gap: 8px">
+                    <input class="form-control" name="category_name" placeholder=" Enter category">
+                    <button class="btn btn-danger ">
+                        Clear
+                    </button>
+                    <button class="btn btn-success">
+                        Save
+                    </button>
+                </form>
             </div>
         </div>
-        <script>
-            const undoBtn = document.querySelectorAll(".undoBtn");
-            undoBtn.forEach((btn, index) => {
-                btn.onclick = (e) => {
-                    location.href = "/WebApp/category";
-                }
-            })
-            const inputCategory = document.querySelectorAll(".input-category");
-            const inputEdit = document.querySelectorAll(".editform input");
-            inputCategory.forEach((element, index) => {
-                inputEdit[index].value = element.value;
-                element.onchange = (e) => {
-                    inputEdit[index].value = e.target.value;
-                    console.log(e.target.value);
-                }
-            })
-        </script>
-        <?php
-        include_once("./pages/components/footer.php");
-        ?>
     </div>
-</body>
-
-</html>
+</div>
+<script>
+    const undoBtn = document.querySelectorAll(".undoBtn");
+    undoBtn.forEach((btn, index) => {
+        btn.onclick = (e) => {
+            location.href = "/WebApp/category";
+        }
+    })
+    const inputCategory = document.querySelectorAll(".input-category");
+    const inputEdit = document.querySelectorAll(".editform input");
+    inputCategory.forEach((element, index) => {
+        inputEdit[index].value = element.value;
+        element.onchange = (e) => {
+            inputEdit[index].value = e.target.value;
+            console.log(e.target.value);
+        }
+    })
+</script>
