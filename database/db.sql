@@ -175,7 +175,7 @@ BEGIN
   PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
   SET @id = id;
   SET @password = password;
-  EXECUTE stmt USING @id, @password;
+  EXECUTE stmt USING @password, @id;
   DEALLOCATE PREPARE stmt;
 END$$
 DELIMITER ;
@@ -185,7 +185,7 @@ BEGIN
   PREPARE stmt FROM 'UPDATE `admin` SET `password` = ? WHERE `id` = ?';
   SET @id = id;
   SET @password = password;
-  EXECUTE stmt USING @id, @password;
+  EXECUTE stmt USING @password, @id;
   DEALLOCATE PREPARE stmt;
 END$$
 DELIMITER ;
