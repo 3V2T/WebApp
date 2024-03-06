@@ -77,6 +77,9 @@ $connection = $conn->getConn();
             case "login-admin":
                 include __DIR__ . '/pages/loginAdmin.php';
                 break;
+            case "error":
+                include __DIR__ . '/pages/notfound.php';
+                break;
             default:
                 include __DIR__ . '/pages/notfound.php';
         }

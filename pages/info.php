@@ -15,6 +15,10 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
+if (!isset($_GET["id"])) {
+    header("Location: " . baseURL("error"));
+}
+
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
 ?>

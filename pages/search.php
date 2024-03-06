@@ -9,6 +9,10 @@ include "../classes/category.php";
 include "../classes/wishlist.php";
 include "../config.php";
 
+if (!isset($_GET["keyword"])) {
+    header("Location: " . baseURL("error"));
+}
+
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["is_login"])) {
@@ -17,6 +21,8 @@ if ($slug != "login") {
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
+
+
 ?>
 
 <!DOCTYPE html>

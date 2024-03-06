@@ -7,6 +7,9 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
+if (!isset($_GET['name'])) {
+    header("Location: " . baseURL("error"));
+}
 $name = $_GET['name'];
 if (isset($name)) {
     $file = '../uploads/books/' . $name;

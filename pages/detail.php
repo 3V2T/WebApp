@@ -13,6 +13,10 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
+if (!isset($_GET["id"])) {
+    header("Location: " . baseURL("error"));
+}
+
 $isEdit = false;
 if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {
