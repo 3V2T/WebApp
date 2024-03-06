@@ -455,3 +455,9 @@ DETERMINISTIC
 CREATE FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
 DETERMINISTIC
   RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0;
+CREATE FUNCTION `kiemtratontaiadmin` (`username` VARCHAR(50)) RETURNS BOOLEAN
+DETERMINISTIC
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username) > 0;
+CREATE FUNCTION `kiemtraadmin` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
+DETERMINISTIC
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username AND `password` = password) > 0;
