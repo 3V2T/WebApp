@@ -31,11 +31,10 @@ class User
 
     public static function update($conn, $user, $id)
     {
-        $query = "UPDATE users SET username = :username, name = :name, email = :email WHERE id = :id";
+        $query = "CALL suathongtin(:id, :name, :email)";
         $stmt = $conn->prepare($query);
         // Sử dụng PDO bind để tránh SQL injection
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':username', $user->username);
         $stmt->bindParam(':name', $user->name);
         $stmt->bindParam(':email', $user->email);
 
@@ -43,7 +42,7 @@ class User
     }
     public static function updatePassword($conn, $user, $id)
     {
-        $query = "UPDATE users SET password = :password WHERE id = :id";
+        $query = "CALL doimatkhau(:id, :password)";
         $stmt = $conn->prepare($query);
         // Sử dụng PDO bind để tránh SQL injection
         $stmt->bindParam(':id', $id);
@@ -55,7 +54,7 @@ class User
 
     public static function delete($conn, $id)
     {
-        $query = "DELETE FROM users WHERE id = :id";
+        $query = "CALL xoauser(:id)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id);
 
@@ -80,7 +79,7 @@ class User
 
     public static function getAll($conn)
     {
-        $query = "SELECT * FROM users";
+        $query = "SELECT * FROM vwusers";
         $stmt = $conn->prepare($query);
         $stmt->execute();
 
@@ -95,7 +94,7 @@ class User
 
     public static function getById($conn, $id)
     {
-        $query = "SELECT * FROM users WHERE id = :id";
+        $query = "CALL getUsersbyid(:id)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -111,7 +110,7 @@ class User
 
     public static function getByName($conn, $username)
     {
-        $query = "SELECT * FROM users WHERE username = :username";
+        $query = "SELECT * FROM vwusers WHERE username = :username";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':username', $username);
         $stmt->execute();

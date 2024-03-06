@@ -34,7 +34,7 @@ class Admin
 
     public static function changePassword($conn, $admin, $id)
     {
-        $query = "update admin set username = :username, password = :password where id = :id";
+        $query = "CALL doimatkhauadmin(:id, :password)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':username', $admin->username);
         $stmt->bindParam(':password', $admin->password);
