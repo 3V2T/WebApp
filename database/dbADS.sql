@@ -153,6 +153,14 @@ BEGIN
   EXECUTE stmt USING @id, @password;
   DEALLOCATE PREPARE stmt;
 END;
+CREATE PROCEDURE `doimatkhauadmin` (IN `id` INT, IN `password` CHAR(128))
+BEGIN
+  PREPARE stmt FROM 'UPDATE `admin` SET `password` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @password = password;
+  EXECUTE stmt USING @id, @password;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `suathongtin` (IN `id` INT, IN `name` VARCHAR(100), IN `email` VARCHAR(100))
 BEGIN
   PREPARE stmt FROM 'UPDATE `users` SET `name` = ?, `email` = ? WHERE `id` = ?';
