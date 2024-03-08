@@ -28,10 +28,6 @@ class Admin
         }
     }
 
-    public static function logout($conn, $admin)
-    {
-    }
-
     public static function changePassword($conn, $admin)
     {
         $query = "update admin set admin.password = :password where admin.username = :username";
