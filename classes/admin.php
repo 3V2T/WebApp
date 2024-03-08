@@ -32,13 +32,12 @@ class Admin
     {
     }
 
-    public static function changePassword($conn, $admin, $id)
+    public static function changePassword($conn, $admin)
     {
         $query = "CALL doimatkhauadmin(:id, :password)";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':username', $admin->username);
         $stmt->bindParam(':password', $admin->password);
-        $stmt->bindParam(':id', $admin->id);
+        $stmt->bindParam(':username', $admin->username);
         return $stmt->execute();
     }
 }

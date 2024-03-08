@@ -26,13 +26,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         } else {
             echo '<script>
                     alert ("Tên đăng nhập hoặc mật khẩu không đúng!");
-                    location.href = "/WebApp/loginAdmin";
+                    location.href = "/WebApp/login-admin";
                 </script>';
         }
     } catch (\Throwable $e) {
         echo '<script>
             alert ("Đã xảy ra lỗi vui lòng thử lại!");
-            location.href = "/WebApp/loginAdmin";
+            location.href = "/WebApp/login-admin";
         </script>';
     }
 }
