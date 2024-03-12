@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost
--- Thời gian đã tạo: Th3 04, 2024 lúc 06:08 AM
--- Phiên bản máy phục vụ: 8.0.31
+-- Thời gian đã tạo: Th3 12, 2024 lúc 02:25 AM
+-- Phiên bản máy phục vụ: 8.0.36
 -- Phiên bản PHP: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -29,7 +29,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhau` (IN `id` INT, IN `passw
   PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
   SET @id = id;
   SET @password = password;
-  EXECUTE stmt USING @id, @password;
+  EXECUTE stmt USING @password, @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhauadmin` (IN `id` INT, IN `password` CHAR(128))   BEGIN
+  PREPARE stmt FROM 'UPDATE `admin` SET `password` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @password = password;
+  EXECUTE stmt USING @password, @id;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -335,9 +343,17 @@ END$$
 --
 -- Các hàm
 --
-CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `crlichsu` (`_user_id` INT) RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwhistory` WHERE `user_id` = _user_id)$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `crsach` () RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwbooks`)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `crtacgia` () RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwauthors`)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `cryeuthich` (`_user_id` INT) RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwwishlist` WHERE `user_id` = _user_id)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtrauser` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username AND `password` = _password) > 0$$
 
 DELIMITER ;
 
@@ -349,8 +365,8 @@ DELIMITER ;
 
 CREATE TABLE `admin` (
   `id` int NOT NULL,
-  `username` varchar(50) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL
+  `username` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `password` char(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -500,7 +516,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `name`, `email`) VALUES
-(1, 'khacvi2003', '$2y$10$vbE1BPwZiAcJj681h7.uj.wsaChlUA/u9PGJpbcmLcJxLjd9jUvDO', 'Đoàn Khắc Vi', 'khacvi2003@gmail.com'),
+(1, 'khacvi2003', '$2y$10$l8TVPnBYZT8.rKQmKgmO9OSlSa/IXv6hr6kC4.6LvYISy2yxs/Esu', 'Đoàn Khắc Vi', 'khacvi2003@gmail.com'),
 (13, 'vanhuynh', '$2y$10$qzQxKDmLozVAt9CxZlnluua8VvAKHCcBf8QL5ndGQjDAzrbN..AYS', 'Hà Huỳnh Văn', 'hahuynhvan2003@gmail.com');
 
 --
@@ -517,13 +533,25 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc đóng vai cho view `vwadmin`
+-- (See below for the actual view)
+--
+CREATE TABLE `vwadmin` (
+`id` int
+,`username` varchar(50)
+,`password` char(128)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc đóng vai cho view `vwauthors`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwauthors` (
-`author` varchar(100)
+`id` int
+,`author` varchar(100)
 ,`description` text
-,`id` int
 );
 
 -- --------------------------------------------------------
@@ -533,14 +561,14 @@ CREATE TABLE `vwauthors` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwbooks` (
-`author` varchar(100)
-,`category` char(100)
-,`cover_path` varchar(260)
-,`description` text
-,`file_path` varchar(260)
-,`id` int
-,`published` date
+`id` int
 ,`title` varchar(100)
+,`author_id` int
+,`category_id` int
+,`cover_path` varchar(260)
+,`file_path` varchar(260)
+,`description` text
+,`published` date
 );
 
 -- --------------------------------------------------------
@@ -550,8 +578,8 @@ CREATE TABLE `vwbooks` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwcategories` (
-`category` char(100)
-,`id` int
+`id` int
+,`category` char(100)
 ,`name` char(100)
 );
 
@@ -563,9 +591,9 @@ CREATE TABLE `vwcategories` (
 --
 CREATE TABLE `vwhistory` (
 `id` int
+,`user_id` int
+,`book_id` int
 ,`last_read` date
-,`name` varchar(100)
-,`title` varchar(100)
 );
 
 -- --------------------------------------------------------
@@ -575,11 +603,11 @@ CREATE TABLE `vwhistory` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwusers` (
-`email` varchar(100)
-,`id` int
-,`name` varchar(100)
-,`password` char(128)
+`id` int
 ,`username` varchar(50)
+,`password` char(128)
+,`name` varchar(100)
+,`email` varchar(100)
 );
 
 -- --------------------------------------------------------
@@ -590,8 +618,8 @@ CREATE TABLE `vwusers` (
 --
 CREATE TABLE `vwwishlist` (
 `id` int
-,`name` varchar(100)
-,`title` varchar(100)
+,`user_id` int
+,`book_id` int
 );
 
 -- --------------------------------------------------------
@@ -619,6 +647,15 @@ INSERT INTO `wishlist` (`id`, `user_id`, `book_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc cho view `vwadmin`
+--
+DROP TABLE IF EXISTS `vwadmin`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwadmin`  AS SELECT `admin`.`id` AS `id`, `admin`.`username` AS `username`, `admin`.`password` AS `password` FROM `admin` ;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc cho view `vwauthors`
 --
 DROP TABLE IF EXISTS `vwauthors`;
@@ -632,7 +669,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `vwbooks`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwbooks`  AS SELECT `books`.`id` AS `id`, `books`.`title` AS `title`, `authors`.`author` AS `author`, `categories`.`category` AS `category`, `books`.`cover_path` AS `cover_path`, `books`.`file_path` AS `file_path`, `books`.`description` AS `description`, `books`.`published` AS `published` FROM ((`books` join `authors` on((`books`.`author_id` = `authors`.`id`))) join `categories` on((`books`.`category_id` = `categories`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwbooks`  AS SELECT `books`.`id` AS `id`, `books`.`title` AS `title`, `books`.`author_id` AS `author_id`, `books`.`category_id` AS `category_id`, `books`.`cover_path` AS `cover_path`, `books`.`file_path` AS `file_path`, `books`.`description` AS `description`, `books`.`published` AS `published` FROM `books` ;
 
 -- --------------------------------------------------------
 
@@ -650,7 +687,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `vwhistory`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwhistory`  AS SELECT `history`.`id` AS `id`, `users`.`name` AS `name`, `books`.`title` AS `title`, `history`.`last_read` AS `last_read` FROM ((`history` join `users` on((`history`.`user_id` = `users`.`id`))) join `books` on((`history`.`book_id` = `books`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwhistory`  AS SELECT `history`.`id` AS `id`, `history`.`user_id` AS `user_id`, `history`.`book_id` AS `book_id`, `history`.`last_read` AS `last_read` FROM `history` ;
 
 -- --------------------------------------------------------
 
@@ -668,7 +705,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `vwwishlist`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwwishlist`  AS SELECT `wishlist`.`id` AS `id`, `users`.`name` AS `name`, `books`.`title` AS `title` FROM ((`wishlist` join `users` on((`wishlist`.`user_id` = `users`.`id`))) join `books` on((`wishlist`.`book_id` = `books`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwwishlist`  AS SELECT `wishlist`.`id` AS `id`, `wishlist`.`user_id` AS `user_id`, `wishlist`.`book_id` AS `book_id` FROM `wishlist` ;
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -678,7 +715,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Chỉ mục cho bảng `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Chỉ mục cho bảng `authors`
