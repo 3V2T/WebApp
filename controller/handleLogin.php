@@ -13,10 +13,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $rs = Auth::login($conn, $username, $password);
         if ($rs) {
             $_SESSION['success_message'] = "Đăng nhập thành công";
-            header("Location: " . baseURL("home"));
+            header("Location: " . BASE_URL . '/home');
         } else {
             $_SESSION['error_message'] = "Tên đăng nhập hoặc mật khẩu không đúng";
-            header("Location: " . baseURL("login"));
+            header("Location: " . BASE_URL . '/login');
         }
     }
 }

@@ -1,4 +1,6 @@
-<nav class="header navbar navbar-expand-lg navbar-light bg-light position-fixed"
+<?php
+
+?><nav class="header navbar navbar-expand-lg navbar-light bg-light position-fixed"
     style="box-shadow: 1px 1px 10px 0px black; top: 0; left: 0; right:0; z-index: 5;">
     <div class="container">
         <a class="navbar-brand" href="<?php echo baseURL("home") ?>">Trang chủ</a>
@@ -21,7 +23,7 @@
                         $category_all = new Category(1, "tat-ca", "Tất cả");
                         array_push($list, $category_all);
                         foreach ($list as $item) {
-                            echo "<a class='dropdown-item' href='/WebApp/pages/book.php?type={$item->category}'>{$item->name}</a>";
+                            echo "<a class='dropdown-item' href='". BASE_URL ."/pages/book.php?type={$item->category}'>{$item->name}</a>";
                         }
                         ?>
                     </div>
@@ -36,10 +38,10 @@
                             </a>
                             <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
                                 aria-labelledby="navbarDropdown">
-                                <a class= "dropdown-item" href="/WebApp/user">Users</a>
-                                <a class= "dropdown-item" href="/WebApp/category">Category</a>
-                                <a class= "dropdown-item" href="/WebApp/author">Author</a>
-                                <a class= "dropdown-item" href="/WebApp/upload">Upload</a>
+                                <a class= "dropdown-item" href="'. BASE_URL .'/user">Users</a>
+                                <a class= "dropdown-item" href="'. BASE_URL .'/category">Category</a>
+                                <a class= "dropdown-item" href="'. BASE_URL .'/author">Author</a>
+                                <a class= "dropdown-item" href="'. BASE_URL .'/upload">Upload</a>
                             </div>
                         </li>';
                     }
@@ -47,7 +49,7 @@
                 ?>
             </ul>
             <div class="d-flex" style="gap: 16px;">
-                <form class="form-inline my-2 my-lg-0" method="get" action="/WebApp/pages/search.php">
+                <form class="form-inline my-2 my-lg-0" method="get" action="<?php echo BASE_URL ?>/pages/search.php">
                     <input class=" form-control mr-sm-2" type="search" name="keyword"
                         style="box-shadow: 2px 2px 5px 2px #cccc;" placeholder="Nhập tên sách" aria-label="Tìm kiếm">
                     <button class="btn btn-outline-success my-2 my-sm-0" style="box-shadow: 2px 2px 5px 2px #cccc;"
@@ -63,10 +65,13 @@
                         </a>
                         <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
                             aria-labelledby="navbarDropdown">
-                            <?php echo (isset($_SESSION['is_admin'])) ? '<a class="dropdown-item" href="/WebApp/pages/admin.php">Đổi mật khẩu</a>' : '<a class="dropdown-item" href="/WebApp/pages/me.php">Thông tin cá nhân</a>
-                            <a class="dropdown-item" href="/WebApp/wishlist">Sách yêu thích</a>' ?>
-                            <a class="dropdown-item" href="/WebApp/controller/handleLogout.php">Đăng
-                                xuất</a>
+                            <?php echo (isset($_SESSION['is_admin'])) ? '<a class="dropdown-item" href="'. BASE_URL.'/pages/admin.php">Đổi mật khẩu</a><a class="dropdown-item" href="'.BASE_URL.'/controller/handleLogoutAdmin.php">Đăng
+                            xuất</a>' : '<a class="dropdown-item" href="'. BASE_URL.'/pages/me.php">Thông tin cá
+                                nhân</a>
+                            <a class="dropdown-item" href="'. BASE_URL.'/wishlist">Sách yêu thích</a><a
+                                class="dropdown-item" href="'.BASE_URL.'/controller/handleLogout.php">Đăng
+                                xuất</a>' ?>
+
                         </div>
                     </li>
                 </ul>

@@ -184,12 +184,12 @@ include "../js/bootstrapConfig.php";
     </div>
 </body>
 <script>
-    const goHome = () => {
-        location.href = "/WebApp/home";
-    }
-    const goBack = () => {
-        location.href = "/WebApp/upload";
-    }
+const goHome = () => {
+    location.href = "<?php echo BASE_URL?> /home";
+}
+const goBack = () => {
+    location.href = "<?php echo BASE_URL?> /upload";
+}
 </script>
 
 </html>

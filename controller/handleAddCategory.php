@@ -39,11 +39,11 @@ if (isset($_POST['category_name'])) {
         $category = new Category(1, convertToSlug($category_name), $category_name);
         Category::add($connection, $category);
         echo '<script>alert("Thêm thể loại thành công!");
-            location.href = "/WebApp/category";
+            location.href = "'.BASE_URL.'/category";
         </script>';
     } catch (\Throwable $e) {
         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-            location.href = "/WebApp/category";
+            location.href = "'.BASE_URL.'/category";
         </script>';
     }
 }

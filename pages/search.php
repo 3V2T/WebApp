@@ -68,8 +68,8 @@ $connection = $conn->getConn();
                                 <div class="col-10">
                                     <h5 class="card-title">' . $b->title . '</h5>
                                     <p> ' . $author->author . ' </p>
-                                    <a class="btn btn-primary" href="/WebApp/pages/detail.php?id=' . $b->id . '">Detail</a>
-                                    <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
+                                    <a class="btn btn-primary" href="'.BASE_URL.'/pages/detail.php?id=' . $b->id . '">Detail</a>
+                                    <a class="btn btn-danger" href="'.BASE_URL.'/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
                                 <div class="col-2" style="padding: 0;">
                                 ' . (isset($_SESSION["id_user"]) ? ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') : null) . '
@@ -89,18 +89,18 @@ $connection = $conn->getConn();
         ?>
     </div>
     <script type="module" async>
-        import handleEvent from '../js/handleEvent.js';
-        const {
-            handleToggleHeartIcon
-        } = handleEvent();
-        console.log(handleToggleHeartIcon);
-        const heartList = document.querySelectorAll(".heart");
-        console.log(heartList);
-        heartList.forEach(heart => {
-            heart.onclick = (event) => {
-                handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
-            }
-        });
+    import handleEvent from '../js/handleEvent.js';
+    const {
+        handleToggleHeartIcon
+    } = handleEvent();
+    console.log(handleToggleHeartIcon);
+    const heartList = document.querySelectorAll(".heart");
+    console.log(heartList);
+    heartList.forEach(heart => {
+        heart.onclick = (event) => {
+            handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
+        }
+    });
     </script>
 </body>
 

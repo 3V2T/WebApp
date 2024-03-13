@@ -20,11 +20,11 @@ if (isset($_GET["id"])) {
         }
         User::delete($connection, $id);
         echo "<script>alert('Xóa người dùng thành công!');
-            location.href = '/WebApp/user'
+            location.href = '".BASE_URL."/user'
         </script>";
     } catch (\Throwable $e) {
         echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-            location.href = '/WebApp/user'
+            location.href = '".BASE_URL."/user'
         </script>";
     }
 }

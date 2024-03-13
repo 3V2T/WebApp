@@ -62,12 +62,12 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <a type="button" class="btn btn-danger text-white" href="/WebApp/controller/handleDeleteUser.php?id=' . $user->id . '">Delete</a>
+                                                <a type="button" class="btn btn-danger text-white" href="'.BASE_URL.'/controller/handleDeleteUser.php?id=' . $user->id . '">Delete</a>
                                             </div>
                                             </div>
                                         </div>
                                         </div>
-                                        <a href="/WebApp/pages/info.php?id=' . $user->id . '" class="px-2 btn btn-primary text-white">Edit</a>
+                                        <a href="'.BASE_URL.'/pages/info.php?id=' . $user->id . '" class="px-2 btn btn-primary text-white">Edit</a>
                                         </form>
                                     </div>
                                     </td>
@@ -77,25 +77,30 @@
                             </tbody>
                         </table>
                         <div class="w-100 d-flex ">
-                            <form class="p-5 form w-50 m-auto" method="post" action="/WebApp/controller/handleAddUser.php" style="gap: 8px; ">
+                            <form class="p-5 form w-50 m-auto" method="post"
+                                action="<?php echo BASE_URL ?>/controller/handleAddUser.php" style="gap: 8px; ">
                                 <div class="form-group">
                                     <h3>Add new user: </h3>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label ">Full Name:</label>
-                                    <input class="form-control" name="name" id="name" placeholder=" Enter full name" required>
+                                    <input class="form-control" name="name" id="name" placeholder=" Enter full name"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label ">Username:</label>
-                                    <input class="form-control" name="username" id="username" placeholder=" Enter username" required>
+                                    <input class="form-control" name="username" id="username"
+                                        placeholder=" Enter username" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label ">Email:</label>
-                                    <input class="form-control" name="email" id="email" placeholder=" Enter email" type="email required">
+                                    <input class="form-control" name="email" id="email" placeholder=" Enter email"
+                                        type="email required">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label ">Password:</label>
-                                    <input class="form-control" name="password" id="password" placeholder=" Enter password" type="password" required>
+                                    <input class="form-control" name="password" id="password"
+                                        placeholder=" Enter password" type="password" required>
                                 </div>
                                 <div class="form-group align-content-end">
                                     <button class="btn btn-danger ">
@@ -112,15 +117,15 @@
             </div>
         </div>
         <script>
-            const form = document.querySelector(".form");
-            console.log(form)
-            let isValid = false;
-            const undoBtn = document.querySelectorAll(".undoBtn");
-            undoBtn.forEach((btn, index) => {
-                btn.onclick = (e) => {
-                    location.href = "/WebApp/author";
-                }
-            })
+        const form = document.querySelector(".form");
+        console.log(form)
+        let isValid = false;
+        const undoBtn = document.querySelectorAll(".undoBtn");
+        undoBtn.forEach((btn, index) => {
+            btn.onclick = (e) => {
+                location.href = "<?php echo BASE_URL ?>/author";
+            }
+        })
         </script>
         <?php
         include_once("./pages/components/footer.php");

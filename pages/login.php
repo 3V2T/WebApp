@@ -8,8 +8,8 @@
     display: none;
 }
 </style>
-<div class="bg-white mh-100 mw-100">
-    <div class=" row container m-auto">
+<div class="bg-white d-flex position-relative" style="margin-top: -60px">
+    <div class=" row container position-absolute" style="left: 50%; top: 25%; transform: translate(-50%, 50%);">
         <div class="col-4"></div>
         <div class="col-4 p-3 bg-white" style="
             box-shadow: 0px 2px 10px 2px #cccc;
@@ -42,10 +42,11 @@
         <?php
         if (isset($_SESSION['register_message'])) {
             echo "<script>alert('" . $_SESSION['register_message'] . "')</script>";
-            session_destroy();
+            unset($_SESSION['register_message']);
         }
         if (isset($_SESSION['error_message'])) {
             echo "<script>alert('" . $_SESSION['error_message'] . "')</script>";
+            unset($_SESSION['register_message'] );
         }
         ?>
         <script>

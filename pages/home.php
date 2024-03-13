@@ -34,7 +34,7 @@ $connection = $conn->getConn();
         <?php
         $categories = Category::getAll($connection);
         foreach ($categories as $category) {
-            echo '<a class="p-4 col-md-3 col-sm-4 d-flex text-decoration-none" style="cursor: pointer;" href="/WebApp/pages/book.php?type=' . $category->category . '">
+            echo '<a class="p-4 col-md-3 col-sm-4 d-flex text-decoration-none" style="cursor: pointer;" href="'.BASE_URL.'/pages/book.php?type=' . $category->category . '">
                 <div class="position-relative d-flex"
                     style="margin:auto; width: 150px; height: 150px;box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
                     <h5 class="m-auto text-center ">' . $category->name . '</h5>
@@ -61,8 +61,8 @@ $connection = $conn->getConn();
                                 <div class="col-10">
                                     <h5 class="card-title">' . $b->title . '</h5>
                                     <p> ' . $author->author . ' </p>
-                                    <a class="btn btn-primary" href="/WebApp/pages/detail.php?id=' . $b->id . '">Detail</a>
-                                    <a class="btn btn-danger" href="/WebApp/pages/read.php?name=' . $b->file_path . '">Read</a>
+                                    <a class="btn btn-primary" href="'.BASE_URL.'/pages/detail.php?id=' . $b->id . '">Detail</a>
+                                    <a class="btn btn-danger" href="'.BASE_URL.'/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
                                 <div class="col-2" style="padding: 0;">
                                     ' . (isset($_SESSION["id_user"]) ? ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') : null) . '

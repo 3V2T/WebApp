@@ -34,10 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             try {
                 User::add($conn, $user);
                 $_SESSION['register_message'] = "Đăng kí thành công vui lòng đăng nhập!";
-                header("Location: " . baseURL("login"));
+                header("Location: " . BASE_URL . "/login");
             } catch (\Throwable $e) {
                 $_SESSION['register_message'] = "Đã xảy ra lỗi vui lòng thử lại!";
-                header("Location: " . baseURL("register"));
+                header("Location: " . BASE_URL . "/register");
             }
         }
     }

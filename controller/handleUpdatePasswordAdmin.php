@@ -27,24 +27,24 @@ if (isset($_POST["newPassword"]) && isset($_POST["password"])) {
             if ($is_success) {
                 echo "<script>
                 alert('Mật khẩu admin đã được thay đổi thành công!');
-                location.href = '/WebApp/login-admin';
+                location.href = '".BASE_URL."/login-admin';
             </script>";
             } else {
                 echo "<script>
                 alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/pages/admin.php';
+                location.href = '".BASE_URL."/pages/admin.php';
             </script>";
             }
         } else {
             echo "<script>
                 alert('Mật khẩu admin chưa đúng, vui lòng thử lại!');
-                location.href = '/WebApp/pages/admin.php';
+                location.href = '".BASE_URL."/pages/admin.php';
             </script>";
         }
     } catch (\Throwable $e) {
         echo "<script>
                 alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/pages/admin.php';
+                location.href = '".BASE_URL."/pages/admin.php';
             </script>";
     }
 }
