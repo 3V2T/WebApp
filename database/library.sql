@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost
--- Thời gian đã tạo: Th3 04, 2024 lúc 06:08 AM
+-- Thời gian đã tạo: Th3 16, 2024 lúc 09:46 AM
 -- Phiên bản máy phục vụ: 8.0.31
 -- Phiên bản PHP: 7.4.33
 
@@ -30,6 +30,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhau` (IN `id` INT, IN `passw
   SET @id = id;
   SET @password = password;
   EXECUTE stmt USING @id, @password;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhauadmin` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
+  PREPARE stmt FROM 'UPDATE `admin` SET `username` = ?, `password` = ?';
+  SET @username = username;
+  SET @password = password;
+  EXECUTE stmt USING @username, @password;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -100,15 +108,33 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `phantranglstheouserid` (IN `id` INT
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsach` (IN `start` INT, IN `number` INT)   BEGIN
-  PREPARE stmt FROM 'SELECT * FROM `vwbooks` LIMIT ?, ?';
+  PREPARE stmt FROM 'SELECT * FROM `books` LIMIT ?, ?';
   SET @start = start;
   SET @number = number;
   EXECUTE stmt USING @start, @number;
   DEALLOCATE PREPARE stmt;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsachtheotacgia` (IN `author` VARCHAR(100), IN `start` INT, IN `number` INT)   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `author_id` = (SELECT `id` FROM `vwauthors` WHERE `author` = ?) LIMIT ?, ?';
+  SET @author = author;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @author, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsachtheotheloai` (IN `category` CHAR(100), IN `start` INT, IN `number` INT)   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `books` WHERE `category_id` = (SELECT `id` FROM `categories` WHERE `category` = ?) LIMIT ?, ?';
+  SET @category = category;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @category, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangtacgia` (IN `start` INT, IN `number` INT)   BEGIN
-  PREPARE stmt FROM 'SELECT * FROM `vwauthors` LIMIT ?, ?';
+  PREPARE stmt FROM 'SELECT * FROM `authors` LIMIT ?, ?';
   SET @start = start;
   SET @number = number;
   EXECUTE stmt USING @start, @number;
@@ -358,7 +384,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', '$2y$10$l8TVPnBYZT8.rKQmKgmO9OSlSa/IXv6hr6kC4.6LvYISy2yxs/Esu');
+(1, 'admin', '$2y$10$T0/D4jNUzs7trqfEcAqOTe4E6viVujBYUQDFM1RvdOHgHThWEGUvm');
 
 -- --------------------------------------------------------
 
@@ -380,13 +406,16 @@ INSERT INTO `authors` (`id`, `author`, `description`) VALUES
 (7, 'Neil Shubin', ''),
 (8, 'Trần Thời', ' '),
 (9, 'William J. Bernstein', ' '),
-(11, 'Nguyễn Du', ' '),
 (12, 'Vũ Hữu Tiệp', ' '),
 (13, 'Paulo Coelho', ' '),
 (14, 'Jeffrey E. Garten', ' '),
 (15, 'Peter Lynch', NULL),
 (16, 'Mario Puzo', ''),
-(17, 'William L. Shirer', '');
+(17, 'William L. Shirer', ''),
+(18, 'Olga Filipova', ''),
+(19, 'Thạch Lam', ''),
+(20, 'Robin Sharma', ''),
+(21, 'Nguyễn Cảnh Bình', '');
 
 --
 -- Bẫy `authors`
@@ -420,13 +449,15 @@ CREATE TABLE `books` (
 INSERT INTO `books` (`id`, `title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES
 (6, 'Tất Cả Chúng Ta Đều Là Cá', 7, 2, 'nhasachmienphi-tat-ca-chung-ta-deu-la-ca.png', 'nhasachmienphi-tat-ca-chung-ta-deu-la-ca.pdf', 'Neil Shubin, nhà cổ sinh học và giáo sư về giải phẫu học, người đã đồng khám phá Tiktaalik, “loài cá có tay”, kể câu chuyện về cơ thể chúng ta mà bạn chưa bao giờ nghe trước đây. Qua nghiên cứu hóa thạch và ADN của các loại sinh vật nguyên thủy, tác giả Neil Shubin đã cho thấy sự tương đồng về mặt cấu tạo cơ thể giữa người với các loại sinh vật khác, từ cá cho đến giun và thậm chí là vi khuẩn. Bằng những nội dung thú vị, lý thú, Tất cả chúng ta đều là cá đã giúp chủ đề sinh học và cổ sinh học vốn vô cùng phong phú, đa dạng trở nên đặc biệt gần gũi và cuốn hút với độc giả, nhất là các bạn trẻ.', '2017-12-05'),
 (7, 'Mật Thư', 8, 2, 'nhasachmienphi-mat-thu.png', 'nhasachmienphi-mat-thu.pdf', 'Mật thư do tác giả Trần Thời biên soạn sẽ giới thiệu đến bạn đọc 9 kiểu mật thư, từ những dạng đơn giản nhất như đọc ngược, đọc lái từ, bỏ đầu bỏ đuôi, đến dạng kí hiệu morse, dạng thay thế, đọc theo khóa, dạng tượng hình hay tọa độ… Sau mỗi phần giới thiệu, bạn sẽ nhanh chóng được thử sức cùng những mật thư nho nhỏ nữa đấy.', '2013-01-01'),
-(8, 'Lịch Sử Giao Thương: Thương Mại Định Hình Thế Giới Như Thế Nào?', 9, 4, 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.jpg', 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.pdf', '“Toàn cầu hóa” hóa ra không phải là một hay thậm chí là một chuỗi sự kiện; mà đó là tiến trình diễn ra chậm rãi trong một thời gian rất, rất dài. Thế giới không đột nhiên trở nên “phẳng” với phát kiến về Internet, và thương mại không bất ngờ bị các tập đoàn lớn tầm cỡ toàn cầu chi phối vào cuối thế kỷ 20. Khởi đầu bằng hàng hóa giá trị cao được ghi nhận trong lịch sử, sau đó từ từ mở rộng sang các mặt hàng ít quý giá hơn, cồng kềnh và dễ hư hỏng hơn, những thị trường của Cựu Thế giới dần tiến đến hợp nhất. Với hành trình đầu tiên của người châu Âu tới Tân Thế giới, quá trình hội nhập toàn cầu diễn ra ngàycàng mạnh mẽ. Hôm nay, các tàu container đồ sộ, máy bay phản lực, Internet, cùng mạng lưới cung ứng và sản xuất ngày càng được toàn cầu hóa chỉ là những bước tiến xa hơn của một quá trình đã diễn ra suốt 5.000 năm qua. Nếu chúng ta muốn biết về những mô hình thương mại toàn cầu đang chuyển dịch nhanh chóng ngày nay, cách thực sự hữu ích là tìm hiểu những gì đã xảy ra trước đây.', '2018-01-06'),
+(8, 'Lịch Sử Giao Thương: Thương Mại Định Hình Thế Giới Như Thế Nào ?', 9, 4, 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.jpg', 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.pdf', '“Toàn cầu hóa” hóa ra không phải là một hay thậm chí là một chuỗi sự kiện; mà đó là tiến trình diễn ra chậm rãi trong một thời gian rất, rất dài. Thế giới không đột nhiên trở nên “phẳng” với phát kiến về Internet, và thương mại không bất ngờ bị các tập đoàn lớn tầm cỡ toàn cầu chi phối vào cuối thế kỷ 20. Khởi đầu bằng hàng hóa giá trị cao được ghi nhận trong lịch sử, sau đó từ từ mở rộng sang các mặt hàng ít quý giá hơn, cồng kềnh và dễ hư hỏng hơn, những thị trường của Cựu Thế giới dần tiến đến hợp nhất. Với hành trình đầu tiên của người châu Âu tới Tân Thế giới, quá trình hội nhập toàn cầu diễn ra ngàycàng mạnh mẽ. Hôm nay, các tàu container đồ sộ, máy bay phản lực, Internet, cùng mạng lưới cung ứng và sản xuất ngày càng được toàn cầu hóa chỉ là những bước tiến xa hơn của một quá trình đã diễn ra suốt 5.000 năm qua.', '2018-01-06'),
 (12, 'Machine Learning Cơ Bản', 12, 6, 'nhasachmienphi-machine-learning-co-ban.jpg', 'nhasachmienphi-machine-learning-co-ban.pdf', 'Những năm gần đây, AI – Artificial Intelligence (Trí Tuệ Nhân Tạo), và cụ thể hơn là Machine Learning (Học Máy hoặc Máy Học) nổi lên như một bằng chứng của cuộc cách mạng công nghiệp lần thứ tư (1 – động cơ hơi nước, 2 – năng lượng điện, 3 – công nghệ thông tin). Trí Tuệ Nhân Tạo đang len lỏi vào mọi lĩnh vực trong đời sống mà có thể chúng ta không nhận ra. Xe tự hành của Google và Tesla, hệ thống tự tag khuôn mặt trong ảnh của Facebook, trợ lý ảo Siri của Apple, hệ thống gợi ý sản phẩm của Amazon, hệ thống gợi ý phim của Netflix, máy chơi cờ vây AlphaGo của Google DeepMind, …, chỉ là một vài trong vô vàn những ứng dụng của AI/Machine Learning.', '2020-02-01'),
-(13, 'Nhà Giả Kim', 13, 7, 'nhasachmienphi-nha-gia-kim.jpg', 'nhasachmienphi-nha-gia-kim.pdf', 'Tất cả những trải nghiệm trong chuyến phiêu du theo đuổi vận mệnh của mình đã giúp Santiago thấu hiểu được ý nghĩa sâu xa nhất của hạnh phúc, hòa hợp với vũ trụ và con người.Tiểu thuyết Nhà giả kim của Paulo Coelho như một câu chuyện cổ tích giản dị, nhân ái, giàu chất thơ, thấm đẫm những minh triết huyền bí của phương Đông. Trong lần xuất bản đầu tiên tại Brazil vào năm 1988, sách chỉ bán được 900 bản. Nhưng, với số phận đặc biệt của cuốn sách dành cho toàn nhân loại, vượt ra ngoài biên giới quốc gia, Nhà giả kim đã làm rung động hàng triệu tâm hồn, trở thành một trong những cuốn sách bán chạy nhất mọi thời đại, và có thể làm thay đổi cuộc đời người đọc.', '2002-01-01'),
-(57, 'Từ Tơ Lụa Đến Slicicon', 14, 8, 'nhasachmienphi-tu-to-lua-den-silicon.jpg', 'nhasachmienphi-tu-to-lua-den-silicon.pdf', 'Đây là câu chuyện chưa từng kể về toàn cầu hóa. Nó xoay quanh mười\r\nnhân vật đã làm cho thế giới chúng ta nhỏ lại và gắn kết với nhau hơn.\r\nTrong số những người bạn sẽ gặp có một thiếu niên lớn lên từ thảo\r\nnguyên Trung Á để rồi dựng nên một đế quốc rộng lớn nhất trong\r\nlịch sử; có nhà sản xuất các sản phẩm bằng giấy trang trí đã đưa truyền\r\nthông toàn cầu đến những tiến bộ vượt xa mọi thành tựu trong lịch sử\r\nnhân loại; có nhà buôn (rượu) cognac đã nghĩ ra một thí nghiệm chưa\r\ntừng ai dám làm để phá bỏ các biên giới các quốc gia; có một người\r\ntị nạn trốn chạy khỏi Đức Quốc xã lẫn Liên Xô để dẫn đầu một cuộc\r\ncách mạng máy tính; và nhiều người khác nữa với cuộc đời cũng lâm li\r\ntương tự. Thành tựu của họ không chỉ kịch tính trong thời đại họ sống\r\nmà còn đang tiếp tục định hình thế giới ngày nay của chúng ta. Trong\r\ncác chương sau, tôi sẽ kể họ là ai, họ làm gì. Tôi sẽ kể lại những cuộc\r\nhành trình khó tin của họ và những điểm chung mà họ có. Tôi cũng\r\nsẽ giải thích bằng cách nào họ vẫn còn thích ứng với một vài thách đố\r\ntoàn cầu lớn nhất của thời đại chúng ta.', '2017-12-01'),
+(13, 'Nhà Giả Kim', 13, 7, '65f1c8a3ee3b5_1161.jpg', '65f1c8a3edfdb_2429.pdf', 'Tất cả những trải nghiệm trong chuyến phiêu du theo đuổi vận mệnh của mình đã giúp Santiago thấu hiểu được ý nghĩa sâu xa nhất của hạnh phúc, hòa hợp với vũ trụ và con người.Tiểu thuyết Nhà giả kim của Paulo Coelho như một câu chuyện cổ tích giản dị, nhân ái, giàu chất thơ, thấm đẫm những minh triết huyền bí của phương Đông. Trong lần xuất bản đầu tiên tại Brazil vào năm 1988, sách chỉ bán được 900 bản. Nhưng, với số phận đặc biệt của cuốn sách dành cho toàn nhân loại, vượt ra ngoài biên giới quốc gia, Nhà giả kim đã làm rung động hàng triệu tâm hồn, trở thành một trong những cuốn sách bán chạy nhất mọi thời đại, và có thể làm thay đổi cuộc đời người đọc.', '2002-01-01'),
+(57, 'Từ Tơ Lụa Đến Slicicon', 14, 8, 'nhasachmienphi-tu-to-lua-den-silicon.jpg', 'nhasachmienphi-tu-to-lua-den-silicon.pdf', 'Đây là câu chuyện chưa từng kể về toàn cầu hóa. Nó xoay quanh mười nhân vật đã làm cho thế giới chúng ta nhỏ lại và gắn kết với nhau hơn. Trong số những người bạn sẽ gặp có một thiếu niên lớn lên từ thảo nguyên Trung Á để rồi dựng nên một đế quốc rộng lớn nhất trong lịch sử; có nhà sản xuất các sản phẩm bằng giấy trang trí đã đưa truyền thông toàn cầu đến những tiến bộ vượt xa mọi thành tựu trong lịch sử nhân loại; có nhà buôn (rượu) cognac đã nghĩ ra một thí nghiệm chưa từng ai dám làm để phá bỏ các biên giới các quốc gia; có một người tị nạn trốn chạy khỏi Đức Quốc xã lẫn Liên Xô để dẫn đầu một cuộc cách mạng máy tính; và nhiều người khác nữa với cuộc đời cũng lâm li tương tự. Thành tựu của họ không chỉ kịch tính trong thời đại họ sống mà còn đang tiếp tục định hình thế giới ngày nay của chúng ta. ', '2017-12-01'),
 (58, 'Đánh Bại Phố Wall', 15, 8, 'nhasachmienphi-danh-bai-pho-wall.jpg', 'nhasachmienphi-danh-bai-pho-wall.pdf', 'Với 13 năm kinh nghiệm quản lý thành công quỹ đầu tư Fidelity Magellan và lựa chọn hàng nghìn cổ phiếu, Lynch đã đúc kết thành 21 nguyên tắc hài hước mà ông gọi là “Những nguyên tắc của Peter”.\r\n\r\nChìa khóa để đầu tư thành công, theo Lynch, là phải ghi nhớ rằng cổ phiếu không giống như tấm vé số; luôn có một công ty đằng sau mỗi cổ phiếu và một nguyên nhân lý giải cho cách thức vận hành của các công ty – và cổ phiếu của chúng. Lynch chỉ ra làm cách nào chúng ta có thể tìm hiểu tối đa về công ty mục tiêu và xây dựng một danh mục đầu tư sinh lợi dựa trên chính kinh nghiệm, hiểu biết và kết quả nghiên cứu của bản thân. Không có bất kỳ lý do nào cản trở một nhà đầu tư cá nhân tự trở thành chuyên gia, và cuốn sách này sẽ chỉ ra cách thực hiện điều đó.', '2010-01-01'),
-(59, 'Bố Già', 16, 1, 'nhasachmienphi-bo-gia.jpg', 'nhasachmienphi-bo-gia.pdf', 'Bố già là tên một cuốn tiểu thuyết nổi tiếng của nhà văn người Mỹ gốc Ý Mario Puzo, được nhà xuất bản G. P. Putnam\'s Sons xuất bản lần đầu vào năm 1969. Tác phẩm là câu chuyện về một gia đình mafia gốc Sicilia tại Mỹ, được một nhân vật gọi là \"Bố già\" Don Vito Corleone tạo lập và lãnh đạo.', '1969-10-03'),
-(61, ' Sự Trỗi Dậy Và Suy Tàn Của Đế Chế Thứ Ba – Lịch Sử Đức Quốc Xã', 17, 9, 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.jpg', 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.pdf', 'Ngay trong năm đầu tiên phát hành – 1960, Sự trỗi dậy và suy tàn của Đế chế thứ ba đã bán được tới 1 triệu bản tại Mỹ và được tái bản hơn 20 lần. Cuốn sách là bản tường thuật hết sức chi tiết về nước Đức, dưới sự cai trị của Adolf Hitler và Đảng Quốc xã. Tác giả đã nghiên cứu kĩ lưỡng về sự ra đời của Đế chế thứ ba ở Đức, con đường dẫn đến quyền lực tuyệt đối của Đảng Quốc xã, diễn biến của Chiến tranh thế giới lần thứ hai và sự thất bại của Phát xít Đức. Nguồn tài liệu của cuốn sách bao gồm lời khai của các nhà lãnh đạo Đảng Quốc xã, nhật kí của các quan chức, cùng hàng loạt các quân lệnh và thư mật. Sự trỗi dậy và suy tàn của Đế chế thứ ba là một trong những công trình nghiên cứu lịch sử quan trọng nhất, nói về một trong những giai đoạn u ám nhất của lịch sử loài người.', '1960-12-10');
+(59, 'Bố Già', 16, 1, 'nhasachmienphi-bo-gia.jpg', 'bo-gia.pdf', 'Bố già là tên một cuốn tiểu thuyết nổi tiếng của nhà văn người Mỹ gốc Ý Mario Puzo, được nhà xuất bản G. P. Putnam\'s Sons xuất bản lần đầu vào năm 1969. Tác phẩm là câu chuyện về một gia đình mafia gốc Sicilia tại Mỹ, được một nhân vật gọi là \"Bố già\" Don Vito Corleone tạo lập và lãnh đạo.', '1969-10-03'),
+(61, ' Sự Trỗi Dậy Và Suy Tàn Của Đế Chế Thứ Ba – Lịch Sử Đức Quốc Xã', 17, 9, 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.jpg', 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.pdf', 'Ngay trong năm đầu tiên phát hành – 1960, Sự trỗi dậy và suy tàn của Đế chế thứ ba đã bán được tới 1 triệu bản tại Mỹ và được tái bản hơn 20 lần. Cuốn sách là bản tường thuật hết sức chi tiết về nước Đức, dưới sự cai trị của Adolf Hitler và Đảng Quốc xã. Tác giả đã nghiên cứu kĩ lưỡng về sự ra đời của Đế chế thứ ba ở Đức, con đường dẫn đến quyền lực tuyệt đối của Đảng Quốc xã, diễn biến của Chiến tranh thế giới lần thứ hai và sự thất bại của Phát xít Đức. Nguồn tài liệu của cuốn sách bao gồm lời khai của các nhà lãnh đạo Đảng Quốc xã, nhật kí của các quan chức, cùng hàng loạt các quân lệnh và thư mật. ', '1960-12-10'),
+(62, 'Đời Ngắn Đừng Ngủ Dài', 20, 3, 'nhasachmienphi-doi-ngan-dung-ngu-dai.png', 'nhasachmienphi-doi-ngan-dung-ngu-dai.pdf', '“Mọi lựa chọn đều giá trị. Mọi bước đi đều quan trọng. Cuộc sống vẫn diễn ra theo cách của nó, không phải theo cách của ta. Hãy kiên nhẫn. Tin tưởng. Hãy giống như người thợ cắt đá, đều đặn từng nhịp, ngày qua ngày. Cuối cùng, một nhát cắt duy nhất sẽ phá vỡ tảng đá và lộ ra viên kim cương. Người tràn đầy nhiệt huyết và tận tâm với việc mình làm không bao giờ bị chối bỏ. Sự thật là thế.”', '2014-01-05'),
+(63, 'Hiến Pháp Mỹ Được Làm Ra Như Thế Nào?', 21, 9, '65f24db234ea2_1396.jpg', '65f24db2346b1_3559.pdf', 'Cuốn sách đã cung cấp một bức tranh toàn cảnh về sự ra đời của Hiến pháp Mỹ, như một lời lý giải cho rất nhiều người có cùng mối băn khoăn.Vậy Hiến pháp Mỹ đã được làm ra như thế nào? Nó được làm ra trong những cuộc tranh luận nảy lửa tưởng như không có lối thoát và những mối bất đồng sâu sắc, bởi những bộ óc vĩ đại có một không hai trong lịch sử, và bằng một tinh thần mà người ta khó có thể tìm một tính từ nào thay thế ngoài cách gọi – “tinh thần Mỹ”. Đó là sự tôn trọng đặc biệt lẫn nhau, thừa nhận những quan điểm hoàn toàn khác biệt, chấp nhận và cùng thỏa hiệp để đi tới lợi ích chung cuối cùng.', '2002-01-12');
 
 --
 -- Bẫy `books`
@@ -456,7 +487,7 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `category`, `name`) VALUES
-(1, 'trinh-tham', 'Trinh thám'),
+(1, 'trinh-tham', 'Trinh Thám'),
 (2, 'khoa-hoc', 'Khoa học'),
 (3, 'tam-ly', 'Tâm lý'),
 (4, 'lich-su', 'Lịch sử'),
@@ -465,8 +496,7 @@ INSERT INTO `categories` (`id`, `category`, `name`) VALUES
 (8, 'kinh-te', 'Kinh tế'),
 (9, 'chinh-tri', 'Chính trị'),
 (13, 'van-hoc', 'Văn Học'),
-(14, 'than-thoai', 'Thần thoại'),
-(15, 'thieu-nhi', 'Thiếu nhi');
+(14, 'than-thoai', 'Thần thoại');
 
 -- --------------------------------------------------------
 
@@ -501,7 +531,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `name`, `email`) VALUES
 (1, 'khacvi2003', '$2y$10$vbE1BPwZiAcJj681h7.uj.wsaChlUA/u9PGJpbcmLcJxLjd9jUvDO', 'Đoàn Khắc Vi', 'khacvi2003@gmail.com'),
-(13, 'vanhuynh', '$2y$10$qzQxKDmLozVAt9CxZlnluua8VvAKHCcBf8QL5ndGQjDAzrbN..AYS', 'Hà Huỳnh Văn', 'hahuynhvan2003@gmail.com');
+(13, 'vanhuynh', '$2y$10$qzQxKDmLozVAt9CxZlnluua8VvAKHCcBf8QL5ndGQjDAzrbN..AYS', 'Hà Huỳnh Văn', 'hahuynhvan2003@gmail.com'),
+(14, 'TriLam2003', '$2y$10$2EamhH4MqXanxh/5m5uqTOk69bFIZ0wctaWNQunnsFPSjGfGHDlnW', 'LÂM QUANG TRÍ', 'triquang2003@gmail.com'),
+(15, 'viho2003', '$2y$10$zaM1pD4RZbp4fhYrtmnrY.vq9Z9Pg4QPpLgFXaeBzF03YrY2beG7W', 'Hồ Nguyễn Tường Vy', 'khacvi2003@gmail.com');
 
 --
 -- Bẫy `users`
@@ -521,9 +553,9 @@ DELIMITER ;
 -- (See below for the actual view)
 --
 CREATE TABLE `vwauthors` (
-`author` varchar(100)
+`id` int
+,`author` varchar(100)
 ,`description` text
-,`id` int
 );
 
 -- --------------------------------------------------------
@@ -533,14 +565,14 @@ CREATE TABLE `vwauthors` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwbooks` (
-`author` varchar(100)
+`id` int
+,`title` varchar(100)
+,`author` varchar(100)
 ,`category` char(100)
 ,`cover_path` varchar(260)
-,`description` text
 ,`file_path` varchar(260)
-,`id` int
+,`description` text
 ,`published` date
-,`title` varchar(100)
 );
 
 -- --------------------------------------------------------
@@ -550,8 +582,8 @@ CREATE TABLE `vwbooks` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwcategories` (
-`category` char(100)
-,`id` int
+`id` int
+,`category` char(100)
 ,`name` char(100)
 );
 
@@ -563,9 +595,9 @@ CREATE TABLE `vwcategories` (
 --
 CREATE TABLE `vwhistory` (
 `id` int
-,`last_read` date
 ,`name` varchar(100)
 ,`title` varchar(100)
+,`last_read` date
 );
 
 -- --------------------------------------------------------
@@ -575,11 +607,11 @@ CREATE TABLE `vwhistory` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwusers` (
-`email` varchar(100)
-,`id` int
-,`name` varchar(100)
-,`password` char(128)
+`id` int
 ,`username` varchar(50)
+,`password` char(128)
+,`name` varchar(100)
+,`email` varchar(100)
 );
 
 -- --------------------------------------------------------
@@ -613,8 +645,9 @@ CREATE TABLE `wishlist` (
 INSERT INTO `wishlist` (`id`, `user_id`, `book_id`) VALUES
 (79, 1, 12),
 (82, 1, 7),
-(83, 1, 6),
-(84, 13, 59);
+(84, 13, 59),
+(85, 1, 59),
+(87, 15, 12);
 
 -- --------------------------------------------------------
 
@@ -741,19 +774,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT cho bảng `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT cho bảng `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `history`
@@ -765,13 +798,13 @@ ALTER TABLE `history`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
