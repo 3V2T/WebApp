@@ -30,7 +30,7 @@ function uploadFile()
             }
 
             // Generate a unique filename to prevent overwrites
-            $new_filename = $file_name;
+            $new_filename = uniqid() . '_' . rand(1000, 9999) .'.'. pathinfo($file_name, PATHINFO_EXTENSION);
             // Move the uploaded file to the uploads directory
             try {
                 move_uploaded_file($file_tmp, $upload_dir_pdf . $new_filename);
@@ -55,7 +55,7 @@ function uploadFile()
                 die('Only image files are allowed!');
             }
 
-            $new_filename = $file_name;
+            $new_filename = uniqid() . '_' . rand(1000, 9999) .'.'. pathinfo($file_name, PATHINFO_EXTENSION);
 
             try {
                 move_uploaded_file($file_tmp, $upload_dir_img . $new_filename);
@@ -88,15 +88,6 @@ function addData()
                     $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
                     Book::add($connection, $book);
                     $_SESSION['title'] = $book->title;
-                } else {
-                    $author =  new Author(1, $author_name, " ");
-                    Author::add($connection, $author);
-                    $author = Author::getByName($connection, $author_name);
-                    if ($author) {
-                        $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
-                        Book::add($connection, $book);
-                        $_SESSION['title'] = $book->title;
-                    }
                 }
             } catch (\Throwable $e) {
                 echo $_SESSION['error_message'] = $e;

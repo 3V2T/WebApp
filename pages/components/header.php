@@ -16,7 +16,8 @@
                         aria-haspopup="true" aria-expanded="false">
                         Category
                     </a>
-                    <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
+                    <div class="dropdown-menu"
+                        style="height: 300px; overflow-y:scroll;box-shadow: 2px 2px 5px 2px #cccc;"
                         aria-labelledby="navbarDropdown">
                         <?php
                         $list = Category::getAll($connection);

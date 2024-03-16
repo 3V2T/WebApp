@@ -88,19 +88,7 @@ function updateAll ($connection, $book, $uploadPath) {
                     echo "<script>alert('Cập nhật sách thành công!');
                         location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
                     </script>";
-                } else {
-                    $author =  new Author(1, $author_name, " ");
-                    Author::add($connection, $author);
-                    $author = Author::getByName($connection, $author_name);
-                    if ($author) {
-                        $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
-                        Book::update($connection, $book_update, $book->id);
-                        $_SESSION['title'] = $book->title;
-                        echo "<script>alert('Cập nhật sách thành công!');
-                            location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
-                        </script>";
-                    }
-                }
+                } 
             } catch (\Throwable $e) {
                 echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
                             location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
@@ -126,18 +114,6 @@ function updateInfoAndPdf ($connection, $book, $uploadPath) {
                 echo "<script>alert('Cập nhật sách thành công!');
                     location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
                 </script>";
-            } else {
-                $author =  new Author(1, $author_name, " ");
-                Author::add($connection, $author);
-                $author = Author::getByName($connection, $author_name);
-                if ($author) {
-                    $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $uploadPath->pdf_path);
-                    Book::update($connection, $book_update, $book->id);
-                    $_SESSION['title'] = $book->title;
-                    echo "<script>alert('Cập nhật sách thành công!');
-                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
-                    </script>";
-                }
             }
         } catch (\Throwable $e) {
             echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
@@ -164,18 +140,6 @@ function updateInfoAndImg ($connection, $book, $uploadPath) {
                 echo "<script>alert('Cập nhật sách thành công!');
                     location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
                 </script>";
-            } else {
-                $author =  new Author(1, $author_name, " ");
-                Author::add($connection, $author);
-                $author = Author::getByName($connection, $author_name);
-                if ($author) {
-                    $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $book->file_path);
-                    Book::update($connection, $book_update, $book->id);
-                    $_SESSION['title'] = $book->title;
-                    echo "<script>alert('Cập nhật sách thành công!');
-                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
-                    </script>";
-                }
             }
         } catch (\Throwable $e) {
             echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
@@ -201,18 +165,6 @@ function updateInfoOnly ($connection, $book) {
                 echo "<script>alert('Cập nhật sách thành công!');
                     location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
                 </script>";
-            } else {
-                $author =  new Author(1, $author_name, " ");
-                Author::add($connection, $author);
-                $author = Author::getByName($connection, $author_name);
-                if ($author) {
-                    $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
-                    Book::update($connection, $book_update, $book->id);
-                    $_SESSION['title'] = $book->title;
-                    echo "<script>alert('Cập nhật sách thành công!');
-                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
-                    </script>";
-                }
             }
         } catch (\Throwable $e) {
             echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
