@@ -340,6 +340,24 @@ BEGIN
   EXECUTE stmt USING @start, @number;
   DEALLOCATE PREPARE stmt;
 END;
+CREATE PROCEDURE `phantrangsachtheotheloai` (IN `category` CHAR(100), IN `start` INT, IN `number` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `category_id` = (SELECT `id` FROM `vwcategories` WHERE `category` = ?) LIMIT ?, ?';
+  SET @category = category;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @category, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
+CREATE PROCEDURE `phantrangsachtheotacgia` (IN `author` VARCHAR(100), IN `start` INT, IN `number` INT)
+BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `author_id` = (SELECT `id` FROM `vwauthors` WHERE `author` = ?) LIMIT ?, ?';
+  SET @author = author;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @author, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END;
 CREATE PROCEDURE `phantrangtacgia` (IN `start` INT, IN `number` INT)
 BEGIN
   PREPARE stmt FROM 'SELECT * FROM `vwauthors` LIMIT ?, ?';

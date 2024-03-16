@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost
--- Thời gian đã tạo: Th3 12, 2024 lúc 02:25 AM
+-- Thời gian đã tạo: Th3 16, 2024 lúc 06:44 AM
 -- Phiên bản máy phục vụ: 8.0.36
 -- Phiên bản PHP: 7.4.33
 
@@ -112,6 +112,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsach` (IN `start` INT, IN 
   SET @start = start;
   SET @number = number;
   EXECUTE stmt USING @start, @number;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsachtheotacgia` (IN `author` VARCHAR(100), IN `start` INT, IN `number` INT)   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `author_id` = (SELECT `id` FROM `vwauthors` WHERE `author` = ?) LIMIT ?, ?';
+  SET @author = author;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @author, @start, @number;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `phantrangsachtheotheloai` (IN `category` CHAR(100), IN `start` INT, IN `number` INT)   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `category_id` = (SELECT `id` FROM `vwcategories` WHERE `category` = ?) LIMIT ?, ?';
+  SET @category = category;
+  SET @start = start;
+  SET @number = number;
+  EXECUTE stmt USING @category, @start, @number;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -374,7 +392,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', '$2y$10$l8TVPnBYZT8.rKQmKgmO9OSlSa/IXv6hr6kC4.6LvYISy2yxs/Esu');
+(1, 'admin', '$2y$10$iY2e832vCy19z0JwBvpkj.GH/DXQv/9p.HJti4N61NL/tF7MSr0xe');
 
 -- --------------------------------------------------------
 
@@ -538,8 +556,8 @@ DELIMITER ;
 --
 CREATE TABLE `vwadmin` (
 `id` int
-,`username` varchar(50)
 ,`password` char(128)
+,`username` varchar(50)
 );
 
 -- --------------------------------------------------------
@@ -549,9 +567,9 @@ CREATE TABLE `vwadmin` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwauthors` (
-`id` int
-,`author` varchar(100)
+`author` varchar(100)
 ,`description` text
+,`id` int
 );
 
 -- --------------------------------------------------------
@@ -561,14 +579,14 @@ CREATE TABLE `vwauthors` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwbooks` (
-`id` int
-,`title` varchar(100)
-,`author_id` int
+`author_id` int
 ,`category_id` int
 ,`cover_path` varchar(260)
-,`file_path` varchar(260)
 ,`description` text
+,`file_path` varchar(260)
+,`id` int
 ,`published` date
+,`title` varchar(100)
 );
 
 -- --------------------------------------------------------
@@ -578,8 +596,8 @@ CREATE TABLE `vwbooks` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwcategories` (
-`id` int
-,`category` char(100)
+`category` char(100)
+,`id` int
 ,`name` char(100)
 );
 
@@ -590,10 +608,10 @@ CREATE TABLE `vwcategories` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwhistory` (
-`id` int
-,`user_id` int
-,`book_id` int
+`book_id` int
+,`id` int
 ,`last_read` date
+,`user_id` int
 );
 
 -- --------------------------------------------------------
@@ -603,11 +621,11 @@ CREATE TABLE `vwhistory` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwusers` (
-`id` int
-,`username` varchar(50)
-,`password` char(128)
+`email` varchar(100)
+,`id` int
 ,`name` varchar(100)
-,`email` varchar(100)
+,`password` char(128)
+,`username` varchar(50)
 );
 
 -- --------------------------------------------------------
@@ -617,9 +635,9 @@ CREATE TABLE `vwusers` (
 -- (See below for the actual view)
 --
 CREATE TABLE `vwwishlist` (
-`id` int
+`book_id` int
+,`id` int
 ,`user_id` int
-,`book_id` int
 );
 
 -- --------------------------------------------------------
