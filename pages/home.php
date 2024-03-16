@@ -7,6 +7,7 @@ if (isset($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 $connection = $conn->getConn();
+$total = count(Book::getAll($connection));
 ?>
 <div class="slider h-75 overflow-hidden position-relative">
     <div class="d-flex container-slide" style="width: 300%; height: 100%; transition: all 0.5s;">
@@ -34,7 +35,7 @@ $connection = $conn->getConn();
         <?php
         $categories = Category::getAll($connection);
         foreach ($categories as $category) {
-            echo '<a class="p-4 col-md-3 col-sm-4 d-flex text-decoration-none" style="cursor: pointer;" href="'.BASE_URL.'/pages/book.php?type=' . $category->category . '">
+            echo '<a class="p-4 col-md-3 col-sm-4 d-flex text-decoration-none" style="cursor: pointer;" href="' . BASE_URL . '/pages/book.php?type=' . $category->category . '">
                 <div class="position-relative d-flex"
                     style="margin:auto; width: 150px; height: 150px;box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
                     <h5 class="m-auto text-center ">' . $category->name . '</h5>
@@ -44,36 +45,50 @@ $connection = $conn->getConn();
         ?>
     </div>
     <h2 class="pt-4 pb-4">Sách</h2>
-    <div class="row gap-3">
-        <?php
-        $books = Book::getAll($connection);
-        foreach ($books as $b) {
-            $wishlist;
-            if (isset($_SESSION["id_user"])) {
-                $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
-            }
-            $author = Author::getById($connection, $b->author_id);
-            echo '
-                        <div class=" col-xl-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card">
-                            <img src="./uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
-                            <div class="card-body row">
-                                <div class="col-10">
-                                    <h5 class="card-title">' . $b->title . '</h5>
-                                    <p> ' . $author->author . ' </p>
-                                    <a class="btn btn-primary" href="'.BASE_URL.'/pages/detail.php?id=' . $b->id . '">Detail</a>
-                                    <a class="btn btn-danger" href="'.BASE_URL.'/pages/read.php?name=' . $b->file_path . '">Read</a>
-                                </div>
-                                <div class="col-2" style="padding: 0;">
-                                    ' . (isset($_SESSION["id_user"]) ? ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') : null) . '
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-        }
-        ?>
+    <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script language="javascript" src="js/ajax.js"></script>
+    <div id="content" class="row gap-3">
     </div>
+
+    <button class="btn btn-outline-success" id="load-more">Load More</button>
+    <div class="p-5"></div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    const total = Number.parseInt(<?php echo $total ?>);
+    let limit = 4;
+    loadMoreData(limit);
+    $('#load-more').click(function() {
+        limit += 4;
+        loadMoreData(limit);
+        if (limit > total) {
+            $("#load-more").addClass("d-none");
+        }
+    });
+
+    function loadMoreData(limit) {
+        $.ajax({
+            url: 'pages/loadMore.php',
+            type: 'get',
+            data: {
+                limit: limit
+            },
+            beforeSend: function() {
+                $('#load-more').show();
+            },
+            success: function(response) {
+                if (response != "") {
+                    $("#content").html(response);
+                } else {
+                    $('#load-more').hide();
+                }
+            }
+        });
+    }
+});
+</script>
 
 <script>
 const containerSlide = document.querySelector('.container-slide');
