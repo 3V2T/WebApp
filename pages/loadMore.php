@@ -1,26 +1,28 @@
 <?php 
-include_once "./utils/routerConfig.php";
-include_once "classes/book.php";
-$connection = $conn->getConn();
-
-
-
 // Số lượng item hiển thị trên mỗi trang
-$limit = 4;
-
+include_once "../utils/routerConfig.php";
+include_once "../classes/database.php";
+include_once "../classes/category.php";
+include_once "../classes/book.php";
+include_once "../classes/user.php";
+include_once "../classes/author.php";
+include_once "../classes/wishlist.php";
+include_once "../config.php";
+$conn = include "../inc/db.php";
+$offset = 0;
+$response = "";
 // Offset, mặc định là 0
-$offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
-
+$limit = isset($_GET['limit']) ? $_GET['limit'] : 0;
 // Truy vấn dữ liệu từ cơ sở dữ liệu
-
-$books = Book::getPagingBooks($connection, $limit, $offset);
+$bookArray = Book::getAll($conn);
+$books = Book::getPagingBooks($conn, $limit, $offset);
 foreach ($books as $b) {
     $wishlist;
     if (isset($_SESSION["id_user"])) {
-        $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
+        $wishlist = WishList::getWishListByUserAndBook($conn, $_SESSION['id_user'], $b->id) != null ? true : false;
     }
-    $author = Author::getById($connection, $b->author_id);
-    echo '
+    $author = Author::getById($conn, $b->author_id);
+    $response = $response .  '
                         <div class=" col-xl-3 col-md-4 col-sm-6 mb-4">
                         <div class="card">
                             <img src="./uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
@@ -38,39 +40,5 @@ foreach ($books as $b) {
                         </div>
                     </div>';
 }
-
-/* code test
-
-$servername = "localhost";
-$username = "root";
-$password = "mysql";
-$dbname = "library";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    die();
-}
-// Số lượng item hiển thị trên mỗi lần load more
-$limit = 1;
-
-// Offset, mặc định là 0
-$offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
-
-// Truy vấn dữ liệu từ cơ sở dữ liệu
-$stmt = $conn->prepare("SELECT * FROM books LIMIT $offset, $limit");
-$stmt->execute();
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Hiển thị dữ liệu
-if ($results) {
-    foreach ($results as $row) {
-        echo '<div class="item">' . $row['title'] . '</div>';
-    }
-} else {
-    echo "No more data available";
-}
-*/
-?>
+echo $response;
+return $response;
