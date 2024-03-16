@@ -10,7 +10,6 @@ $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    echo $id;
     try {
         $book = Book::getById($connection, $id);
         $filePath = '../uploads/books/' . $book->file_path;
@@ -19,9 +18,15 @@ if (isset($_GET['id'])) {
             unlink($filePath);
             unlink($imgPath);
             Book::delete($connection, $id);
-            $_SESSION["error_message"] = "Delete successfully!";
+            echo '<script>
+                    alert("Xóa sách thành công!");
+                    location.href="'.BASE_URL .'/home" ;
+                </script>';
         }
     } catch (\Throwable $e) {
-        $_SESSION["error_message"] = $e;
+        echo '<script>
+                    alert("Xóa sách thất bại vui lòng thử lại!");
+                    location.href="'.BASE_URL .'/home" ;
+                </script>';
     }
 }
