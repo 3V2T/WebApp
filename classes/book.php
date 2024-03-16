@@ -333,4 +333,37 @@ class Book
             return false;
         }
     }
+
+    public static function getPagingBooks($conn, $limit, $offset)
+    {
+        try {
+            $sql = "select * from books order by title asc
+                limit :limit
+                offset :offset";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            //$stmt->setFetchMode(PDO::FETCH_CLASS, 'Book');
+            $stmt->execute();
+
+            $booksList = [];
+
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $booksList[] = new Book(
+                    $row['id'],
+                    $row['title'],
+                    $row['author_id'],
+                    $row['category_id'],
+                    $row['description'],
+                    $row['published'],
+                    $row['cover_path'],
+                    $row['file_path']
+                );
+            }
+            return $booksList;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
 }
