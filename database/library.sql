@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost
--- Thời gian đã tạo: Th3 17, 2024 lúc 02:59 PM
+-- Thời gian đã tạo: Th3 17, 2024 lúc 03:09 PM
 -- Phiên bản máy phục vụ: 8.0.36
 -- Phiên bản PHP: 7.4.33
 
@@ -26,7 +26,7 @@ DELIMITER $$
 -- Thủ tục
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhau` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
-  PREPARE stmt FROM 'UPDATE `user` SET `password` = ? WHERE `username` = ?';
+  PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `username` = ?';
   SET @username = username;
   SET @password = password;
   EXECUTE stmt USING @password, @username;
