@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost
--- Thời gian đã tạo: Th3 17, 2024 lúc 02:49 PM
+-- Thời gian đã tạo: Th3 17, 2024 lúc 02:59 PM
 -- Phiên bản máy phục vụ: 8.0.36
 -- Phiên bản PHP: 7.4.33
 
@@ -369,7 +369,11 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `crtacgia` () RETURNS INT DETERMINIST
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `cryeuthich` (`_user_id` INT) RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwwishlist` WHERE `user_id` = _user_id)$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username) > 0$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtraadmin` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwadmin` WHERE `username` = _username AND `password` = _password) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiadmin` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwadmin` WHERE `username` = _username) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwusers` WHERE `username` = _username) > 0$$
 
 CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtrauser` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username AND `password` = _password) > 0$$
 

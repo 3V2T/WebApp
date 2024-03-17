@@ -412,15 +412,15 @@ BEGIN
 END;
 CREATE TRIGGER `xoatacgia` BEFORE DELETE ON `authors` FOR EACH ROW
   DELETE FROM `books` WHERE `author_id` = OLD.id;
-CREATE FUNCTION `kiemtratontaiuser` (`username` VARCHAR(50)) RETURNS BOOLEAN
+CREATE FUNCTION `kiemtratontaiuser` (`_username` VARCHAR(50)) RETURNS BOOLEAN
 DETERMINISTIC
-  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0;
-CREATE FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
+  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username) > 0;
+CREATE FUNCTION `kiemtrauser` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS BOOLEAN
 DETERMINISTIC
-  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0;
-CREATE FUNCTION `kiemtratontaiadmin` (`username` VARCHAR(50)) RETURNS BOOLEAN
+  RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = _username AND `password` = password) > 0;
+CREATE FUNCTION `kiemtratontaiadmin` (`_username` VARCHAR(50)) RETURNS BOOLEAN
 DETERMINISTIC
-  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username) > 0;
-CREATE FUNCTION `kiemtraadmin` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = _username) > 0;
+CREATE FUNCTION `kiemtraadmin` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS BOOLEAN
 DETERMINISTIC
-  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username AND `password` = password) > 0;
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = _username AND `password` = _password) > 0;
