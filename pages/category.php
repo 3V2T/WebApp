@@ -40,12 +40,12 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <a type="button" class="btn btn-danger text-white" href="/WebApp/controller/handleDeleteCategory.php?id=' . $category->id . '">Delete</a>
+                                                <a type="button" class="btn btn-danger text-white" href="'.BASE_URL.'/controller/handleDeleteCategory.php?id=' . $category->id . '">Delete</a>
                                             </div>
                                             </div>
                                         </div>
                                         </div>
-                                        <form action="/WebApp/controller/handleUpdateCategory.php?id=' . $category->id . '" method="post" class="editform categoryId-' . $category->id . '">
+                                        <form action="'.BASE_URL.'/controller/handleUpdateCategory.php?id=' . $category->id . '" method="post" class="editform categoryId-' . $category->id . '">
                                         <input class="d-none" name="category_name"></input>
                                         <button class="px-2  btn btn-success text-white">Save</button>
                                         </form>
@@ -56,7 +56,8 @@
                         ?>
                     </tbody>
                 </table>
-                <form class="d-flex p-5" method="post" action="/WebApp/controller/handleAddCategory.php" style="gap: 8px">
+                <form class="d-flex p-5" method="post" action="<?php echo BASE_URL ?>/controller/handleAddCategory.php"
+                    style="gap: 8px">
                     <input class="form-control" name="category_name" placeholder=" Enter category">
                     <button class="btn btn-danger ">
                         Clear
@@ -70,19 +71,19 @@
     </div>
 </div>
 <script>
-    const undoBtn = document.querySelectorAll(".undoBtn");
-    undoBtn.forEach((btn, index) => {
-        btn.onclick = (e) => {
-            location.href = "/WebApp/category";
-        }
-    })
-    const inputCategory = document.querySelectorAll(".input-category");
-    const inputEdit = document.querySelectorAll(".editform input");
-    inputCategory.forEach((element, index) => {
-        inputEdit[index].value = element.value;
-        element.onchange = (e) => {
-            inputEdit[index].value = e.target.value;
-            console.log(e.target.value);
-        }
-    })
+const undoBtn = document.querySelectorAll(".undoBtn");
+undoBtn.forEach((btn, index) => {
+    btn.onclick = (e) => {
+        location.href = "<?php echo BASE_URL ?>/category";
+    }
+})
+const inputCategory = document.querySelectorAll(".input-category");
+const inputEdit = document.querySelectorAll(".editform input");
+inputCategory.forEach((element, index) => {
+    inputEdit[index].value = element.value;
+    element.onchange = (e) => {
+        inputEdit[index].value = e.target.value;
+        console.log(e.target.value);
+    }
+})
 </script>

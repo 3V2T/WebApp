@@ -21,18 +21,18 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             $_SESSION['is_login'] = true;
             echo '<script>
             alert ("Đăng nhập thành công, chào mừng admin!");
-            location.href = "/WebApp/home";
+            location.href = "'.BASE_URL.'/home";
         </script>';
         } else {
             echo '<script>
                     alert ("Tên đăng nhập hoặc mật khẩu không đúng!");
-                    location.href = "/WebApp/loginAdmin";
+                    location.href = "'.BASE_URL.'/login-admin";
                 </script>';
         }
     } catch (\Throwable $e) {
         echo '<script>
             alert ("Đã xảy ra lỗi vui lòng thử lại!");
-            location.href = "/WebApp/loginAdmin";
+            location.href = "'.BASE_URL.'/login-admin";
         </script>';
     }
 }

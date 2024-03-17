@@ -38,7 +38,7 @@ if ($is_valid) {
     if (isset($_SESSION["message"])) {
         if ($_SESSION['message'] != "") {
             echo '<script> alert("' . $_SESSION["message"] . '");
-                location.href = "/WebApp/pages/me.php"
+                location.href = "'.BASE_URL.'/pages/me.php"
             </script>
             ';
             $_SESSION["message"]  = "";

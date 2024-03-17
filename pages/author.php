@@ -63,12 +63,12 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <a type="button" class="btn btn-danger text-white" href="/WebApp/controller/handleDeleteAuthor.php?id=' . $author->id . '">Delete</a>
+                                                <a type="button" class="btn btn-danger text-white" href="'.BASE_URL.'/controller/handleDeleteAuthor.php?id=' . $author->id . '">Delete</a>
                                             </div>
                                             </div>
                                         </div>
                                         </div>
-                                        <form action="/WebApp/controller/handleUpdateAuthor.php?id=' . $author->id . '" method="post" class="editform authorId-' . $author->id . '">
+                                        <form action="'.BASE_URL.'/controller/handleUpdateAuthor.php?id=' . $author->id . '" method="post" class="editform authorId-' . $author->id . '">
                                         <input class="d-none" name="author"></input>
                                         <button class="px-2  btn btn-success text-white">Save</button>
                                         </form>
@@ -79,7 +79,8 @@
                                 ?>
                             </tbody>
                         </table>
-                        <form class="d-flex p-5" method="post" action="/WebApp/controller/handleAddAuthor.php" style="gap: 8px">
+                        <form class="d-flex p-5" method="post"
+                            action="<?php echo BASE_URL ?>/controller/handleAddAuthor.php" style="gap: 8px">
                             <input class="form-control" name="author" placeholder=" Enter author's name">
                             <button class="btn btn-danger ">
                                 Clear
@@ -93,21 +94,21 @@
             </div>
         </div>
         <script>
-            const undoBtn = document.querySelectorAll(".undoBtn");
-            undoBtn.forEach((btn, index) => {
-                btn.onclick = (e) => {
-                    location.href = "/WebApp/author";
-                }
-            })
-            const inputAuthor = document.querySelectorAll(".input-author");
-            const inputEdit = document.querySelectorAll(".editform input");
-            inputAuthor.forEach((element, index) => {
-                inputEdit[index].value = element.value;
-                element.onchange = (e) => {
-                    inputEdit[index].value = e.target.value;
-                    console.log(e.target.value);
-                }
-            })
+        const undoBtn = document.querySelectorAll(".undoBtn");
+        undoBtn.forEach((btn, index) => {
+            btn.onclick = (e) => {
+                location.href = "<?php echo BASE_URL ?>/author";
+            }
+        })
+        const inputAuthor = document.querySelectorAll(".input-author");
+        const inputEdit = document.querySelectorAll(".editform input");
+        inputAuthor.forEach((element, index) => {
+            inputEdit[index].value = element.value;
+            element.onchange = (e) => {
+                inputEdit[index].value = e.target.value;
+                console.log(e.target.value);
+            }
+        })
         </script>
         <?php
         include_once("./pages/components/footer.php");

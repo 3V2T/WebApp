@@ -16,11 +16,11 @@ if (isset($_GET["id"]) && $_POST['author']) {
         $author = new Author(1, $author_name, "");
         Author::update($connection, $author, $id);
         echo '<script>alert("Update tác giả thành công!");
-            location.href = "/WebApp/author";
+            location.href = "'.BASE_URL.'/author";
         </script>';
     } catch (\Throwable $e) {
         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-            location.href = "/WebApp/author";
+            location.href = "'.BASE_URL.'/author";
         </script>';
     }
 }

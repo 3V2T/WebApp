@@ -89,7 +89,6 @@ class User
             $user = new User($row['id'], $row['username'], $row['name'], $row['password'], $row['email']);
             $usersList[] = $user;
         }
-
         return $usersList;
     }
 

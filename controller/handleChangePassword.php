@@ -36,13 +36,13 @@ if ($is_valid) {
     if (isset($_SESSION["message"])) {
         if ($_SESSION['message']) {
             echo '<script> alert("Đổi mật khẩu thành công vui lòng đăng nhập lại!");
-                location.href = "/WebApp/login"
+                location.href = "'.BASE_URL.'/login"
             </script>
             ';
             session_destroy();
         } else {
             echo '<script> alert("Đã xảy ra lỗi vui lòng thử lại!");
-                location.href = "/WebApp/pages/me.php"
+                location.href = "'.BASE_URL.'/pages/me.php"
             </script>
             ';
         }

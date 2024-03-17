@@ -18,7 +18,7 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
         $isExist = User::getByName($connection, $username);
         if ($isExist) {
             echo "<script>alert('Người dùng đã tồn tại vui lòng thử lại!');
-                location.href = '/WebApp/user'
+                location.href = '".BASE_URL."/user'
             </script>";
         } else {
             try {
@@ -48,8 +48,8 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <a type="button" class="btn btn-danger text-white" href="/WebApp/home">Go Home</a>
-                                <a type="button" class="btn btn-primary text-white" data-dismiss="modal" href="/WebApp/user">Add
+                                <a type="button" class="btn btn-danger text-white" href="'.BASE_URL.'/home">Go Home</a>
+                                <a type="button" class="btn btn-primary text-white" data-dismiss="modal" href="'.BASE_URL.'/user">Add
                                     New</a>
                             </div>
                         </div>
@@ -58,13 +58,13 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
             </div>';
             } catch (\Throwable $e) {
                 echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                        location.href = '/WebApp/user'
+                        location.href = '".BASE_URL."/user'
                     </script>";
             }
         }
     } catch (\Throwable $e) {
         echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/user'
+                location.href = '".BASE_URL."/user'
             </script>";
     }
 }

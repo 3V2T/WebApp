@@ -65,19 +65,19 @@ $connection = $conn->getConn();
     <div class="col-md-7 p-4" style="box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
         <h1>' . $book->title . '</h1>
         <h6>Tác giả:</h6> <p class="pl-4">' . $author->author . '</p>
-        <h6>Thể loại:</h6><p><a href="/WebApp/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
+        <h6>Thể loại:</h6><p><a href="'.BASE_URL.'/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
         <h6>Ngày phát hành:</h6><p class="pl-4">' . $book->published . '</p>
         <h6 >Mô tả:</h6>
         <p class="pl-4">' . $book->description . '</p>
         <div>
-            <a class="btn btn-success text-white" href="/WebApp/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
+            <a class="btn btn-success text-white" href="'.BASE_URL.'/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
             <a class="btn btn-primary text-white"
-                href="/WebApp/pages/read.php?name=' . $book->file_path . '">Read</a>
+                href="'.BASE_URL.'/pages/read.php?name=' . $book->file_path . '">Read</a>
                 ';
 
                         if (isset($_SESSION["is_admin"])) {
                             echo '<button data-toggle="modal" data-target="#modalDelete" class="btn btn-danger text-white">Delete</button>
-                                    <a  class="btn btn-info text-white" href="/WebApp/pages/editBook.php?id=' . $book->id . '">Edit</a>
+                                    <a  class="btn btn-info text-white" href="'.BASE_URL.'/pages/editBook.php?id=' . $book->id . '">Edit</a>
                                     <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -92,7 +92,7 @@ $connection = $conn->getConn();
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <a type="button" class="btn btn-danger text-white"href="/WebApp/controller/handleDelete.php?id=' . $book->id . '">Delete</a>
+                                                <a type="button" class="btn btn-danger text-white"href="'.BASE_URL.'/controller/handleDelete.php?id=' . $book->id . '">Delete</a>
                                             </div>
                                             </div>
                                         </div>

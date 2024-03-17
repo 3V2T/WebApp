@@ -7,10 +7,6 @@ include "../classes/category.php";
 include "../config.php";
 include_once "../utils/routerConfig.php";
 
-// Error reporting for development
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 // Define upload path
 function uploadFile()
 {
@@ -33,7 +29,7 @@ function uploadFile()
             }
 
             // Generate a unique filename to prevent overwrites
-            $new_filename = $file_name;
+            $new_filename = uniqid() . '_' . rand(1000, 9999) .'.'. pathinfo($file_name, PATHINFO_EXTENSION);
             // Move the uploaded file to the uploads directory
             try {
                 move_uploaded_file($file_tmp, $upload_dir_pdf . $new_filename);
@@ -41,10 +37,10 @@ function uploadFile()
                 $path->pdf_path = $new_filename;
                 // You can now store the file path in your database or process it further
             } catch (\Throwable $e) {
-                return false;
+                $path->pdf_path = "";
             }
         } else {
-            return false;
+            $path->pdf_path = "";
         }
 
         // Check if an image file has been uploaded
@@ -57,99 +53,145 @@ function uploadFile()
             if (!in_array($_FILES['file-anh']['type'], $allowed_types)) {
                 die('Only image files are allowed!');
             }
-
-            $new_filename = $file_name;
-
+            $new_filename = uniqid() . '_' . rand(1000, 9999) .'.'. pathinfo($file_name, PATHINFO_EXTENSION);
             try {
                 move_uploaded_file($file_tmp, $upload_dir_img . $new_filename);
                 $path->img_path = $new_filename;
             } catch (\Throwable $e) {
-                return false;
+                $path->img_path = "";
             }
         }
-        return $path;
+        else {
+            $path->img_path = "";
+        }
     } else {
-        return false;
+        return $path;
+    }
+    return $path;
+}
+
+function updateAll ($connection, $book, $uploadPath) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $title = $_POST["title"];
+            $category_id = $_POST["category_id"];
+            $description = $_POST["description"];
+            $author_name = $_POST["author"];
+            $published = $_POST["published"];
+            try {
+                unlink("../uploads/books/". $book->file_path);
+                unlink("../uploads/books-cover/". $book->cover_path);
+                $author = Author::getByName($connection, $author_name);
+                if ($author) {
+                    $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
+                    Book::update($connection, $book_update, $book->id);
+                    $_SESSION['title'] = $book->title;
+                    echo "<script>alert('Cập nhật sách thành công!');
+                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                    </script>";
+                } 
+            } catch (\Throwable $e) {
+                echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
+                            location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                        </script>";
+            }
+        }
+}
+
+function updateInfoAndPdf ($connection, $book, $uploadPath) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $title = $_POST["title"];
+        $category_id = $_POST["category_id"];
+        $description = $_POST["description"];
+        $author_name = $_POST["author"];
+        $published = $_POST["published"];
+        try {
+            unlink("../uploads/books/". $book->file_path);
+            $author = Author::getByName($connection, $author_name);
+            if ($author) {
+                $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $uploadPath->pdf_path);
+                Book::update($connection, $book_update, $book->id);
+                $_SESSION['title'] = $book->title;
+                echo "<script>alert('Cập nhật sách thành công!');
+                    location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                </script>";
+            }
+        } catch (\Throwable $e) {
+            echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
+                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                    </script>";
+        }
     }
 }
 
-function addData()
-{
+function updateInfoAndImg ($connection, $book, $uploadPath) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $title = $_POST["title"];
+        $category_id = $_POST["category_id"];
+        $description = $_POST["description"];
+        $author_name = $_POST["author"];
+        $published = $_POST["published"];
+        try {
+            unlink("../uploads/books-cover/". $book->cover_path);
+            $author = Author::getByName($connection, $author_name);
+            if ($author) {
+                $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $book->file_path);
+                Book::update($connection, $book_update, $book->id);
+                $_SESSION['title'] = $book->title;
+                echo "<script>alert('Cập nhật sách thành công!');
+                    location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                </script>";
+            }
+        } catch (\Throwable $e) {
+            echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
+                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                    </script>";
+        }
+    }
+}
+
+function updateInfoOnly ($connection, $book) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $title = $_POST["title"];
+        $category_id = $_POST["category_id"];
+        $description = $_POST["description"];
+        $author_name = $_POST["author"];
+        $published = $_POST["published"];
+        try {
+            $author = Author::getByName($connection, $author_name);
+            if ($author) {
+                $book_update = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
+                Book::update($connection, $book_update, $book->id);
+                $_SESSION['title'] = $book->title;
+                echo "<script>alert('Cập nhật sách thành công!');
+                    location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                </script>";
+            }
+        } catch (\Throwable $e) {
+            echo "<script>alert('Cập nhật sách thất bại vui lòng thử lại!');
+                        location.href = '".BASE_URL."/pages/detail.php?id=".$book->id."';
+                    </script>";
+        }
+    }
+}
+
+function updateData () {
     $id = $_SESSION["current_id"];
     $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
     $connection = $conn->getConn();
-    $uploadPath = uploadFile();
-    $id = $_SESSION["current_id"];
-    if (is_object($uploadPath)) {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $title = $_POST["title"];
-            $category_id = $_POST["category_id"];
-            $description = $_POST["description"];
-            $author_name = $_POST["author"];
-            $published = $_POST["published"];
-            try {
-                $author = Author::getByName($connection, $author_name);
-                if ($author) {
-                    $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
-                    Book::update($connection, $book, $id);
-                    $_SESSION['title'] = $book->title;
-                    $_SESSION['error_message'] = "Sửa thông tin thành công!";
-                } else {
-                    $author =  new Author(1, $author_name, " ");
-                    Author::add($connection, $author);
-                    $author = Author::getByName($connection, $author_name);
-                    if ($author) {
-                        $book = new Book(1, $title, $author->id, $category_id, $description, $published, $uploadPath->img_path, $uploadPath->pdf_path);
-                        Book::update($connection, $book, $id);
-                        $_SESSION['title'] = $book->title;
-                        echo "<script>alert('Sửa thông tin thành công!');
-                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
-                        </script>";
-                    }
-                }
-            } catch (\Throwable $e) {
-                echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
-                        </script>";
-            }
-        }
-    } else {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $book = Book::getById($connection, $id);
-            $title = $_POST["title"];
-            $category_id = $_POST["category_id"];
-            $description = $_POST["description"];
-            $author_name = $_POST["author"];
-            $published = $_POST["published"];
-            try {
-                $author = Author::getByName($connection, $author_name);
-                if ($author) {
-                    $book = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
-                    Book::updateInfo($connection, $book, $id);
-                    $_SESSION['title'] = $book->title;
-                    echo "<script>alert('Sửa thông tin thành công!');
-                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
-                        </script>";
-                } else {
-                    $author =  new Author(1, $author_name, " ");
-                    Author::add($connection, $author);
-                    $author = Author::getByName($connection, $author_name);
-                    if ($author) {
-                        $book = new Book(1, $title, $author->id, $category_id, $description, $published, $book->cover_path, $book->file_path);
-                        Book::updateInfo($connection, $book, $id);
-                        $_SESSION['title'] = $book->title;
-                        echo "<script>alert('Sửa thông tin thành công!');
-                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
-                        </script>";
-                    }
-                }
-            } catch (\Throwable $e) {
-                echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                            location.href = '/WebApp/pages/detail.php?id=" . $id . "';
-                        </script>";
-            }
-        }
+    $book = Book::getById($connection, $id);
+    $path = uploadFile();
+    if ($path->pdf_path != "" && $path->img_path != "") {
+        updateAll($connection, $book, $path);
+    }
+    else if ($path->pdf_path != "" && $path->img_path == "") {
+        updateInfoAndPdf($connection, $book, $path);
+    }
+    else if ($path->pdf_path == "" && $path-> img_path != "") {
+        updateInfoAndImg($connection, $book, $path);
+    }
+    else if ($path->pdf_path == "" && $path->img_path == "") {
+        updateInfoOnly($connection, $book);
     }
 }
 
-addData();
+updateData();

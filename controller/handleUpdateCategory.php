@@ -47,11 +47,11 @@ if (isset($_GET["id"]) && $_POST['category_name']) {
         $category = new Category(1, $category, $category_name);
         Category::updateById($connection, $category, $id);
         echo '<script>alert("Update thể loại thành công!");
-            location.href = "/WebApp/category";
+            location.href = "'.BASE_URL.'/category";
         </script>';
     } catch (\Throwable $e) {
         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-            location.href = "/WebApp/category";
+            location.href = "'.BASE_URL.'/category";
         </script>';
     }
 }

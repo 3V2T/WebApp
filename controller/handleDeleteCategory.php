@@ -25,7 +25,7 @@ if (isset($_GET["id"])) {
                         Book::delete($connection, $id);
                     } catch (\Throwable $e) {
                         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-                            location.href = "/WebApp/category";
+                            location.href = "'.BASE_URL.'/category";
                             </script>';
                     }
                 }
@@ -33,11 +33,11 @@ if (isset($_GET["id"])) {
         }
         Category::deleteById($connection, $id);
         echo '<script>alert("Xóa thể loại thành công!");
-        location.href = "/WebApp/category";
+        location.href = "'.BASE_URL.'/category";
     </script>';
     } catch (\Throwable $e) {
         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-        location.href = "/WebApp/category";
+        location.href = "'.BASE_URL.'/category";
     </script>';
     }
 }

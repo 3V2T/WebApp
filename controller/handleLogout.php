@@ -1,5 +1,5 @@
 <?php
 session_start();
-include "../utils/routerConfig.php";
+include "../config.php";
 session_destroy();
-header("Location: " . baseURL("login"));
+header("Location: " .BASE_URL. '/login');

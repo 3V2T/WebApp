@@ -13,11 +13,11 @@ if (isset($_POST['author'])) {
     try {
         Author::add($connection, $author);
         echo "<script>alert('Thêm tác giả mới thành công!');
-                location.href = '/WebApp/author'
+                location.href = '".BASE_URL."/author'
             </script>";
     } catch (\Throwable $e) {
         echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/author'
+                location.href = '".BASE_URL."/author'
             </script>";
     }
 }

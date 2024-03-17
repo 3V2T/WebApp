@@ -21,11 +21,11 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
             User::update($connection, $user_update, $user->id);
             User::updatePassword($connection, $user_update, $id);
             echo "<script>alert('Update người dùng thành công!');
-                location.href = '/WebApp/pages/info.php?id=" . $id . "'
+                location.href = '".BASE_URL."/pages/info.php?id=" . $id . "'
             </script>";
         } catch (\Throwable $e) {
             echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/pages/info.php?id=" . $id . "'
+                location.href = '".BASE_URL."/pages/info.php?id=" . $id . "'
             </script>";
         }
     } else {
@@ -33,11 +33,11 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
             $user_update = new User(1, $user->username, $name, "", $email);
             User::update($connection, $user_update, $user->id);
             echo "<script>alert('Update người dùng thành công!');
-                location.href = '/WebApp/pages/info.php?id=" . $id . "'
+                location.href = '".BASE_URL."/pages/info.php?id=" . $id . "'
             </script>";
         } catch (\Throwable $e) {
             echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '/WebApp/pages/info.php?id=" . $id . "'
+                location.href = '".BASE_URL."/pages/info.php?id=" . $id . "'
             </script>";
         }
     }

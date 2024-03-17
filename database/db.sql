@@ -53,12 +53,19 @@ CREATE TABLE `wishlist` (
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+CREATE TABLE `admin` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL UNIQUE,
+  `password` char(128) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE VIEW `vwusers` AS SELECT * FROM `users`;
 CREATE VIEW `vwauthors` AS SELECT * FROM `authors`;
 CREATE VIEW `vwcategories` AS SELECT * FROM `categories`;
 CREATE VIEW `vwbooks` AS SELECT `books`.`id`, `books`.`title`, `authors`.`author`, `categories`.`category`, `books`.`cover_path`, `books`.`file_path`, `books`.`description`, `books`.`published` FROM `books` INNER JOIN `authors` ON `books`.`author_id` = `authors`.`id` INNER JOIN `categories` ON `books`.`category_id` = `categories`.`id`;
 CREATE VIEW `vwhistory` AS SELECT `history`.`id`, `users`.`name`, `books`.`title`, `history`.`last_read` FROM `history` INNER JOIN `users` ON `history`.`user_id` = `users`.`id` INNER JOIN `books` ON `history`.`book_id` = `books`.`id`;
 CREATE VIEW `vwwishlist` AS SELECT `wishlist`.`id`, `users`.`name`, `books`.`title` FROM `wishlist` INNER JOIN `users` ON `wishlist`.`user_id` = `users`.`id` INNER JOIN `books` ON `wishlist`.`book_id` = `books`.`id`;
+CREATE VIEW `vwadmin` AS SELECT * FROM `admin`;
 DELIMITER $$
 CREATE PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))
 BEGIN
@@ -169,7 +176,17 @@ BEGIN
   PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
   SET @id = id;
   SET @password = password;
-  EXECUTE stmt USING @id, @password;
+  EXECUTE stmt USING @password, @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE `doimatkhauadmin` (IN `id` INT, IN `password` CHAR(128))
+BEGIN
+  PREPARE stmt FROM 'UPDATE `admin` SET `password` = ? WHERE `id` = ?';
+  SET @id = id;
+  SET @password = password;
+  EXECUTE stmt USING @password, @id;
   DEALLOCATE PREPARE stmt;
 END$$
 DELIMITER ;
@@ -455,3 +472,9 @@ DETERMINISTIC
 CREATE FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
 DETERMINISTIC
   RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0;
+CREATE FUNCTION `kiemtratontaiadmin` (`username` VARCHAR(50)) RETURNS BOOLEAN
+DETERMINISTIC
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username) > 0;
+CREATE FUNCTION `kiemtraadmin` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS BOOLEAN
+DETERMINISTIC
+  RETURN (SELECT COUNT(*) FROM `admins` WHERE `username` = username AND `password` = password) > 0;
