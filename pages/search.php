@@ -10,7 +10,7 @@ include "../classes/wishlist.php";
 include "../config.php";
 
 if (!isset($_GET["keyword"])) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/pages/book.php?type=tat-ca");
 }
 
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
@@ -51,9 +51,15 @@ $connection = $conn->getConn();
                 <div class="row gap-3">
                     <?php
                     $keyword = $_GET['keyword'];
-                    if ($keyword) {
+                  
                         $books = [];
                         $books = Book::getByKeyWord($connection, $keyword);
+                        if (count($books) == 0) {
+                            echo "<div class='p-4 w-100 h-100'>
+                                    <h4>Không tìm thấy kết quả phù hợp!</h4>
+                                </div>";
+                        }
+                        else {
                         foreach ($books as $b) {
                             $wishlist;
                             if (isset($_SESSION['id_user'])) {

@@ -9,6 +9,7 @@ $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
 if (isset($_POST['author'])) {
     $author_name = $_POST['author'];
+    $isExist = Author::getByName($connection, $author_name);
     $author = new Author(1, $author_name, "");
     try {
         Author::add($connection, $author);

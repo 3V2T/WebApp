@@ -55,7 +55,6 @@ try {
     const {
         handleToggleHeartIcon
     } = handleEvent();
-    console.log(handleToggleHeartIcon);
     const heartList = document.querySelectorAll(".heart");
     console.log(heartList);
     heartList.forEach(heart => {
