@@ -14,27 +14,12 @@ if ($slug != "login") {
         header("Location: " . baseURL("login"));
     }
 }
-if (!isset($_GET["type"])) {
+if (!isset($_GET["authorId"])) {
     header("Location: " . baseURL("pages/book.php?type=tat-ca"));
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
 
-try {
-    $categories = Category::getAll($connection);
-    if (isset($_GET["type"])) {
-        $type = $_GET["type"];
-        $list = ['tat-ca'];
-        foreach ($categories as $category) {
-            array_push($list, $category->category);
-        }
-        if (!in_array($type, $list)) {
-            header("Location: " . baseURL("error"));
-        }
-    }
-} catch (\Throwable $e) {
-    header("Location: " . baseURL("error"));
-}
 
 
 ?>
@@ -72,23 +57,14 @@ try {
         ?>
         <div class="container min-vh-100 mt-4">
             <?php
-            if (isset($_GET["type"])) {
-                $list = Category::getAll($connection);
-                $category_all = new Category(1, "tat-ca", "Tất cả");
-                array_push($list, $category_all);
-                foreach ($list as $item) {
-                    if ($item->category == $_GET['type']) {
-                        echo "<h1 class='p-4'>{$item->name}</h1>";
-                    }
-                }
-            }
+                $id = $_GET["authorId"];
+                $books = Book::getByAuthor($connection, $id);
+                $author = Author::getById($connection, $id);
+                        echo "<h1 class='p-4'>Author: ". $author->author ."</h1>";
             ?>
             <div class="container">
                 <div class="row gap-3">
                     <?php
-                    $category = $_GET['type'] != null ? $_GET['type'] : null;
-                    if ($category) {
-                        $books = $category == "tat-ca" ? Book::getAll($connection) : Book::getByCategory($connection, $category);
                         foreach ($books as $b) {
                             $wishlist;
                             if (isset($_SESSION["id_user"])) {
@@ -114,7 +90,6 @@ try {
                     </div>
                         ';
                         }
-                    }
                     ?>
                 </div>
             </div>

@@ -64,7 +64,7 @@ $connection = $conn->getConn();
     </div>
     <div class="col-md-7 p-4" style="box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
         <h1>' . $book->title . '</h1>
-        <h6>Tác giả:</h6> <p class="pl-4">' . $author->author . '</p>
+        <h6>Tác giả:</h6> <a href="'.BASE_URL . '/pages/bookbyauthor.php?authorId=' . $author->id . '" class="pl-4">' . $author->author . '</a>
         <h6>Thể loại:</h6><p><a href="'.BASE_URL.'/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
         <h6>Ngày phát hành:</h6><p class="pl-4">' . $book->published . '</p>
         <h6 >Mô tả:</h6>

@@ -10,7 +10,35 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto align-content-center">
+                <div class="dropdown nav-item d-flex">
+                    <button class="dropdown-toggle border-0 bg-transparent m-auto" style="color: gray;" type="button"
+                        data-toggle="dropdown">
+                        Author
+                        <span class="caret"></span></button>
+                    <ul class="p-2 dropdown-menu"
+                        style="height: 300px; width: 250px; overflow-x: hidden; overflow-y: scroll">
+                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                        <?php
+                            $authorList = Author::getAll($connection);
+                            if (count($authorList) != 0) {
+                                foreach ($authorList as $author) {
+                                    echo '<li class="py-2"><a class="px-3" href="'.BASE_URL . '/pages/bookbyauthor.php?authorId=' . $author->id . '">'. $author->author .'</a></li>';
+                                }
+                            }
+                        ?>
+                    </ul>
+                </div>
+                <script>
+                $(document).ready(function() {
+                    $("#myInput").on("keyup", function() {
+                        var value = $(this).val().toLowerCase();
+                        $(".dropdown-menu li").filter(function() {
+                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                    });
+                });
+                </script>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
