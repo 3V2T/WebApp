@@ -1,5 +1,6 @@
 <?php 
 // Số lượng item hiển thị trên mỗi trang
+session_start();
 include_once "../utils/routerConfig.php";
 include_once "../classes/database.php";
 include_once "../classes/category.php";
@@ -19,6 +20,7 @@ $books = Book::getPagingBooks($conn, $limit, $offset);
 foreach ($books as $b) {
     $wishlist;
     if (isset($_SESSION["id_user"])) {
+        
         $wishlist = WishList::getWishListByUserAndBook($conn, $_SESSION['id_user'], $b->id) != null ? true : false;
     }
     $author = Author::getById($conn, $b->author_id);

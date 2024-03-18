@@ -307,10 +307,10 @@ class Book
     public static function getByKeyWord($conn, $key_word)
     {
         try {
-            $sql = "SELECT * FROM books WHERE title LIKE :key_word";
+            $sql = "CALL timsachtheoten (:keyword)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':key_word', '%' . $key_word . '%');
+            $stmt->bindValue(':keyword',$key_word);
             $stmt->execute();
 
             $booksList = [];

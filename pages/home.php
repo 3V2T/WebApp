@@ -35,7 +35,7 @@ $total = count(Book::getAll($connection));
         <?php
         $categories = Category::getAll($connection);
         foreach ($categories as $category) {
-            echo '<a class="p-4 col-md-3 col-sm-4 d-flex text-decoration-none" style="cursor: pointer;" href="' . BASE_URL . '/pages/book.php?type=' . $category->category . '">
+            echo '<a class="p-4 col-md-3 col-sm-4 col-6 d-flex text-decoration-none" style="cursor: pointer;" href="' . BASE_URL . '/pages/book.php?type=' . $category->category . '">
                 <div class="position-relative d-flex"
                     style="margin:auto; width: 150px; height: 150px;box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
                     <h5 class="m-auto text-center ">' . $category->name . '</h5>

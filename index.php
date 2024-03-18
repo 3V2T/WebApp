@@ -7,7 +7,7 @@ include_once "./classes/database.php";
 include_once "./classes/category.php";
 include_once "./classes/book.php";
 include_once "./classes/user.php";
-include_once "./classes/author.php";
+include_once "./classes/author.php";  
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);

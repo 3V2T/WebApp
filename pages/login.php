@@ -24,12 +24,12 @@
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" class="form-control" name="username" id="username" aria-describedby="emailHelp"
-                        placeholder="Enter username">
+                        placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password"
-                        placeholder="Enter password">
+                        placeholder="Enter password" required>
                 </div>
                 <div class="form-group form-check" style="font-size: 14px">
                     <label class="form-check-label" for="message">Have no account?</label>
