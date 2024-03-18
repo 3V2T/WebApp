@@ -4,11 +4,11 @@ include_once "../utils/routerConfig.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        header("Location: " . BASE_URL . "/login");
     }
 }
 if (!isset($_GET['name'])) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/error");
 }
 $name = $_GET['name'];
 if (isset($name)) {

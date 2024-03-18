@@ -46,7 +46,7 @@
                                         </div>
                                         </div>
                                         <form action="'.BASE_URL.'/controller/handleUpdateCategory.php?id=' . $category->id . '" method="post" class="editform categoryId-' . $category->id . '">
-                                        <input class="d-none" name="category_name"></input>
+                                        <input class="d-none" name="category_name" required></input>
                                         <button class="px-2  btn btn-success text-white">Save</button>
                                         </form>
                                     </div>
@@ -58,7 +58,7 @@
                 </table>
                 <form class="d-flex p-5" method="post" action="<?php echo BASE_URL ?>/controller/handleAddCategory.php"
                     style="gap: 8px">
-                    <input class="form-control" name="category_name" placeholder=" Enter category">
+                    <input class="form-control" name="category_name" placeholder=" Enter category" required>
                     <button class="btn btn-danger ">
                         Clear
                     </button>

@@ -12,11 +12,11 @@ include "../classes/wishlist.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        header("Location: " . BASE_URL . "/login");
     }
 }
 if (!isset($_GET["id"])) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/error");
 }
 
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
@@ -48,7 +48,7 @@ if (isset($_GET["id"])) {
                     <label class="form-label ">Username:</label>
                     <div class="p-2">' . $user->username . '
                     </div>
-                    <input class="d-none" value=' . $user->username . ' name="username">
+                    <input class="d-none" value=' . $user->username . ' name="username" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label ">Email:</label>
@@ -56,7 +56,7 @@ if (isset($_GET["id"])) {
                 </div>
                 <div class="form-group">
                     <label class="form-label ">New Password:</label>
-                    <input class="form-control" name="password" id="password" placeholder="Enter new password" type="password">
+                    <input class="form-control" name="password" id="password" placeholder="Enter new password" type="password" required>
                 </div>
                 <div class="form-group align-content-end">
                     <button class="btn btn-primary"onclick="location.reload();" >

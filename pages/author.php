@@ -81,7 +81,7 @@
                         </table>
                         <form class="d-flex p-5" method="post"
                             action="<?php echo BASE_URL ?>/controller/handleAddAuthor.php" style="gap: 8px">
-                            <input class="form-control" name="author" placeholder=" Enter author's name">
+                            <input class="form-control" name="author" placeholder=" Enter author's name" required>
                             <button class="btn btn-danger ">
                                 Clear
                             </button>

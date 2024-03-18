@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>
             localStorage.setItem('data', '" . $jsonData . "');
           </script>";
-            header("Location: " . baseURL("register"));
+          header("Location: " . BASE_URL . "/register");
         } else {
             $password = password_hash($password, PASSWORD_BCRYPT);
             $user = new User(1, $username, $name, $password, $email);

@@ -11,11 +11,11 @@ include "../classes/wishlist.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        header("Location: " . BASE_URL . "/login");
     }
 }
 if (!isset($_GET["type"])) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/error");
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
@@ -29,11 +29,11 @@ try {
             array_push($list, $category->category);
         }
         if (!in_array($type, $list)) {
-            header("Location: " . baseURL("error"));
+            header("Location: " . BASE_URL . "/error");
         }
     }
 } catch (\Throwable $e) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/error");
 }
 
 

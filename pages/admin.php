@@ -10,9 +10,9 @@ include "../classes/category.php";
 include "../classes/user.php";
 include "../classes/wishlist.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-if ($slug != "login") {
-    if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+if ($slug != "login-admin") {
+    if (!isset($_SESSION["is_admin"])) {
+        header("Location: " . BASE_URL . "/login-admin");
     }
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);

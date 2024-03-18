@@ -8,9 +8,3 @@ function getSlugFromUrl($url)
         return ""; // Handle cases where there's no "/"
     }
 }
-
-
-function baseURL($slug)
-{
-    return "/WebApp/" . $slug;
-}

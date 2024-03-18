@@ -3,7 +3,7 @@
 ?><nav class="header navbar navbar-expand-lg navbar-light bg-light position-fixed"
     style="box-shadow: 1px 1px 10px 0px black; top: 0; left: 0; right:0; z-index: 5;">
     <div class="container">
-        <a class="navbar-brand" href="<?php echo baseURL("home") ?>">Trang chủ</a>
+        <a class="navbar-brand" href="<?php echo BASE_URL . "/home" ?>">Trang chủ</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

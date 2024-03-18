@@ -10,11 +10,11 @@ include "../classes/category.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug != "login") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        header("Location: " . BASE_URL . "/login");
     }
 }
 if (!isset($_GET["id"])) {
-    header("Location: " . baseURL("error"));
+    header("Location: " . BASE_URL . "/error");
 }
 
 $isEdit = false;
@@ -22,7 +22,7 @@ if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {
         $isEdit = true;
     } else {
-        header("Location: " . baseURL('pages/detail.php?id=' . $_GET["id"]));
+        header("Location: " . BASE_URL .'pages/detail.php?id=' . $_GET["id"]);
     }
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);

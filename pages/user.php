@@ -95,7 +95,7 @@
                                 <div class="form-group">
                                     <label class="form-label ">Email:</label>
                                     <input class="form-control" name="email" id="email" placeholder=" Enter email"
-                                        type="email required">
+                                        type="email" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label ">Password:</label>
@@ -103,10 +103,10 @@
                                         placeholder=" Enter password" type="password" required>
                                 </div>
                                 <div class="form-group align-content-end">
-                                    <button class="btn btn-danger ">
+                                    <button type="button" class="btn btn-danger clear-btn ">
                                         Clear
                                     </button>
-                                    <button class="btn btn-success">
+                                    <button type="submit" class="btn btn-success">
                                         Save
                                     </button>
                                 </div>
@@ -126,6 +126,13 @@
                 location.href = "<?php echo BASE_URL ?>/author";
             }
         })
+        const clearBtn = document.querySelector(".clear-btn");
+        const inputs = document.querySelectorAll("input");
+        clearBtn.onclick = () => {
+            inputs.forEach(input => {
+                input.value = "";
+            });
+        }
         </script>
         <?php
         include_once("./pages/components/footer.php");

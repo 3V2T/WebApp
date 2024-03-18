@@ -13,12 +13,12 @@ $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 
 if ($slug == "upload") {
     if (!isset($_SESSION["is_admin"])) {
-        header("Location: " . baseURL("home"));
+        header("Location: " . BASE_URL . "/home");
     }
 }
 if ($slug != "login" && $slug != "register") {
     if (!isset($_SESSION["is_login"])) {
-        header("Location: " . baseURL("login"));
+        header("Location: " . BASE_URL . "/login");
     }
 }
 
