@@ -307,7 +307,7 @@ class Book
     public static function getByKeyWord($conn, $key_word)
     {
         try {
-            $sql = "CALL timsachtheoten (:keyword)";
+            $sql = "CALL timsach(:keyword)";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindValue(':keyword',$key_word);
