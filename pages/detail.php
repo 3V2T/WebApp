@@ -8,11 +8,7 @@ include "../classes/author.php";
 include "../config.php";
 include "../classes/category.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-if ($slug != "login") {
-    if (!isset($_SESSION["is_login"])) {
-        header("Location: " . BASE_URL . "/login");
-    }
-}
+
 if (!isset($_GET["id"])) {
     header("Location: " . BASE_URL . "/error");
 }
@@ -22,7 +18,7 @@ if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {
         $isEdit = true;
     } else {
-        header("Location: " . BASE_URL .'pages/detail.php?id=' . $_GET["id"]);
+        header("Location: " . BASE_URL . 'pages/detail.php?id=' . $_GET["id"]);
     }
 }
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
@@ -65,19 +61,18 @@ $connection = $conn->getConn();
     <div class="col-md-7 p-4" style="box-shadow: 2px 2px 5px 2px #cccc; border-radius: 12px">
         <h1>' . $book->title . '</h1>
         <h6>Tác giả:</h6> <p class="pl-4">' . $author->author . '</p>
-        <h6>Thể loại:</h6><p><a href="'.BASE_URL.'/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
+        <h6>Thể loại:</h6><p><a href="' . BASE_URL . '/pages/book.php?type=' . $category->category . '" class="pl-4">' . $category->name . '</a></p>
         <h6>Ngày phát hành:</h6><p class="pl-4">' . $book->published . '</p>
         <h6 >Mô tả:</h6>
         <p class="pl-4">' . $book->description . '</p>
         <div>
-            <a class="btn btn-success text-white" href="'.BASE_URL.'/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
+            <a class="btn btn-success download-btn text-white" href="' . BASE_URL . '/controller/handleDownload.php?file=' . $book->file_path . '">Download</a>
             <a class="btn btn-primary text-white"
-                href="'.BASE_URL.'/pages/read.php?name=' . $book->file_path . '">Read</a>
+                href="' . BASE_URL . '/pages/read.php?name=' . $book->file_path . '#toolbar=0">Read</a>
                 ';
-
                         if (isset($_SESSION["is_admin"])) {
                             echo '<button data-toggle="modal" data-target="#modalDelete" class="btn btn-danger text-white">Delete</button>
-                                    <a  class="btn btn-info text-white" href="'.BASE_URL.'/pages/editBook.php?id=' . $book->id . '">Edit</a>
+                                    <a  class="btn btn-info text-white" href="' . BASE_URL . '/pages/editBook.php?id=' . $book->id . '">Edit</a>
                                     <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -92,14 +87,13 @@ $connection = $conn->getConn();
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <a type="button" class="btn btn-danger text-white"href="'.BASE_URL.'/controller/handleDelete.php?id=' . $book->id . '">Delete</a>
+                                                <a type="button" class="btn btn-danger text-white"href="' . BASE_URL . '/controller/handleDelete.php?id=' . $book->id . '">Delete</a>
                                             </div>
                                             </div>
                                         </div>
                                         </div>
                                     ';
                         }
-
                         echo '</div>
                         </div>';
                     }
@@ -111,5 +105,16 @@ $connection = $conn->getConn();
         include_once("./components/footer.php");
         ?>
 </body>
+<?php
+if (isset($_SESSION['guest'])) {
+    echo '<script>
+        const downloadBtn = document.querySelector(".download-btn");
+        downloadBtn.onclick = () => {
+            alert("Bạn cần đăng nhập trước khi download sách!");
+            downloadBtn.setAttribute("href", "' . BASE_URL . '/login");
+        }
+</script>';
+}
+?>
 
 </html>

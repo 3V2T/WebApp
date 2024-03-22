@@ -9,11 +9,6 @@ include "../config.php";
 include "../classes/category.php";
 include "../classes/wishlist.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-if ($slug != "login") {
-    if (!isset($_SESSION["is_login"])) {
-        header("Location: " . BASE_URL . "/login");
-    }
-}
 if (!isset($_GET["type"])) {
     header("Location: " . BASE_URL . "/error");
 }
@@ -103,8 +98,8 @@ try {
                                 <div class="col-10">
                                     <h5 class="card-title">' . $b->title . '</h5>
                                     <p> ' . $author->author . ' </p>
-                                    <a class="btn btn-primary" href="'.BASE_URL.'/pages/detail.php?id=' . $b->id . '">Detail</a>
-                                    <a class="btn btn-danger" href="'.BASE_URL.'/pages/read.php?name=' . $b->file_path . '">Read</a>
+                                    <a class="btn btn-primary" href="' . BASE_URL . '/pages/detail.php?id=' . $b->id . '">Detail</a>
+                                    <a class="btn btn-danger" href="' . BASE_URL . '/pages/read.php?name=' . $b->file_path . '">Read</a>
                                 </div>
                                 <div class="col-2" style="padding: 0;">
                                 ' . (isset($_SESSION["id_user"]) ? ($wishlist ? '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; padding: 0;" id="' . $b->id . '" class="fa-solid text-danger active fa-heart"></i></a>' : '<a style="cursor: pointer" id="' . $_SESSION["id_user"] . '" class="heart"><i style="font-size: 25px; " id="' . $b->id . '" class="fa-regular text-danger fa-heart"></i></a>') : null) . '

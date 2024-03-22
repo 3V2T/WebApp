@@ -29,7 +29,7 @@ class Category
 
     public static function add($conn, $category)
     {
-        $query = "INSERT INTO categories (category, name) VALUES (:category, :name)";
+        $query = "INSERT INTO `categories` (`category`, `name`) VALUES (:category, :name)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':category', $category->category);
         $stmt->bindParam(':name', $category->name);

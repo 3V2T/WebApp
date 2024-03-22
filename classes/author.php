@@ -78,7 +78,7 @@ class Author
     }
     public static function getAll($conn)
     {
-        $query = "SELECT * FROM authors ORDER BY author ASC";
+        $query = "SELECT * FROM vwauthors ORDER BY author ASC";
         $stmt = $conn->prepare($query);
         $stmt->execute();
 

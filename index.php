@@ -7,20 +7,23 @@ include_once "./classes/database.php";
 include_once "./classes/category.php";
 include_once "./classes/book.php";
 include_once "./classes/user.php";
-include_once "./classes/author.php";  
+include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if ($slug == "upload" || $slug == "author" || $slug == "user") {
     if (!isset($_SESSION["is_admin"])) {
-        header("Location: " . BASE_URL. "/home");
+        header("Location: " . BASE_URL . "/home");
     }
 }
-if ($slug != "login" && $slug != "register" && $slug != "login-admin") {
-    if (!isset($_SESSION["is_login"])) {
-        header("Location: " . BASE_URL . "/login");
-    }
+if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
+    $_SESSION["guest"] = true;
 }
+// if ($slug != "login" && $slug != "register" && $slug != "login-admin") {
+//     if (!isset($_SESSION["is_login"])) {
+//         header("Location: " . BASE_URL . "/login");
+//     }
+// }
 
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();

@@ -24,7 +24,7 @@
                         $category_all = new Category(1, "tat-ca", "Tất cả");
                         array_push($list, $category_all);
                         foreach ($list as $item) {
-                            echo "<a class='dropdown-item' href='". BASE_URL ."/pages/book.php?type={$item->category}'>{$item->name}</a>";
+                            echo "<a class='dropdown-item' href='" . BASE_URL . "/pages/book.php?type={$item->category}'>{$item->name}</a>";
                         }
                         ?>
                     </div>
@@ -39,10 +39,10 @@
                             </a>
                             <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
                                 aria-labelledby="navbarDropdown">
-                                <a class= "dropdown-item" href="'. BASE_URL .'/user">Users</a>
-                                <a class= "dropdown-item" href="'. BASE_URL .'/category">Category</a>
-                                <a class= "dropdown-item" href="'. BASE_URL .'/author">Author</a>
-                                <a class= "dropdown-item" href="'. BASE_URL .'/upload">Upload</a>
+                                <a class= "dropdown-item" href="' . BASE_URL . '/user">Users</a>
+                                <a class= "dropdown-item" href="' . BASE_URL . '/category">Category</a>
+                                <a class= "dropdown-item" href="' . BASE_URL . '/author">Author</a>
+                                <a class= "dropdown-item" href="' . BASE_URL . '/upload">Upload</a>
                             </div>
                         </li>';
                     }
@@ -56,9 +56,9 @@
                     <button class="btn btn-outline-success my-2 my-sm-0" style="box-shadow: 2px 2px 5px 2px #cccc;"
                         type="submit">Tìm kiếm</button>
                 </form>
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto change-user">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle btn btn-btn-outline-light " href="" id="navbarDropdown"
+                        <a class="nav-link dropdown-toggle btn btn-btn-outline-light" href="" id="navbarDropdown"
                             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             <?php
                             echo (isset($_SESSION['is_admin'])) ? "ADMIN" : "ME"
@@ -66,13 +66,12 @@
                         </a>
                         <div class="dropdown-menu" style="box-shadow: 2px 2px 5px 2px #cccc;"
                             aria-labelledby="navbarDropdown">
-                            <?php echo (isset($_SESSION['is_admin'])) ? '<a class="dropdown-item" href="'. BASE_URL.'/pages/admin.php">Đổi mật khẩu</a><a class="dropdown-item" href="'.BASE_URL.'/controller/handleLogoutAdmin.php">Đăng
-                            xuất</a>' : '<a class="dropdown-item" href="'. BASE_URL.'/pages/me.php">Thông tin cá
+                            <?php echo (isset($_SESSION['is_admin'])) ? '<a class="dropdown-item" href="' . BASE_URL . '/pages/admin.php">Đổi mật khẩu</a><a class="dropdown-item" href="' . BASE_URL . '/controller/handleLogoutAdmin.php">Đăng
+                            xuất</a>' : '<a class="dropdown-item" href="' . BASE_URL . '/pages/me.php">Thông tin cá
                                 nhân</a>
-                            <a class="dropdown-item" href="'. BASE_URL.'/wishlist">Sách yêu thích</a><a
-                                class="dropdown-item" href="'.BASE_URL.'/controller/handleLogout.php">Đăng
+                            <a class="dropdown-item" href="' . BASE_URL . '/wishlist">Sách yêu thích</a><a
+                                class="dropdown-item" href="' . BASE_URL . '/controller/handleLogout.php">Đăng
                                 xuất</a>' ?>
-
                         </div>
                     </li>
                 </ul>
@@ -80,3 +79,16 @@
         </div>
 </nav>
 <div style="margin-top: 60px;"></div>
+<script>
+const isGuest = <?php echo $_SESSION['guest'] ?>;
+console.log(isGuest);
+const changeUser = document.querySelector(".change-user");
+if (isGuest === 1) {
+    changeUser.innerHTML = "<button class='btn btn-outline-success' onclick='redirectLogin()'>Log in</button>";
+} else {
+    console.log(false);
+}
+const redirectLogin = () => {
+    window.location.href = "<?php echo BASE_URL . '/login' ?>";
+}
+</script>
