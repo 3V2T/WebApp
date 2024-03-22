@@ -12,7 +12,9 @@ $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 if (!isset($_GET["id"])) {
     header("Location: " . BASE_URL . "/error");
 }
-
+if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
+    $_SESSION["guest"] = true;
+}
 $isEdit = false;
 if (isset($_GET['edit'])) {
     if ($_GET['edit'] == "true") {

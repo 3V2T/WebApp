@@ -12,6 +12,9 @@ include "../config.php";
 if (!isset($_GET["keyword"])) {
     header("Location: " . BASE_URL . "/pages/book.php?type=tat-ca");
 }
+if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
+    $_SESSION["guest"] = true;
+}
 
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
