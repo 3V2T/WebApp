@@ -53,6 +53,20 @@ class Category
         }
     }
 
+    public static function getByCategory($conn, $category)
+    {
+        $query = "SELECT * FROM `categories` WHERE `categories`.`category` = :category";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':category', $category->category);
+        $stmt->execute();
+        $category = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($category) {
+            return new Category($category['id'], $category['category'], $category['name']);
+        } else {
+            return null;
+        }
+    }
+
     public static function updateById($conn, $category, $id)
     {
         $query = "UPDATE categories SET category = :category, name = :name WHERE id = :id";
