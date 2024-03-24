@@ -1,12 +1,14 @@
-<?php session_destroy(); ?>
+<?php session_destroy();
+$_SESSION['guest'] = true;
+?>
 <style>
-.header {
-    display: none;
-}
+    .header {
+        display: none;
+    }
 
-.footer {
-    display: none;
-}
+    .footer {
+        display: none;
+    }
 </style>
 <div class="bg-white d-flex position-relative" style="margin-top: -60px">
     <div class=" row container position-absolute" style="left: 50%; top: 25%; transform: translate(-50%, 50%);">
@@ -23,13 +25,11 @@
                 </div>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" name="username" id="username" aria-describedby="emailHelp"
-                        placeholder="Enter username" required>
+                    <input type="text" class="form-control" name="username" id="username" aria-describedby="emailHelp" placeholder="Enter username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password"
-                        placeholder="Enter password" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
                 </div>
                 <div class="form-group form-check" style="font-size: 14px">
                     <label class="form-check-label" for="message">Have no account?</label>
@@ -46,11 +46,11 @@
         }
         if (isset($_SESSION['error_message'])) {
             echo "<script>alert('" . $_SESSION['error_message'] . "')</script>";
-            unset($_SESSION['register_message'] );
+            unset($_SESSION['register_message']);
         }
         ?>
         <script>
-        localStorage.clear("data");
+            localStorage.clear("data");
         </script>
     </div>
 </div>

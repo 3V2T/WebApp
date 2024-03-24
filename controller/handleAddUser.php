@@ -14,15 +14,14 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
     $email = $_POST['email'];
     $password = $_POST['password'];
     try {
-        $password_hash = password_hash($password, PASSWORD_BCRYPT);
         $isExist = User::getByName($connection, $username);
         if ($isExist) {
             echo "<script>alert('Người dùng đã tồn tại vui lòng thử lại!');
-                location.href = '".BASE_URL."/user'
+                location.href = '" . BASE_URL . "/user'
             </script>";
         } else {
             try {
-                $user = new User(1, $username, $name, $password_hash, $email);
+                $user = new User(1, $username, $name, $password, $email);
                 User::add($connection, $user);
                 echo "<script>alert('Thêm người dùng thành công!');
                     </script>
@@ -48,8 +47,8 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <a type="button" class="btn btn-danger text-white" href="'.BASE_URL.'/home">Go Home</a>
-                                <a type="button" class="btn btn-primary text-white" data-dismiss="modal" href="'.BASE_URL.'/user">Add
+                                <a type="button" class="btn btn-danger text-white" href="' . BASE_URL . '/home">Go Home</a>
+                                <a type="button" class="btn btn-primary text-white" data-dismiss="modal" href="' . BASE_URL . '/user">Add
                                     New</a>
                             </div>
                         </div>
@@ -58,13 +57,13 @@ if (isset($_POST['name']) && isset($_POST['username']) && isset($_POST['email'])
             </div>';
             } catch (\Throwable $e) {
                 echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                        location.href = '".BASE_URL."/user'
+                        location.href = '" . BASE_URL . "/user'
                     </script>";
             }
         }
     } catch (\Throwable $e) {
         echo "<script>alert('Đã xảy ra lỗi vui lòng thử lại!');
-                location.href = '".BASE_URL."/user'
+                location.href = '" . BASE_URL . "/user'
             </script>";
     }
 }

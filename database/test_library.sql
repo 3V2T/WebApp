@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: localhost
--- Thời gian đã tạo: Th3 16, 2024 lúc 09:46 AM
--- Phiên bản máy phục vụ: 8.0.31
--- Phiên bản PHP: 7.4.33
+-- Host: localhost
+-- Generation Time: Mar 24, 2024 at 05:25 AM
+-- Server version: 8.0.31
+-- PHP Version: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,27 +18,35 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `library`
+-- Database: `test_library`
 --
 
 DELIMITER $$
 --
--- Thủ tục
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhau` (IN `id` INT, IN `password` CHAR(128))   BEGIN
-  PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
-  SET @id = id;
-  SET @password = password;
-  EXECUTE stmt USING @id, @password;
-  DEALLOCATE PREPARE stmt;
+    PREPARE stmt FROM 'UPDATE users SET password = ? WHERE id = ?';
+    SET @id = id;
+    SET @password = SHA2(password,512);
+    EXECUTE stmt USING @password, @id;
+    DEALLOCATE PREPARE stmt;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `doimatkhauadmin` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
-  PREPARE stmt FROM 'UPDATE `admin` SET `username` = ?, `password` = ?';
-  SET @username = username;
-  SET @password = password;
-  EXECUTE stmt USING @username, @password;
-  DEALLOCATE PREPARE stmt;
+    PREPARE stmt FROM 'UPDATE admin SET password = ? WHERE username = ?';
+    SET @username = username;
+    SET @password = SHA2(password,512);
+    EXECUTE stmt USING @password, @username;
+    DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getadminbyusername` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
+    PREPARE stmt FROM 'SELECT * FROM vwadmin WHERE username = ? AND password = ?';
+    SET @username = username;
+    SET @password = SHA2(password, 512);
+    EXECUTE stmt USING @username, @password;
+    DEALLOCATE PREPARE stmt;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAuthorsbyid` (IN `id` INT)   BEGIN
@@ -52,6 +60,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAuthorsbyname` (IN `author` TEXT
   PREPARE stmt FROM 'SELECT * FROM `vwauthors` WHERE `author` = ?';
   SET @author = author;
   EXECUTE stmt USING @author;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getBooksbyauthorid` (IN `id` INT)   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE `author_id` = ?';
+  SET @id = id;
+  EXECUTE stmt USING @id;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -76,8 +91,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `gethistorybyuserid` (IN `user_id` I
   DEALLOCATE PREPARE stmt;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getuserbyusername` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
+    PREPARE stmt FROM 'SELECT * FROM vwusers WHERE username = ? AND password = ?';
+    SET @username = username;
+    SET @password = SHA2(password, 512);
+    EXECUTE stmt USING @username, @password;
+    DEALLOCATE PREPARE stmt;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getUsersbyid` (IN `id` INT)   BEGIN
-  PREPARE stmt FROM 'SELECT * FROM `vwusers` WHERE `id` = ?';
+  PREPARE stmt FROM 'SELECT * FROM `users` WHERE `id` = ?';
   SET @id = id;
   EXECUTE stmt USING @id;
   DEALLOCATE PREPARE stmt;
@@ -192,6 +215,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `suaduongdanfile` (IN `id` INT, IN `
   DEALLOCATE PREPARE stmt;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `suamatkhauuser` (IN `id` INT, IN `password` CHAR(128))   BEGIN
+  PREPARE stmt FROM 'UPDATE `users` SET `password` = ? WHERE `id` = ?';
+  SET @id = id;
+	SET @password = SHA2(password, 512);
+  EXECUTE stmt USING @password, @id;
+  DEALLOCATE PREPARE stmt;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `suasach` (IN `id` INT, IN `title` VARCHAR(100), IN `author_id` INT, IN `category_id` INT, IN `cover_path` VARCHAR(260), IN `file_path` VARCHAR(260), IN `description` TEXT, IN `published` DATE)   BEGIN
   PREPARE stmt FROM 'UPDATE `books` SET `title` = ?, `author_id` = ?, `category_id` = ?, `cover_path` = ?, `file_path` = ?, `description` = ?, `published` = ? WHERE `id` = ?';
   SET @id = id;
@@ -211,19 +242,26 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `suathongtin` (IN `id` INT, IN `name
   SET @id = id;
   SET @name = name;
   SET @email = email;
-  EXECUTE stmt USING @id, @name, @email;
+  EXECUTE stmt USING @name, @email, @id;
   DEALLOCATE PREPARE stmt;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `suauser` (IN `id` INT, IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))   BEGIN
-  PREPARE stmt FROM 'UPDATE `users` SET `username` = ?, `password` = ?, `name` = ?, `email` = ? WHERE `id` = ?';
+CREATE DEFINER=`root`@`localhost` PROCEDURE `suauser` (IN `id` INT, IN `username` VARCHAR(50), IN `name` VARCHAR(100), IN `email` VARCHAR(100))   BEGIN
+  PREPARE stmt FROM 'UPDATE `users` SET `username` = ?, `name` = ?, `email` = ? WHERE `id` = ?';
   SET @id = id;
   SET @username = username;
-  SET @password = password;
   SET @name = name;
   SET @email = email;
-  EXECUTE stmt USING @username, @password, @name, @email, @id;
+  EXECUTE stmt USING @username, @name, @email, @id;
   DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `themadmin` (IN `username` VARCHAR(50), IN `password` CHAR(128))   BEGIN
+    PREPARE stmt FROM 'INSERT INTO admin(username, password) VALUES (?, ?)';
+    SET @username = username;
+    SET @password = SHA2(password, 512);
+    EXECUTE stmt USING @username, @password;
+    DEALLOCATE PREPARE stmt;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `themauthor` (IN `author` VARCHAR(100), IN `description` TEXT)   BEGIN
@@ -234,10 +272,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `themauthor` (IN `author` VARCHAR(10
   DEALLOCATE PREPARE stmt;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `themcategory` (IN `category` CHAR(100))   BEGIN
-  PREPARE stmt FROM 'INSERT INTO `categories` (`category`) VALUES (?)';
+CREATE DEFINER=`root`@`localhost` PROCEDURE `themcategory` (IN `category` CHAR(100), IN `name` CHAR(100))   BEGIN
+  PREPARE stmt FROM 'INSERT INTO `categories` (`category`, `name`) VALUES (?, ?)';
   SET @category = category;
-  EXECUTE stmt USING @category;
+  SET @name = name;
+  EXECUTE stmt USING @category, @name;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -257,10 +296,17 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `themuser` (IN `username` VARCHAR(50), IN `password` CHAR(128), IN `name` VARCHAR(100), IN `email` VARCHAR(100))   BEGIN
   PREPARE stmt FROM 'INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES (?, ?, ?, ?)';
   SET @username = username;
-  SET @password = password;
+  SET @password = SHA2(password,512);
   SET @name = name;
   SET @email = email;
   EXECUTE stmt USING @username, @password, @name, @email;
+  DEALLOCATE PREPARE stmt;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `timsach` (IN `keyword` VARCHAR(100))   BEGIN
+  PREPARE stmt FROM 'SELECT * FROM `vwbooks` WHERE MATCH (`title`) AGAINST (? WITH QUERY EXPANSION) UNION DISTINCT SELECT * FROM `vwbooks` WHERE `author_id` IN (SELECT `id` FROM `vwauthors` WHERE MATCH (`author`) AGAINST (? WITH QUERY EXPANSION))';
+  SET @keyword = keyword;
+  EXECUTE stmt USING @keyword, @keyword;
   DEALLOCATE PREPARE stmt;
 END$$
 
@@ -359,37 +405,49 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `yeuthich` (IN `user_id` INT, IN `bo
 END$$
 
 --
--- Các hàm
+-- Functions
 --
-CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username) > 0$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `crlichsu` (`_user_id` INT) RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwhistory` WHERE `user_id` = _user_id)$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtrauser` (`username` VARCHAR(50), `password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `users` WHERE `username` = username AND `password` = password) > 0$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `crsach` () RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwbooks`)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `crtacgia` () RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwauthors`)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `cryeuthich` (`_user_id` INT) RETURNS INT DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwwishlist` WHERE `user_id` = _user_id)$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtraadmin` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwadmin` WHERE `username` = _username AND `password` = SHA2(_password,512)) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiadmin` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwadmin` WHERE `username` = _username) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtratontaiuser` (`_username` VARCHAR(50)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwusers` WHERE `username` = _username) > 0$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `kiemtrauser` (`_username` VARCHAR(50), `_password` CHAR(128)) RETURNS TINYINT(1) DETERMINISTIC RETURN (SELECT COUNT(*) FROM `vwusers` WHERE `username` = _username AND `password` = SHA2(_password,512)) > 0$$
 
 DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `admin`
+-- Table structure for table `admin`
 --
 
 CREATE TABLE `admin` (
   `id` int NOT NULL,
-  `username` varchar(50) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL
+  `username` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `password` char(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `admin`
+-- Dumping data for table `admin`
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', '$2y$10$T0/D4jNUzs7trqfEcAqOTe4E6viVujBYUQDFM1RvdOHgHThWEGUvm');
+(5, 'admin', 'b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `authors`
+-- Table structure for table `authors`
 --
 
 CREATE TABLE `authors` (
@@ -399,11 +457,10 @@ CREATE TABLE `authors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `authors`
+-- Dumping data for table `authors`
 --
 
 INSERT INTO `authors` (`id`, `author`, `description`) VALUES
-(7, 'Neil Shubin', ''),
 (8, 'Trần Thời', ' '),
 (9, 'William J. Bernstein', ' '),
 (12, 'Vũ Hữu Tiệp', ' '),
@@ -413,12 +470,14 @@ INSERT INTO `authors` (`id`, `author`, `description`) VALUES
 (16, 'Mario Puzo', ''),
 (17, 'William L. Shirer', ''),
 (18, 'Olga Filipova', ''),
-(19, 'Thạch Lam', ''),
 (20, 'Robin Sharma', ''),
-(21, 'Nguyễn Cảnh Bình', '');
+(21, 'Nguyễn Cảnh Bình', ''),
+(22, 'Nguyễn Du', ''),
+(26, 'Hồ Chí Minh', ''),
+(27, 'Thạch Lam', '');
 
 --
--- Bẫy `authors`
+-- Triggers `authors`
 --
 DELIMITER $$
 CREATE TRIGGER `xoatacgia` BEFORE DELETE ON `authors` FOR EACH ROW DELETE FROM `books` WHERE `author_id` = OLD.id
@@ -428,7 +487,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `books`
+-- Table structure for table `books`
 --
 
 CREATE TABLE `books` (
@@ -436,18 +495,17 @@ CREATE TABLE `books` (
   `title` varchar(100) NOT NULL,
   `author_id` int NOT NULL,
   `category_id` int NOT NULL,
-  `cover_path` varchar(260) DEFAULT NULL,
-  `file_path` varchar(260) DEFAULT NULL,
+  `cover_path` varchar(260) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `file_path` varchar(260) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `description` text,
   `published` date NOT NULL DEFAULT (curdate())
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `books`
+-- Dumping data for table `books`
 --
 
 INSERT INTO `books` (`id`, `title`, `author_id`, `category_id`, `cover_path`, `file_path`, `description`, `published`) VALUES
-(6, 'Tất Cả Chúng Ta Đều Là Cá', 7, 2, 'nhasachmienphi-tat-ca-chung-ta-deu-la-ca.png', 'nhasachmienphi-tat-ca-chung-ta-deu-la-ca.pdf', 'Neil Shubin, nhà cổ sinh học và giáo sư về giải phẫu học, người đã đồng khám phá Tiktaalik, “loài cá có tay”, kể câu chuyện về cơ thể chúng ta mà bạn chưa bao giờ nghe trước đây. Qua nghiên cứu hóa thạch và ADN của các loại sinh vật nguyên thủy, tác giả Neil Shubin đã cho thấy sự tương đồng về mặt cấu tạo cơ thể giữa người với các loại sinh vật khác, từ cá cho đến giun và thậm chí là vi khuẩn. Bằng những nội dung thú vị, lý thú, Tất cả chúng ta đều là cá đã giúp chủ đề sinh học và cổ sinh học vốn vô cùng phong phú, đa dạng trở nên đặc biệt gần gũi và cuốn hút với độc giả, nhất là các bạn trẻ.', '2017-12-05'),
 (7, 'Mật Thư', 8, 2, 'nhasachmienphi-mat-thu.png', 'nhasachmienphi-mat-thu.pdf', 'Mật thư do tác giả Trần Thời biên soạn sẽ giới thiệu đến bạn đọc 9 kiểu mật thư, từ những dạng đơn giản nhất như đọc ngược, đọc lái từ, bỏ đầu bỏ đuôi, đến dạng kí hiệu morse, dạng thay thế, đọc theo khóa, dạng tượng hình hay tọa độ… Sau mỗi phần giới thiệu, bạn sẽ nhanh chóng được thử sức cùng những mật thư nho nhỏ nữa đấy.', '2013-01-01'),
 (8, 'Lịch Sử Giao Thương: Thương Mại Định Hình Thế Giới Như Thế Nào ?', 9, 4, 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.jpg', 'nhasachmienphi-lich-su-giao-thuong-thuong-mai-dinh-hinh-the-gioi-nhu-the-nao.pdf', '“Toàn cầu hóa” hóa ra không phải là một hay thậm chí là một chuỗi sự kiện; mà đó là tiến trình diễn ra chậm rãi trong một thời gian rất, rất dài. Thế giới không đột nhiên trở nên “phẳng” với phát kiến về Internet, và thương mại không bất ngờ bị các tập đoàn lớn tầm cỡ toàn cầu chi phối vào cuối thế kỷ 20. Khởi đầu bằng hàng hóa giá trị cao được ghi nhận trong lịch sử, sau đó từ từ mở rộng sang các mặt hàng ít quý giá hơn, cồng kềnh và dễ hư hỏng hơn, những thị trường của Cựu Thế giới dần tiến đến hợp nhất. Với hành trình đầu tiên của người châu Âu tới Tân Thế giới, quá trình hội nhập toàn cầu diễn ra ngàycàng mạnh mẽ. Hôm nay, các tàu container đồ sộ, máy bay phản lực, Internet, cùng mạng lưới cung ứng và sản xuất ngày càng được toàn cầu hóa chỉ là những bước tiến xa hơn của một quá trình đã diễn ra suốt 5.000 năm qua.', '2018-01-06'),
 (12, 'Machine Learning Cơ Bản', 12, 6, 'nhasachmienphi-machine-learning-co-ban.jpg', 'nhasachmienphi-machine-learning-co-ban.pdf', 'Những năm gần đây, AI – Artificial Intelligence (Trí Tuệ Nhân Tạo), và cụ thể hơn là Machine Learning (Học Máy hoặc Máy Học) nổi lên như một bằng chứng của cuộc cách mạng công nghiệp lần thứ tư (1 – động cơ hơi nước, 2 – năng lượng điện, 3 – công nghệ thông tin). Trí Tuệ Nhân Tạo đang len lỏi vào mọi lĩnh vực trong đời sống mà có thể chúng ta không nhận ra. Xe tự hành của Google và Tesla, hệ thống tự tag khuôn mặt trong ảnh của Facebook, trợ lý ảo Siri của Apple, hệ thống gợi ý sản phẩm của Amazon, hệ thống gợi ý phim của Netflix, máy chơi cờ vây AlphaGo của Google DeepMind, …, chỉ là một vài trong vô vàn những ứng dụng của AI/Machine Learning.', '2020-02-01'),
@@ -455,12 +513,12 @@ INSERT INTO `books` (`id`, `title`, `author_id`, `category_id`, `cover_path`, `f
 (57, 'Từ Tơ Lụa Đến Slicicon', 14, 8, 'nhasachmienphi-tu-to-lua-den-silicon.jpg', 'nhasachmienphi-tu-to-lua-den-silicon.pdf', 'Đây là câu chuyện chưa từng kể về toàn cầu hóa. Nó xoay quanh mười nhân vật đã làm cho thế giới chúng ta nhỏ lại và gắn kết với nhau hơn. Trong số những người bạn sẽ gặp có một thiếu niên lớn lên từ thảo nguyên Trung Á để rồi dựng nên một đế quốc rộng lớn nhất trong lịch sử; có nhà sản xuất các sản phẩm bằng giấy trang trí đã đưa truyền thông toàn cầu đến những tiến bộ vượt xa mọi thành tựu trong lịch sử nhân loại; có nhà buôn (rượu) cognac đã nghĩ ra một thí nghiệm chưa từng ai dám làm để phá bỏ các biên giới các quốc gia; có một người tị nạn trốn chạy khỏi Đức Quốc xã lẫn Liên Xô để dẫn đầu một cuộc cách mạng máy tính; và nhiều người khác nữa với cuộc đời cũng lâm li tương tự. Thành tựu của họ không chỉ kịch tính trong thời đại họ sống mà còn đang tiếp tục định hình thế giới ngày nay của chúng ta. ', '2017-12-01'),
 (58, 'Đánh Bại Phố Wall', 15, 8, 'nhasachmienphi-danh-bai-pho-wall.jpg', 'nhasachmienphi-danh-bai-pho-wall.pdf', 'Với 13 năm kinh nghiệm quản lý thành công quỹ đầu tư Fidelity Magellan và lựa chọn hàng nghìn cổ phiếu, Lynch đã đúc kết thành 21 nguyên tắc hài hước mà ông gọi là “Những nguyên tắc của Peter”.\r\n\r\nChìa khóa để đầu tư thành công, theo Lynch, là phải ghi nhớ rằng cổ phiếu không giống như tấm vé số; luôn có một công ty đằng sau mỗi cổ phiếu và một nguyên nhân lý giải cho cách thức vận hành của các công ty – và cổ phiếu của chúng. Lynch chỉ ra làm cách nào chúng ta có thể tìm hiểu tối đa về công ty mục tiêu và xây dựng một danh mục đầu tư sinh lợi dựa trên chính kinh nghiệm, hiểu biết và kết quả nghiên cứu của bản thân. Không có bất kỳ lý do nào cản trở một nhà đầu tư cá nhân tự trở thành chuyên gia, và cuốn sách này sẽ chỉ ra cách thực hiện điều đó.', '2010-01-01'),
 (59, 'Bố Già', 16, 1, 'nhasachmienphi-bo-gia.jpg', 'bo-gia.pdf', 'Bố già là tên một cuốn tiểu thuyết nổi tiếng của nhà văn người Mỹ gốc Ý Mario Puzo, được nhà xuất bản G. P. Putnam\'s Sons xuất bản lần đầu vào năm 1969. Tác phẩm là câu chuyện về một gia đình mafia gốc Sicilia tại Mỹ, được một nhân vật gọi là \"Bố già\" Don Vito Corleone tạo lập và lãnh đạo.', '1969-10-03'),
-(61, ' Sự Trỗi Dậy Và Suy Tàn Của Đế Chế Thứ Ba – Lịch Sử Đức Quốc Xã', 17, 9, 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.jpg', 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.pdf', 'Ngay trong năm đầu tiên phát hành – 1960, Sự trỗi dậy và suy tàn của Đế chế thứ ba đã bán được tới 1 triệu bản tại Mỹ và được tái bản hơn 20 lần. Cuốn sách là bản tường thuật hết sức chi tiết về nước Đức, dưới sự cai trị của Adolf Hitler và Đảng Quốc xã. Tác giả đã nghiên cứu kĩ lưỡng về sự ra đời của Đế chế thứ ba ở Đức, con đường dẫn đến quyền lực tuyệt đối của Đảng Quốc xã, diễn biến của Chiến tranh thế giới lần thứ hai và sự thất bại của Phát xít Đức. Nguồn tài liệu của cuốn sách bao gồm lời khai của các nhà lãnh đạo Đảng Quốc xã, nhật kí của các quan chức, cùng hàng loạt các quân lệnh và thư mật. ', '1960-12-10'),
+(61, ' Sự Trỗi Dậy Và Suy Tàn Của Đế Chế Thứ Ba – Lịch Sử Đức Quốc Xã', 17, 9, '65f71ed025a90_5026.jpg', 'nhasachmienphi-su-troi-day-va-suy-tan-cua-de-che-thu-ba-lich-su-duc-quoc-xa.pdf', 'Ngay trong năm đầu tiên phát hành – 1960, Sự trỗi dậy và suy tàn của Đế chế thứ ba đã bán được tới 1 triệu bản tại Mỹ và được tái bản hơn 20 lần. Cuốn sách là bản tường thuật hết sức chi tiết về nước Đức, dưới sự cai trị của Adolf Hitler và Đảng Quốc xã. Tác giả đã nghiên cứu kĩ lưỡng về sự ra đời của Đế chế thứ ba ở Đức, con đường dẫn đến quyền lực tuyệt đối của Đảng Quốc xã, diễn biến của Chiến tranh thế giới lần thứ hai và sự thất bại của Phát xít Đức. Nguồn tài liệu của cuốn sách bao gồm lời khai của các nhà lãnh đạo Đảng Quốc xã, nhật kí của các quan chức, cùng hàng loạt các quân lệnh và thư mật.', '1960-11-10'),
 (62, 'Đời Ngắn Đừng Ngủ Dài', 20, 3, 'nhasachmienphi-doi-ngan-dung-ngu-dai.png', 'nhasachmienphi-doi-ngan-dung-ngu-dai.pdf', '“Mọi lựa chọn đều giá trị. Mọi bước đi đều quan trọng. Cuộc sống vẫn diễn ra theo cách của nó, không phải theo cách của ta. Hãy kiên nhẫn. Tin tưởng. Hãy giống như người thợ cắt đá, đều đặn từng nhịp, ngày qua ngày. Cuối cùng, một nhát cắt duy nhất sẽ phá vỡ tảng đá và lộ ra viên kim cương. Người tràn đầy nhiệt huyết và tận tâm với việc mình làm không bao giờ bị chối bỏ. Sự thật là thế.”', '2014-01-05'),
 (63, 'Hiến Pháp Mỹ Được Làm Ra Như Thế Nào?', 21, 9, '65f24db234ea2_1396.jpg', '65f24db2346b1_3559.pdf', 'Cuốn sách đã cung cấp một bức tranh toàn cảnh về sự ra đời của Hiến pháp Mỹ, như một lời lý giải cho rất nhiều người có cùng mối băn khoăn.Vậy Hiến pháp Mỹ đã được làm ra như thế nào? Nó được làm ra trong những cuộc tranh luận nảy lửa tưởng như không có lối thoát và những mối bất đồng sâu sắc, bởi những bộ óc vĩ đại có một không hai trong lịch sử, và bằng một tinh thần mà người ta khó có thể tìm một tính từ nào thay thế ngoài cách gọi – “tinh thần Mỹ”. Đó là sự tôn trọng đặc biệt lẫn nhau, thừa nhận những quan điểm hoàn toàn khác biệt, chấp nhận và cùng thỏa hiệp để đi tới lợi ích chung cuối cùng.', '2002-01-12');
 
 --
--- Bẫy `books`
+-- Triggers `books`
 --
 DELIMITER $$
 CREATE TRIGGER `xoasach` BEFORE DELETE ON `books` FOR EACH ROW BEGIN
@@ -473,7 +531,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `categories`
+-- Table structure for table `categories`
 --
 
 CREATE TABLE `categories` (
@@ -483,7 +541,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `categories`
+-- Dumping data for table `categories`
 --
 
 INSERT INTO `categories` (`id`, `category`, `name`) VALUES
@@ -495,13 +553,12 @@ INSERT INTO `categories` (`id`, `category`, `name`) VALUES
 (7, 'tieu-thuyet', 'Tiểu thuyết'),
 (8, 'kinh-te', 'Kinh tế'),
 (9, 'chinh-tri', 'Chính trị'),
-(13, 'van-hoc', 'Văn Học'),
-(14, 'than-thoai', 'Thần thoại');
+(17, 'van-hoc', 'Văn Học');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `history`
+-- Table structure for table `history`
 --
 
 CREATE TABLE `history` (
@@ -514,7 +571,7 @@ CREATE TABLE `history` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -526,17 +583,16 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `name`, `email`) VALUES
-(1, 'khacvi2003', '$2y$10$vbE1BPwZiAcJj681h7.uj.wsaChlUA/u9PGJpbcmLcJxLjd9jUvDO', 'Đoàn Khắc Vi', 'khacvi2003@gmail.com'),
-(13, 'vanhuynh', '$2y$10$qzQxKDmLozVAt9CxZlnluua8VvAKHCcBf8QL5ndGQjDAzrbN..AYS', 'Hà Huỳnh Văn', 'hahuynhvan2003@gmail.com'),
-(14, 'TriLam2003', '$2y$10$2EamhH4MqXanxh/5m5uqTOk69bFIZ0wctaWNQunnsFPSjGfGHDlnW', 'LÂM QUANG TRÍ', 'triquang2003@gmail.com'),
-(15, 'viho2003', '$2y$10$zaM1pD4RZbp4fhYrtmnrY.vq9Z9Pg4QPpLgFXaeBzF03YrY2beG7W', 'Hồ Nguyễn Tường Vy', 'khacvi2003@gmail.com');
+(20, 'huynhvan2003', '5aa5687dc0a563cbea3619dc16e091b89338af6252ab48ffd4fc76fe97954c8937cc8015a285eef456b7d507522e7cfe8159f837bc4d70eddae0408fd6aca809', 'Hà Huỳnh Văn', 'vanhuynh2003@gmail.com'),
+(21, 'khacvi2003', '24ce3f2aab99e7b7ac7a53f55df3076bc2866f98845df14ab456e4259391d9a3e53c247ad7894bceb97e1d1919a17bfc727694981518039868154140e89b38db', 'Đoàn Khắc Vi', 'khacvi2003@gmail.com'),
+(22, 'TriLam2003', 'd2a1946b6a19dd2af79fe08a7b6b0307f20749e53dfc590a5b418c1b525e250e0e49d8cd6e5ba0f77648b049cf2f923c49b90ee8474feb2ea672be59cc5d7ac1', 'LÂM QUANG TRÍ', 'triquang2003@gmail.com');
 
 --
--- Bẫy `users`
+-- Triggers `users`
 --
 DELIMITER $$
 CREATE TRIGGER `xoauser` BEFORE DELETE ON `users` FOR EACH ROW BEGIN
@@ -549,75 +605,87 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwauthors`
+-- Stand-in structure for view `vwadmin`
+-- (See below for the actual view)
+--
+CREATE TABLE `vwadmin` (
+`id` int
+,`password` char(128)
+,`username` varchar(50)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `vwauthors`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwauthors` (
-`id` int
-,`author` varchar(100)
+`author` varchar(100)
 ,`description` text
+,`id` int
 );
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwbooks`
+-- Stand-in structure for view `vwbooks`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwbooks` (
-`id` int
-,`title` varchar(100)
-,`author` varchar(100)
-,`category` char(100)
+`author_id` int
+,`category_id` int
 ,`cover_path` varchar(260)
-,`file_path` varchar(260)
 ,`description` text
+,`file_path` varchar(260)
+,`id` int
 ,`published` date
+,`title` varchar(100)
 );
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwcategories`
+-- Stand-in structure for view `vwcategories`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwcategories` (
-`id` int
-,`category` char(100)
+`category` char(100)
+,`id` int
 ,`name` char(100)
 );
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwhistory`
+-- Stand-in structure for view `vwhistory`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwhistory` (
 `id` int
+,`last_read` date
 ,`name` varchar(100)
 ,`title` varchar(100)
-,`last_read` date
 );
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwusers`
+-- Stand-in structure for view `vwusers`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwusers` (
-`id` int
-,`username` varchar(50)
-,`password` char(128)
+`email` varchar(100)
+,`id` int
 ,`name` varchar(100)
-,`email` varchar(100)
+,`password` char(128)
+,`username` varchar(50)
 );
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `vwwishlist`
+-- Stand-in structure for view `vwwishlist`
 -- (See below for the actual view)
 --
 CREATE TABLE `vwwishlist` (
@@ -629,7 +697,7 @@ CREATE TABLE `vwwishlist` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `wishlist`
+-- Table structure for table `wishlist`
 --
 
 CREATE TABLE `wishlist` (
@@ -639,20 +707,25 @@ CREATE TABLE `wishlist` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Đang đổ dữ liệu cho bảng `wishlist`
+-- Dumping data for table `wishlist`
 --
 
 INSERT INTO `wishlist` (`id`, `user_id`, `book_id`) VALUES
-(79, 1, 12),
-(82, 1, 7),
-(84, 13, 59),
-(85, 1, 59),
-(87, 15, 12);
+(92, 21, 61);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwauthors`
+-- Structure for view `vwadmin`
+--
+DROP TABLE IF EXISTS `vwadmin`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwadmin`  AS SELECT `admin`.`id` AS `id`, `admin`.`username` AS `username`, `admin`.`password` AS `password` FROM `admin` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `vwauthors`
 --
 DROP TABLE IF EXISTS `vwauthors`;
 
@@ -661,16 +734,16 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwbooks`
+-- Structure for view `vwbooks`
 --
 DROP TABLE IF EXISTS `vwbooks`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwbooks`  AS SELECT `books`.`id` AS `id`, `books`.`title` AS `title`, `authors`.`author` AS `author`, `categories`.`category` AS `category`, `books`.`cover_path` AS `cover_path`, `books`.`file_path` AS `file_path`, `books`.`description` AS `description`, `books`.`published` AS `published` FROM ((`books` join `authors` on((`books`.`author_id` = `authors`.`id`))) join `categories` on((`books`.`category_id` = `categories`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwbooks`  AS SELECT `books`.`id` AS `id`, `books`.`title` AS `title`, `books`.`author_id` AS `author_id`, `books`.`category_id` AS `category_id`, `books`.`cover_path` AS `cover_path`, `books`.`file_path` AS `file_path`, `books`.`description` AS `description`, `books`.`published` AS `published` FROM `books` ;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwcategories`
+-- Structure for view `vwcategories`
 --
 DROP TABLE IF EXISTS `vwcategories`;
 
@@ -679,7 +752,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwhistory`
+-- Structure for view `vwhistory`
 --
 DROP TABLE IF EXISTS `vwhistory`;
 
@@ -688,7 +761,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwusers`
+-- Structure for view `vwusers`
 --
 DROP TABLE IF EXISTS `vwusers`;
 
@@ -697,48 +770,49 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc cho view `vwwishlist`
+-- Structure for view `vwwishlist`
 --
 DROP TABLE IF EXISTS `vwwishlist`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vwwishlist`  AS SELECT `wishlist`.`id` AS `id`, `users`.`name` AS `name`, `books`.`title` AS `title` FROM ((`wishlist` join `users` on((`wishlist`.`user_id` = `users`.`id`))) join `books` on((`wishlist`.`book_id` = `books`.`id`))) ;
 
 --
--- Chỉ mục cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Chỉ mục cho bảng `admin`
+-- Indexes for table `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
--- Chỉ mục cho bảng `authors`
+-- Indexes for table `authors`
 --
 ALTER TABLE `authors`
   ADD PRIMARY KEY (`id`);
 ALTER TABLE `authors` ADD FULLTEXT KEY `author` (`author`);
 
 --
--- Chỉ mục cho bảng `books`
+-- Indexes for table `books`
 --
 ALTER TABLE `books`
   ADD PRIMARY KEY (`id`),
   ADD KEY `category_id` (`category_id`),
   ADD KEY `author_id` (`author_id`);
 ALTER TABLE `books` ADD FULLTEXT KEY `title` (`title`);
-ALTER TABLE `books` ADD FULLTEXT KEY `description` (`description`);
 
 --
--- Chỉ mục cho bảng `categories`
+-- Indexes for table `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `category` (`category`);
+  ADD UNIQUE KEY `category` (`category`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
--- Chỉ mục cho bảng `history`
+-- Indexes for table `history`
 --
 ALTER TABLE `history`
   ADD PRIMARY KEY (`id`),
@@ -746,14 +820,14 @@ ALTER TABLE `history`
   ADD KEY `book_id` (`book_id`);
 
 --
--- Chỉ mục cho bảng `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Chỉ mục cho bảng `wishlist`
+-- Indexes for table `wishlist`
 --
 ALTER TABLE `wishlist`
   ADD PRIMARY KEY (`id`),
@@ -761,71 +835,71 @@ ALTER TABLE `wishlist`
   ADD KEY `book_id` (`book_id`);
 
 --
--- AUTO_INCREMENT cho các bảng đã đổ
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT cho bảng `admin`
+-- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT cho bảng `authors`
+-- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT cho bảng `books`
+-- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
--- AUTO_INCREMENT cho bảng `categories`
+-- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
--- AUTO_INCREMENT cho bảng `history`
+-- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT cho bảng `wishlist`
+-- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
--- Các ràng buộc cho các bảng đã đổ
+-- Constraints for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `books`
+-- Constraints for table `books`
 --
 ALTER TABLE `books`
   ADD CONSTRAINT `books_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `books_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `history`
+-- Constraints for table `history`
 --
 ALTER TABLE `history`
   ADD CONSTRAINT `history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `history_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `wishlist`
+-- Constraints for table `wishlist`
 --
 ALTER TABLE `wishlist`
   ADD CONSTRAINT `wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

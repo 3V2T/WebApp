@@ -18,20 +18,24 @@ class User
 
     public static function add($conn, $user)
     {
-        $query = "INSERT INTO users (username, password, name, email) VALUES (:username, :password, :name, :email)";
+        $query = 'CALL themuser(:username, :password, :name, :email)';
         $stmt = $conn->prepare($query);
-
-        // Sử dụng PDO bind để tránh SQL injection
-        $stmt->bindParam(':username', $user->username);
-        $stmt->bindParam(':password', $user->password);
-        $stmt->bindParam(':name', $user->name);
-        $stmt->bindParam(':email', $user->email);
+        $stmt->bindParam(":username", $user->username);
+        $stmt->bindParam(":password", $user->password);
+        $stmt->bindParam(":name", $user->name);
+        $stmt->bindParam(":email", $user->email);
         $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            return new User($user['id'], $user['username'], $user['name'], $user['password'], $user['email']);
+        } else {
+            return null;
+        }
     }
 
     public static function update($conn, $user, $id)
     {
-        $query = "UPDATE users SET username = :username, name = :name, email = :email WHERE id = :id";
+        $query = "CALL suauser(:id, :username, :name, :email)";
         $stmt = $conn->prepare($query);
         // Sử dụng PDO bind để tránh SQL injection
         $stmt->bindParam(':id', $id);
@@ -43,9 +47,8 @@ class User
     }
     public static function updatePassword($conn, $user, $id)
     {
-        $query = "UPDATE users SET password = :password WHERE id = :id";
+        $query = "CALL suamatkhauuser(:id, :password)";
         $stmt = $conn->prepare($query);
-        // Sử dụng PDO bind để tránh SQL injection
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':password', $user->password);
         return $stmt->execute();
@@ -62,19 +65,34 @@ class User
         return $stmt->execute();
     }
 
-    public static function authen($conn, $username, $password)
+    public static function login($conn, $username, $password)
     {
-        $query = "SELECT * FROM users WHERE username = :username";
+        $query = 'CALL getuserbyusername(:username, :password)';
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":password", $password);
         $stmt->execute();
-
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password, $user['password'])) {
-            return true;
+        if ($user) {
+            return new User($user['id'], $user['username'], $user['name'], $user['password'], $user['email']);
         } else {
-            return false;
+            return null;
+        }
+    }
+    public static function register($conn, $user)
+    {
+        $query = 'CALL themuser(:username, :password, :name, :email)';
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":username", $user->username);
+        $stmt->bindParam(":password", $user->password);
+        $stmt->bindParam(":name", $user->name);
+        $stmt->bindParam(":email", $user->email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            return new User($user['id'], $user['username'], $user['name'], $user['password'], $user['email']);
+        } else {
+            return null;
         }
     }
 
@@ -94,7 +112,7 @@ class User
 
     public static function getById($conn, $id)
     {
-        $query = "SELECT * FROM users WHERE id = :id";
+        $query = "CALL getUsersbyid(:id)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -122,5 +140,15 @@ class User
         } else {
             return null;
         }
+    }
+
+    public static function isExist($conn, $username)
+    {
+        $query = 'SELECT kiemtratontaiuser(:username)';
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":username", $username);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result;
     }
 }

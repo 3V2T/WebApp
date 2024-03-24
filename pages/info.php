@@ -36,7 +36,7 @@ if (isset($_GET["id"])) {
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
         $user = User::getById($connection, $id);
-        echo '<form class="p-5 form w-50 m-auto" method="post" action="'.BASE_URL.'/controller/handleUpdateUser.php?id=' . $id . '" style="gap: 8px; ">
+        echo '<form class="p-5 form w-50 m-auto" method="post" action="' . BASE_URL . '/controller/handleUpdateUser.php?id=' . $id . '" style="gap: 8px; ">
             <div class="form-group">
                 <h3>User ' . $id . ':</h3>
                 </div>  
@@ -56,7 +56,7 @@ if (isset($_GET["id"])) {
                 </div>
                 <div class="form-group">
                     <label class="form-label ">New Password:</label>
-                    <input class="form-control" name="password" id="password" placeholder="Enter new password" type="password" required>
+                    <input class="form-control" name="password" id="password" placeholder="Enter new password" type="password">
                 </div>
                 <div class="form-group align-content-end">
                     <button class="btn btn-primary"onclick="location.reload();" >

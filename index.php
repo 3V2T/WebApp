@@ -11,9 +11,9 @@ include_once "./classes/author.php";
 include_once "./classes/wishlist.php";
 include_once "./config.php";
 $slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
-if ($slug == "upload" || $slug == "author" || $slug == "user") {
+if ($slug == "upload" || $slug == "author" || $slug == "user" || $slug == "category") {
     if (!isset($_SESSION["is_admin"])) {
-        header("Location: " . BASE_URL . "/home");
+        header("Location: " . BASE_URL . "/error");
     }
 }
 if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
@@ -27,6 +27,7 @@ if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
 
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

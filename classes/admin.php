@@ -16,15 +16,16 @@ class Admin
     {
         $username = $admin->username;
         $password = $admin->password;
-        $query = "select * from admin where admin.username = :username";
+        $query = "CALL getadminbyusername (:username,:password)";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
         $stmt->execute();
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($admin && password_verify($password, $admin['password'])) {
-            return true;
+        if ($admin) {
+            return new Admin($admin['id'], $admin['username'], $admin['password']);
         } else {
-            return false;
+            return null;
         }
     }
 
