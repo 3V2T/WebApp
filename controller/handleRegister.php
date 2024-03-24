@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo $username;
         echo $email;
         echo $name;
-        $is_exist_user = User::getByName($conn, $username) != null ? true : false;
-        if ($is_exist_user) {
+        $is_exist_user = User::isExist($conn, $username);
+        if ($is_exist_user === 1) {
             $_SESSION['register_message'] = "Người dùng đã tồn tại vui lòng đổi tên đăng nhập!";
             $data = array(
                 "username" => $username,
@@ -27,12 +27,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>
             localStorage.setItem('data', '" . $jsonData . "');
           </script>";
-          header("Location: " . BASE_URL . "/register");
+            header("Location: " . BASE_URL . "/register");
         } else {
-            $password = password_hash($password, PASSWORD_BCRYPT);
             $user = new User(1, $username, $name, $password, $email);
             try {
-                User::add($conn, $user);
+                User::register($conn, $user);
                 $_SESSION['register_message'] = "Đăng kí thành công vui lòng đăng nhập!";
                 header("Location: " . BASE_URL . "/login");
             } catch (\Throwable $e) {

@@ -12,24 +12,23 @@ $newPassword = $_POST['newPassword'];
 $confirmPassword = $_POST['confirmPassword'];
 if ($newPassword != $confirmPassword) {
     echo '<script> alert("Mật khẩu xác thực không khớp!");
-                location.href = "'.BASE_URL.'/pages/me.php?change=password"
+                location.href = "' . BASE_URL . '/pages/me.php?change=password"
             </script>
             ';
 }
 $password = $_POST['password'];
-$is_valid = User::authen($connection, $username, $password);
+$is_valid = User::login($connection, $username, $password);
 if ($is_valid) {
     try {
-        $password = password_hash($newPassword, PASSWORD_BCRYPT);
         $updateUser = new User(1, "", "", $password, "");
         User::updatePassword($connection, $updateUser, $id);
         echo '<script> alert("Đổi mật khẩu thành công vui lòng đăng nhập lại!");
-                location.href = "'.BASE_URL.'/login"
+                location.href = "' . BASE_URL . '/login"
             </script>
             ';
     } catch (\Throwable $e) {
         echo '<script> alert("Đã xảy ra lỗi vui lòng thử lại!");
-        location.href = "'.BASE_URL.'/pages/me.php"
+        location.href = "' . BASE_URL . '/pages/me.php"
     </script>
     ';
     }

@@ -18,23 +18,7 @@ class Auth
             die('Please login to continue!');
         }
     }
-    /*
-            Xử lý đăng nhập
-        */
-    public static function login($conn, $username, $password)
-    {
-        $isAuth = User::authen($conn, $username, $password);
-        $user = User::getByName($conn, $username);
-        if ($isAuth) {
-            $_SESSION['is_login'] = true;
-            $_SESSION['name_user'] = $user->username;
-            $_SESSION['id_user'] = $user->id;
-            return true;
-        } else return false;
-    }
-    /*
-            Xử lý đăng xuất
-        */
+
     public static function logout()
     {
         if (ini_get("session.use_cookies")) {

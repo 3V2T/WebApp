@@ -11,7 +11,7 @@ $username = $_SESSION['name_user'];
 $name = $_POST['name'];
 $password = $_POST['password'];
 $email = $_POST['email'];
-$is_valid = User::authen($connection, $username, $password);
+$is_valid = User::login($connection, $username, $password);
 if ($is_valid) {
     $updateUser = new User(1, $username, $name, $password, $email);
     try {
@@ -38,7 +38,7 @@ if ($is_valid) {
     if (isset($_SESSION["message"])) {
         if ($_SESSION['message'] != "") {
             echo '<script> alert("' . $_SESSION["message"] . '");
-                location.href = "'.BASE_URL.'/pages/me.php"
+                location.href = "' . BASE_URL . '/pages/me.php"
             </script>
             ';
             $_SESSION["message"]  = "";

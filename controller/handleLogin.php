@@ -10,8 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
     $conn = require('../inc/db.php');
     if ($conn) {
-        $rs = Auth::login($conn, $username, $password);
-        if ($rs) {
+        $user = User::login($conn, $username, $password);
+        if ($user) {
+            $_SESSION['is_login'] = true;
+            $_SESSION['name_user'] = $user->username;
+            $_SESSION['id_user'] = $user->id;
             $_SESSION['success_message'] = "Đăng nhập thành công";
             header("Location: " . BASE_URL . '/home');
         } else {
