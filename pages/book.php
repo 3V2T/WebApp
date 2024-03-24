@@ -96,7 +96,7 @@ try {
                             <img src="../uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
                             <div class="card-body row">
                                 <div class="col-10">
-                                    <h5 class="card-title">' . $b->title . '</h5>
+                                    <a href="' . BASE_URL . '/pages/detail.php?id=' . $b->id . '" style="font-size: 20px; color: black" class="card-title fw-bold">' . $b->title . '</a>
                                     <p> ' . $author->author . ' </p>
                                     <a class="btn btn-primary" href="' . BASE_URL . '/pages/detail.php?id=' . $b->id . '">Detail</a>
                                     <a class="btn btn-danger" href="' . BASE_URL . '/pages/read.php?name=' . $b->file_path . '">Read</a>

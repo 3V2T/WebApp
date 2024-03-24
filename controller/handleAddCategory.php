@@ -29,7 +29,6 @@ if (isset($_POST['category_name'])) {
         }
     } catch (\Throwable $e) {
         echo '<script>alert("Đã xảy ra lỗi vui lòng thử lại!");
-            
         </script>';
     }
 }

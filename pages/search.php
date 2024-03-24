@@ -69,7 +69,7 @@ $connection = $conn->getConn();
                             <img src="../uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
                             <div class="card-body row">
                                 <div class="col-10">
-                                    <h5 class="card-title">' . $b->title . '</h5>
+                                    <a style="color: black; font-size: 20px;" href="' . BASE_URL . '/pages/detail.php?id=' . $b->id . '" class="fw-bold card-title">' . $b->title . '</a>
                                     <p> ' . $author->author . ' </p>
                                     <a class="btn btn-primary" href="' . BASE_URL . '/pages/detail.php?id=' . $b->id . '">Detail</a>
                                     <a class="btn btn-danger" href="' . BASE_URL . '/pages/read.php?name=' . $b->file_path . '">Read</a>
