@@ -5,21 +5,16 @@ include_once "../utils/routerConfig.php";
 include "../classes/database.php";
 include "../classes/book.php";
 include "../classes/author.php";
+include "../config.php";
 include "../classes/category.php";
 include "../classes/wishlist.php";
-include "../config.php";
+$slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 
-if (!isset($_GET["keyword"])) {
+if (!isset($_GET["authorId"])) {
     header("Location: " . BASE_URL . "/pages/book.php?type=tat-ca");
 }
-if (!isset($_SESSION["is_admin"]) && !isset($_SESSION["is_login"])) {
-    $_SESSION["guest"] = true;
-}
-
-$slug = getSlugFromUrl($_SERVER['REQUEST_URI']);
 $conn = new Database(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 $connection = $conn->getConn();
-
 
 ?>
 
@@ -34,6 +29,19 @@ $connection = $conn->getConn();
 </head>
 
 <body>
+    <script type="module" async>
+        import handleEvent from '../js/handleEvent.js';
+        const {
+            handleToggleHeartIcon
+        } = handleEvent();
+        const heartList = document.querySelectorAll(".heart");
+        console.log(heartList);
+        heartList.forEach(heart => {
+            heart.onclick = (event) => {
+                handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
+            }
+        });
+    </script>
     <?php
     include_once("../js/bootstrapConfig.php");
     ?>
@@ -42,28 +50,22 @@ $connection = $conn->getConn();
         include_once("./components/header.php");
         ?>
         <div class="container min-vh-100 mt-4">
-            <h1 class='p-4'>Search - "<?php
-                                        echo $_GET['keyword'];
-                                        ?>" </h1>
+            <?php
+            $id = $_GET["authorId"];
+            $books = Book::getByAuthor($connection, $id);
+            $author = Author::getById($connection, $id);
+            echo "<h1 class='p-4'>Author: " . $author->author . "</h1>";
+            ?>
             <div class="container">
                 <div class="row gap-3">
                     <?php
-                    $keyword = $_GET['keyword'];
-
-                    $books = [];
-                    $books = Book::getByKeyWord($connection, $keyword);
-                    if (count($books) == 0) {
-                        echo "<div class='p-4 w-100 h-100'>
-                                    <h4>Không tìm thấy kết quả phù hợp!</h4>
-                                </div>";
-                    } else {
-                        foreach ($books as $b) {
-                            $wishlist;
-                            if (isset($_SESSION['id_user'])) {
-                                $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
-                            }
-                            $author = Author::getById($connection, $b->author_id);
-                            echo '
+                    foreach ($books as $b) {
+                        $wishlist;
+                        if (isset($_SESSION["id_user"])) {
+                            $wishlist = WishList::getWishListByUserAndBook($connection, $_SESSION['id_user'], $b->id) != null ? true : false;
+                        }
+                        $author = Author::getById($connection, $b->author_id);
+                        echo '
                             <div class=" col-xl-3 col-md-4 col-sm-6 mb-4">
                         <div class="card">
                             <img src="../uploads/books-cover/' . $b->cover_path . '" class="card-img-top" alt="Card image cap">
@@ -86,7 +88,6 @@ $connection = $conn->getConn();
     </div>
     </div>
     ';
-                        }
                     }
                     ?>
                 </div>
@@ -96,20 +97,6 @@ $connection = $conn->getConn();
         include_once("./components/footer.php");
         ?>
     </div>
-    <script type="module" async>
-        import handleEvent from '../js/handleEvent.js';
-        const {
-            handleToggleHeartIcon
-        } = handleEvent();
-        console.log(handleToggleHeartIcon);
-        const heartList = document.querySelectorAll(".heart");
-        console.log(heartList);
-        heartList.forEach(heart => {
-            heart.onclick = (event) => {
-                handleToggleHeartIcon(event, heart.id, heart.querySelector("i").id);
-            }
-        });
-    </script>
 </body>
 
 </html>

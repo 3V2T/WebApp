@@ -277,11 +277,9 @@ class Book
     public static function getByAuthor($conn, $author_id)
     {
         try {
-            $sql = "SELECT books.id, books.title, books.author_id, books.category_id, books.description, books.published, books.cover_path, books.file_path
-            FROM books
-            WHERE books.author_id = :author_id";
+            $sql = "CALL getBooksbyauthorid(:author_id)";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam('author_id', $author_id);
+            $stmt->bindParam(':author_id', $author_id);
             $stmt->execute();
 
             $booksList = [];
@@ -310,7 +308,7 @@ class Book
             $sql = "CALL timsach(:keyword)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':keyword',$key_word);
+            $stmt->bindValue(':keyword', $key_word);
             $stmt->execute();
 
             $booksList = [];
